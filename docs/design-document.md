@@ -19,7 +19,7 @@ details later in this document, but for now, here is a summary of what is happen
 * <strong>Step 2</strong>: The CLI application parses the user's command and translates it into an HTTPS request for the Server. The API module of the Server receives 
   the request and check if the input is valid and if the user is authorized to perform the requested operation.
 
-* <strong>Step 3</strong>: If all validations pass, the API module will forward the request to the corresponding internal handler (i.e. interactor) that will 
+* <strong>Step 3</strong>: If all validations pass, the API module will forward the request to the corresponding internal handler (i.e. [interactor](https://crosp.net/blog/software-architecture/clean-architecture-part-2-the-clean-architecture/)) that will 
   do business logic, access the in-memory state and invoke the OS Process API with the Worker Library when necessary.
 
 PS: The image depicts a situation where the CLI and the Server are running on separate machines/OS, which is not always the case. This was intended to highlight the necessity
