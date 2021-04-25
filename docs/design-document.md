@@ -33,8 +33,8 @@ will be further discussed during application development.)
 
 ## CLI
 
-The Job Worker CLI is the user interface of the Job Worker Service. Its responsibility is to authenticate the user with the Server, parse commands and generate authenticated HTTPS requests for it.
-This section will:
+The Job Worker CLI is the user interface of the Job Worker Service. Its responsibility is to authenticate the user with the Server, parse commands, generate authenticated HTTPS requests
+and exhibit the responses in a structured manner. This section will:
 
 1. Describe which commands are available for the user and how to use them;
 2. Describe how the CLI will manage user secrets (i.e. username/password);
