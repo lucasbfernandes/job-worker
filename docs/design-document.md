@@ -22,10 +22,10 @@ details later in this document, but for now, here is a summary of what's happeni
 * <strong>Step 3</strong>: If all validations pass, the API module will forward the request to the corresponding internal handler (i.e. [interactor](https://crosp.net/blog/software-architecture/clean-architecture-part-2-the-clean-architecture/)) that will 
   do business logic, access the in-memory state and invoke the OS Process API with the Worker Library when necessary.
 
+![Architecture](../assets/images/architecture.png)
+
 PS: The image depicts a situation where the CLI and the Server are running on separate machines/OS, which is not always the case. This was intended to highlight the necessity
 of creating a secure channel between them.
-
-![Architecture](../assets/images/architecture.png)
 
 The next sections will describe in details each of key aspects of the 2 components of the system. The design decisions and trade-offs will be shown in a way that by the end of the
 document the reader will have a "grey-box" understanding of the entire system (i.e. Some internal nuances will be mentioned, but not all of them for the sake of readability. These
