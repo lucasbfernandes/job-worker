@@ -24,7 +24,7 @@ details later in this document, but for now, here is a summary of what is happen
 
 ![Architecture](../assets/images/architecture.png)
 
-The next sections will describe in details each of key aspects of two the components of the system. The design decisions and trade-offs will be highlighted in a way that by
+The next sections will describe in details each of key aspects of the 2 components of the system. The design decisions and trade-offs will be highlighted in a way that by
 the end of the document the reader will have a "grey-box" understanding of the entire system (i.e. Some internal nuances will be mentioned, but not all of them for the sake of
 readability. These will be further discussed during application development.)
 
