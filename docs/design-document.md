@@ -50,7 +50,7 @@ The Job Worker Server is responsible for receiving HTTPS requests, applying vali
 
 #### Authorization
 
-## Managing Linux Processes
+### Managing Linux Processes
 
 ### Trade-offs
 
