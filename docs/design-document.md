@@ -20,7 +20,10 @@ details later in this document, but for now, here is a summary of what is happen
   the request and check if the input is valid and if the user is authorized to perform the requested operation.
 
 * <strong>Step 3</strong>: If all validations pass, the API module will forward the request to the corresponding internal handler (i.e. interactor) that will 
-  do business logic, access the in-memory state and invoke the OS process API with the worker library when necessary.
+  do business logic, access the in-memory state and invoke the OS Process API with the Worker Library when necessary.
+
+PS: The image depicts a situation where the CLI and the Server are running on separate machines/OS, which is not always the case. This was intended to highlight the necessity
+of creating a secure channel between them.
 
 ![Architecture](../assets/images/architecture.png)
 
