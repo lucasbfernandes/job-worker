@@ -34,3 +34,24 @@ readability. These will be further discussed during application development.)
 ## CLI
 
 ## Server
+
+The Job Worker Server is responsible for receiving HTTPS requests, applying validations, and executing the requested action if possible. This section will:
+
+1. Describe which actions are available for requests and how the Server expects to receive them;
+2. Describe how the Server will handle security concerns (Authentication and Authorization);
+3. Explain briefly how the Server will keep track/state of every spawned process;
+4. Show the trade-offs and what could and should be done for future work.
+
+### REST API
+
+### Security
+
+#### Authentication
+
+#### Authorization
+
+## Managing Linux Processes
+
+### Trade-offs
+
+### Future work
