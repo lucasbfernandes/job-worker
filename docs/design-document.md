@@ -1,8 +1,8 @@
 # Job Worker Design Document
 
 This document describes the key design choices and trade-offs for the development of the Job Worker, an application
-that enables the execution of arbitrary linux processes remotely. <strong>Users that interact with the system are able to <strong>start, stop,
-query status and also read the stdout logs</strong> of any requested process execution.
+that enables the execution of arbitrary linux processes remotely. Users that interact with the system are able to <strong>start, stop,
+query status and also read the stdout logs of any requested process execution.
 
 ## Architecture overview
 
