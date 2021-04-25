@@ -10,17 +10,17 @@ The application is composed of 2 components: The CLI and the Server. The former 
 into REST HTTPS requests. The Server receives such requests, maintains internal in-memory state and manages the pool of linux processes that are spawned
 along with their statuses.
 
-In Figure 1 it's possible to see numbers 1, 2 and 3, each representing a different step of a user request. Each step of the request will be described in
+It's possible to see numbers 1, 2 and 3 in the image below, each representing a different step of a user request. Each step of the request will be described in
 details later in this document, but for now, here is a summary of what is happening:
 
-* Step <strong>1</strong>: After logging in using a basic username/password authentication mechanism, the user types a CLI command requesting one of the possible 
+* <strong>Step 1</strong>: After logging in using a basic username/password authentication mechanism, the user types a CLI command requesting one of the possible 
   interactions with a linux process. For this example, let's say the user is requesting the execution of a new process.
 
-* Step <strong>2</strong>: The CLI application parses the user's command and translates it into an HTTPS request for the Server. The API module of the Server receives 
+* <strong>Step 2</strong>: The CLI application parses the user's command and translates it into an HTTPS request for the Server. The API module of the Server receives 
   the request and check if the input is valid and if the user is authorized to perform the requested operation.
 
-* Step <strong>3</strong>: If all validations pass, the API module will forward the request to the corresponding internal handler (i.e. interactors) that will 
-  do business logic, accessing in-memory state and accessing the OS process API with the worker library.
+* <strong>Step 3</strong>: If all validations pass, the API module will forward the request to the corresponding internal handler (i.e. interactor) that will 
+  do business logic, access the in-memory state and access the OS process API with the worker library when necessary.
 
 ![Architecture](../assets/images/architecture.png)
 
