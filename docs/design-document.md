@@ -85,6 +85,8 @@ Body:
 {
   id: "bdf951f2-f0d8-4e5f-a0ea-79f103391ec9"
 }
+
+Status code: 201 Created
 ```
 
 <strong>Parameters:</strong>
@@ -94,6 +96,33 @@ Body:
 ---
 
 POST jobs/:id/stop
+
+<strong>Request</strong>
+```
+Body:
+""
+
+Headers:"
+{
+  Authorization: Basic ZGVtbzpwQDU1dzByZA==
+}
+```
+
+<strong>Parameters:</strong>
+
+<strong>:id:</strong> Job id. This is the uuidv4 id returned by the "POST jobs/" request. 
+
+<strong>Response:</strong>
+```
+Body:
+""
+
+Status code: 200 Ok
+```
+
+---
+
+GET jobs
 
 ---
 
