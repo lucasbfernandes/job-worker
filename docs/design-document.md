@@ -17,10 +17,10 @@ details later in this document, but for now, here is a summary of what's happeni
   interactions with a linux process.
 
 * <strong>Step 2</strong>: The CLI application parses the user's command and translates it into an HTTPS request for the Server. The API module of the Server receives 
-  the request and check if the input is valid and if the user is authorized to perform the requested operation.
+  the request, checks if the input is valid and verifies if the user is authorized to perform the requested operation.
 
-* <strong>Step 3</strong>: If all validations pass, the API module will forward the request to the corresponding internal handler (i.e. [interactor](https://crosp.net/blog/software-architecture/clean-architecture-part-2-the-clean-architecture/)) that will 
-  do business logic, access the in-memory state and invoke the OS Process API with the Worker Library when necessary.
+* <strong>Step 3</strong>: If all validations pass, the API module will forward the request to the corresponding internal handler [[1]](####[1]).
+  It will do business logic, access the persistence layer and invoke the OS Process API with the Worker Library when necessary.
 
 ![Architecture](../assets/images/architecture.png)
 
@@ -59,6 +59,30 @@ The Job Worker Server is responsible for receiving HTTPS requests, applying vali
 
 ### REST API
 
+#### POST jobs/
+```
+Request body:
+{
+  commmand: ["/bin/bash", "-c", "echo hello"]
+}
+
+Request headers:
+{
+  Authorization: Basic ZGVtbzpwQDU1dzByZA==
+}
+```
+
+<strong>Parameters description:</strong>
+
+<strong>command:</strong> Array of strings in the form `["executable", "param1", "param2", "param3]` [[2]](####[2]). The first element 
+of the array will always be considered as the requested executable.
+
+POST jobs/:id/stop
+
+GET jobs/:id/status
+
+GET jobs/:id/logs
+
 ### Security
 
 #### Authentication
@@ -70,3 +94,8 @@ The Job Worker Server is responsible for receiving HTTPS requests, applying vali
 ### Trade-offs
 
 ### Future work
+
+## References
+
+####[1] https://crosp.net/blog/software-architecture/clean-architecture-part-2-the-clean-architecture/
+####[2] https://docs.docker.com/engine/reference/builder/
