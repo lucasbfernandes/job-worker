@@ -95,7 +95,7 @@ Status code: 201 Created
 
 ---
 
-POST jobs/:id/stop
+#### POST jobs/:id/stop
 
 <strong>Request</strong>
 ```
@@ -122,15 +122,15 @@ Status code: 200 Ok
 
 ---
 
-GET jobs
+#### GET jobs
 
 ---
 
-GET jobs/:id/status
+#### GET jobs/:id/status
 
 ---
 
-GET jobs/:id/logs
+#### GET jobs/:id/logs
 
 ### Security
 
