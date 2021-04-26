@@ -60,26 +60,46 @@ The Job Worker Server is responsible for receiving HTTPS requests, applying vali
 ### REST API
 
 #### POST jobs/
+
+<strong>Request</strong>
 ```
-Request body:
+Body:
 {
   commmand: ["/bin/bash", "-c", "echo hello"]
 }
 
-Request headers:
+Headers:
 {
   Authorization: Basic ZGVtbzpwQDU1dzByZA==
 }
 ```
 
-<strong>Parameters description:</strong>
+<strong>Parameters:</strong>
 
 <strong>command:</strong> Array of strings in the form `["executable", "param1", "param2", "param3]` [2]. The first element 
-of the array will always be considered as the requested executable.
+of the array will always be considered as the executable. Validations: NotNull and NotEmpty.
+
+<strong>Response:</strong>
+```
+Body:
+{
+  id: "bdf951f2-f0d8-4e5f-a0ea-79f103391ec9"
+}
+```
+
+<strong>Parameters:</strong>
+
+<strong>id:</strong> Job id. Will be generated as uuidv4 and must be used to apply further commands to it.
+
+---
 
 POST jobs/:id/stop
 
+---
+
 GET jobs/:id/status
+
+---
 
 GET jobs/:id/logs
 
