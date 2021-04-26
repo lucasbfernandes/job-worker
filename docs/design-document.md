@@ -89,7 +89,7 @@ Body:
 Status code: 201 Created
 ```
 
-<strong>Parameters:</strong>
+<strong>Body parameters:</strong>
 
 <strong>id:</strong> Job id. Will be generated as uuidv4 and must be used to apply further commands to it.
 
@@ -108,9 +108,9 @@ Headers:"
 }
 ```
 
-<strong>Parameters:</strong>
+<strong>Query parameters:</strong>
 
-<strong>:id:</strong> Job id. This is the uuidv4 id returned by the "POST jobs/" request. 
+<strong>id:</strong> Job id. This is the uuidv4 id returned by the "POST jobs/" request. 
 
 <strong>Response:</strong>
 ```
