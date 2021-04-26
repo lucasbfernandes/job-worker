@@ -19,7 +19,7 @@ details later in this document, but for now, here is a summary of what's happeni
 * <strong>Step 2</strong>: The CLI application parses the user's command and translates it into an HTTPS request for the Server. The API module of the Server receives 
   the request, checks if the input is valid and verifies if the user is authorized to perform the requested operation.
 
-* <strong>Step 3</strong>: If all validations pass, the API module will forward the request to the corresponding internal handler [[1]](####[1]).
+* <strong>Step 3</strong>: If all validations pass, the API module will forward the request to the corresponding internal handler [1].
   It will do business logic, access the persistence layer and invoke the OS Process API with the Worker Library when necessary.
 
 ![Architecture](../assets/images/architecture.png)
@@ -74,7 +74,7 @@ Request headers:
 
 <strong>Parameters description:</strong>
 
-<strong>command:</strong> Array of strings in the form `["executable", "param1", "param2", "param3]` [[2]](####[2]). The first element 
+<strong>command:</strong> Array of strings in the form `["executable", "param1", "param2", "param3]` [2]. The first element 
 of the array will always be considered as the requested executable.
 
 POST jobs/:id/stop
@@ -97,5 +97,6 @@ GET jobs/:id/logs
 
 ## References
 
-####[1] https://crosp.net/blog/software-architecture/clean-architecture-part-2-the-clean-architecture/
-####[2] https://docs.docker.com/engine/reference/builder/
+[1] https://crosp.net/blog/software-architecture/clean-architecture-part-2-the-clean-architecture/
+
+[2] https://docs.docker.com/engine/reference/builder/
