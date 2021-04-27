@@ -173,8 +173,8 @@ Status code: 200 Ok
 
 <strong>Body parameters:</strong>
 
-<strong>jobs:</strong> Array of jobs. Will be returned without pagination and will contain relevant information about every requested
-job from the authenticated user.
+<strong>jobs:</strong> Array of jobs. Will be returned without pagination and will contain relevant information from every job
+requested by the authenticated user.
 
 ---
 
