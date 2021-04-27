@@ -24,7 +24,7 @@ details later in this document, but for now, here is a summary of what's happeni
 
 ![Architecture](../assets/images/architecture.png)
 
-PS: The image depicts a situation where the CLI and the Server are running on separate machines/OS, which is not always the case. This was intended to highlight the necessity
+<strong>PS:</strong> The image depicts a situation where the CLI and the Server are running on separate machines/OS, which is not always the case. This was intended to highlight the necessity
 of creating a secure channel between them.
 
 The next sections will describe in details each of key aspects of the 2 components of the system. The design decisions and trade-offs will be shown in a way that by the end of the
@@ -45,7 +45,7 @@ and exhibit the responses in a structured manner. This section will:
 * [Login](cli/login/login.md): `job-worker login SERVER_URL`
 * [Create Job](cli/jobs/create-job.md): `job-worker exec COMMAND [ARG...]`
 * [List Jobs](cli/jobs/list-jobs.md): `job-worker list`
-* [Stop Job](cli/jobs/stop-job.md): `job-worker status JOB_ID`
+* [Stop Job](cli/jobs/stop-job.md): `job-worker stop JOB_ID`
 * [Get Job Status](cli/jobs/get-status.md): `job-worker status JOB_ID`
 * [Get Job Logs](cli/jobs/get-logs.md): `job-worker logs JOB_ID`
 
