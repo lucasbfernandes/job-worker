@@ -54,8 +54,10 @@ and exhibit the responses in a structured manner. This section will:
 The CLI login command will follow a very similar approach to what `docker login` does with its default configuration mechanism [5]. It
 receives user input in the username/password form and then invokes the [login api](api/login/login.md). If a `200 Ok` is
 received, then a new folder `$HOME/.job-worker` will be created if it doesn't exist. A `config.json` inside this folder will contain
-the current active login "session" (it won't be a real session because we are not using expiring tokens). This is what the file
+the current active login "session". This is what the file
 will look like:
+
+<strong>PS:</strong> It won't be a real session because we are not using tokens that expire.
 
 <strong>Example command:</strong> `job-worker login https://my-server.example:443`
 
