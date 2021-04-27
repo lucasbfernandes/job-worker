@@ -69,7 +69,7 @@ will look like:
 }
 ```
 
-The CLI config.json file will have the same permissions of the docker `config.json` file: `-rw-------` (i.e. only read and write permissions
+The CLI `config.json` file will have the same permissions of the docker `config.json` file: `-rw-------` (i.e. only read and write permissions
 for the file owner).
 
 <strong>PS:</strong> If the `config.json` file doesn't exist, the user will be oriented to invoke the login command.
