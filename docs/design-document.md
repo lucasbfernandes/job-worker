@@ -61,7 +61,7 @@ The Job Worker Server is responsible for receiving HTTPS requests, applying vali
 
 #### POST jobs/
 
-<strong>Request</strong>
+Request:
 ```
 Body:
 {
@@ -74,12 +74,12 @@ Headers:
 }
 ```
 
-<strong>Body parameters:</strong>
+Body parameters:
 
 <strong>command:</strong> Array of strings in the form `["executable", "param1", "param2", "param3]` [2]. The first element 
 of the array will always be considered as the executable. Validations: NotNull and NotEmpty.
 
-<strong>Response:</strong>
+Response:
 ```
 Body:
 {
@@ -89,7 +89,7 @@ Body:
 Status code: 201 Created
 ```
 
-<strong>Body parameters:</strong>
+Body parameters:
 
 <strong>id:</strong> Job id. Will be generated as uuidv4 and must be used to apply further commands to it.
 
@@ -97,7 +97,7 @@ Status code: 201 Created
 
 #### POST jobs/:id/stop
 
-<strong>Request</strong>
+Request:
 ```
 Body:
 ""
@@ -108,11 +108,11 @@ Headers:
 }
 ```
 
-<strong>Query parameters:</strong>
+Query parameters:
 
 <strong>id:</strong> Job id. This is the uuidv4 id returned from the "POST jobs/" request. 
 
-<strong>Response:</strong>
+Response:
 ```
 Body:
 ""
@@ -124,7 +124,7 @@ Status code: 200 Ok
 
 #### GET jobs
 
-<strong>Request</strong>
+Request:
 ```
 Headers:
 {
@@ -132,7 +132,7 @@ Headers:
 }
 ```
 
-<strong>Response:</strong>
+Response:
 ```
 Body:
 {
@@ -171,7 +171,7 @@ Body:
 Status code: 200 Ok
 ```
 
-<strong>Body parameters:</strong>
+Body parameters:
 
 <strong>jobs:</strong> Array of jobs. Will be returned without pagination and will contain relevant information from every job
 requested by the authenticated user.
@@ -180,7 +180,7 @@ requested by the authenticated user.
 
 #### GET jobs/:id/status
 
-<strong>Request</strong>
+Request:
 ```
 Body:
 ""
@@ -191,11 +191,11 @@ Headers:
 }
 ```
 
-<strong>Query parameters:</strong>
+Query parameters:
 
 <strong>id:</strong> Job id. This is the uuidv4 id returned from the "POST jobs/" request.
 
-<strong>Response:</strong>
+Response:
 ```
 Body:
 {
@@ -205,7 +205,7 @@ Body:
 Status code: 200 Ok
 ```
 
-<strong>Body parameters:</strong>
+Body parameters:
 
 <strong>status:</strong> Status of the job. Will be one of the following: `RUNNING`, `FAILED`, `STOPPED`, `COMPLETED`.
 
@@ -213,7 +213,7 @@ Status code: 200 Ok
 
 #### GET jobs/:id/logs
 
-<strong>Request</strong>
+Request:
 ```
 Body:
 ""
@@ -224,11 +224,11 @@ Headers:
 }
 ```
 
-<strong>Query parameters:</strong>
+Query parameters:
 
 <strong>id:</strong> Job id. This is the uuidv4 id returned from the "POST jobs/" request.
 
-<strong>Response:</strong>
+Response:
 ```
 Body:
 {
@@ -238,7 +238,7 @@ Body:
 Status code: 200 Ok
 ```
 
-<strong>Body parameters:</strong>
+Body parameters:
 
 <strong>logs:</strong> Job logs. Will be retrieved from stdout and stored as a single string for this initial version.
 
