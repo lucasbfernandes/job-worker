@@ -13,10 +13,10 @@ along with their statuses.
 It's possible to see numbers 1, 2 and 3 in the image below, each representing a different step of a user request. Each step of the request will be described in
 details later in this document, but for now, here is a summary of what's happening:
 
-* <strong>Step 1</strong>: After logging in using a basic username/password authentication mechanism, the user types a CLI command requesting one of the possible 
+* <strong>Step 1</strong>: After logging in using a basic username/password authentication mechanism, the user types a CLI command requesting one of the possible
   interactions with a linux process.
 
-* <strong>Step 2</strong>: The CLI application parses the user's command and translates it into an HTTPS request for the Server. The API module of the Server receives 
+* <strong>Step 2</strong>: The CLI application parses the user's command and translates it into an HTTPS request for the Server. The API module of the Server receives
   the request, checks if the input is valid and verifies if the user is authorized to perform the requested operation.
 
 * <strong>Step 3</strong>: If all validations pass, the API module will forward the request to the corresponding internal handler [1].
@@ -76,7 +76,7 @@ Headers:
 
 Body parameters:
 
-<strong>command:</strong> Array of strings in the form `["executable", "param1", "param2", "param3]` [2]. The first element 
+<strong>command:</strong> Array of strings in the form `["executable", "param1", "param2", "param3]` [2]. The first element
 of the array will always be considered as the executable. Validations: NotNull and NotEmpty.
 
 Response:
@@ -110,7 +110,7 @@ Headers:
 
 Query parameters:
 
-<strong>id:</strong> Job id. This is the uuidv4 id returned from the "POST jobs/" request. 
+<strong>id:</strong> Job id. This is the uuidv4 id returned from the "POST jobs/" request.
 
 Response:
 ```
