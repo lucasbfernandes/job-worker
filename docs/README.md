@@ -96,9 +96,26 @@ a set of permissions associated with it.
 |  Developer | jobs.create, jobs.get, jobs.logs, jobs.stop | Can create/stop jobs, view all jobs and query their logs|
 |  Reader | jobs.get | Can view all jobs and their status|
 
-When receiving an authenticated request, the Server will always check if the user has enough permissions to access the resource. For now, a user will have only one role.
+When receiving an authenticated request, the Server will always check if the user has enough permissions to access the resource. If not, `403 Forbidden` will be returned.
+
+<strong>PS: For now, role and user relationship will be one to many.</strong>
 
 ### Managing Linux Processes
+
+The Golang exec package [4] will be responsible for the interaction with the operating system. This package will be used by the Server in a library that could be imported by
+any Golang project that  wishes to do any of the following actions on linux processes: `create`, `stop`, `read logs`.
+
+In order to keep track of processes (jobs) data, the Server will persist their data and update it according to the outputs of the `exec` package commands.
+
+Jobs will have 4 possible states:
+
+* <strong>RUNNING:</strong> Process is currently running with no errors;
+* <strong>FAILED:</strong> Process finished with errors;
+* <strong>STOPPED:</strong> Process was forced to stop by a user;
+* <strong>COMPLETED:</strong> Process finished without errors.
+
+Job states will be stored in the job object inside the in-memory database. One goroutine will be created for each job, and each will perform a database write/update on a
+different record.
 
 ### Trade-offs
 
@@ -111,3 +128,5 @@ When receiving an authenticated request, the Server will always check if the use
 [2] https://en.wikipedia.org/wiki/Basic_access_authentication
 
 [3] https://medium.com/bluecore-engineering/implementing-role-based-security-in-a-web-app-89b66d1410e4
+
+[4] https://golang.org/pkg/os/exec/
