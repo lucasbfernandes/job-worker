@@ -2,13 +2,8 @@
 
 ### Request:
 ```
-Body:
-""
-
 Headers:
-{
-  Authorization: Basic ZGVtbzpwQDU1dzByZA==
-}
+Authorization: Basic ZGVtbzpwQDU1dzByZA==
 ```
 
 #### Query parameters:
@@ -17,8 +12,5 @@ Headers:
 
 ### Success response:
 ```
-Body:
-""
-
 Status code: 200 Ok
 ```

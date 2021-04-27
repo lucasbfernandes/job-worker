@@ -1,14 +1,9 @@
-# GET jobs/:id/status
+# GET /jobs/:id/status
 
 ### Request:
 ```
-Body:
-""
-
 Headers:
-{
-  Authorization: Basic ZGVtbzpwQDU1dzByZA==
-}
+Authorization: Basic ZGVtbzpwQDU1dzByZA==
 ```
 
 #### Query parameters:
@@ -17,12 +12,12 @@ Headers:
 
 ### Success response:
 ```
+Status code: 200 Ok
+
 Body:
 {
   status: "RUNNING"
 }
-
-Status code: 200 Ok
 ```
 
 #### Body parameters:

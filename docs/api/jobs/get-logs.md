@@ -1,14 +1,9 @@
-# GET jobs/:id/logs
+# GET /jobs/:id/logs
 
 ### Request:
 ```
-Body:
-""
-
 Headers:
-{
-  Authorization: Basic ZGVtbzpwQDU1dzByZA==
-}
+Authorization: Basic ZGVtbzpwQDU1dzByZA==
 ```
 
 #### Query parameters:
@@ -17,12 +12,12 @@ Headers:
 
 ### Success response:
 ```
+Status code: 200 Ok
+
 Body:
 {
   logs: "Process exited with code 1"
 }
-
-Status code: 200 Ok
 ```
 
 #### Body parameters:
