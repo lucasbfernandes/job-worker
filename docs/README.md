@@ -83,7 +83,7 @@ its in-memory database. If the request is not valid, a `401 Unauthorized` will b
 
 #### Authorization
 
-The Job Worker Service will handle authorization using a simple RBAC mechanism. There will be 4 types of roles, each with
+Authorization will be handled with a simple RBAC mechanism. There will be 4 types of roles, each with
 a set of permissions associated with it.
 
 <strong>PS: Stub users will be created as seed data when the Server starts. There will be no users CRUD in the initial version. Some permissions won't be enforced until then. </strong>
