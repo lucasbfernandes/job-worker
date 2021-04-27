@@ -15,7 +15,7 @@ Headers:
 
 #### Body parameters:
 
-<strong>command:</strong> Array of strings in the form `["executable", "param1", "param2", "param3]` [2]. The first element
+<strong>command:</strong> Array of strings in the form `["executable", "param1", "param2", "param3]` [1]. The first element
 of the array will always be considered as the executable. Validations: NotNull and NotEmpty.
 
 ### Success response:
@@ -31,3 +31,7 @@ Status code: 201 Created
 #### Body parameters:
 
 <strong>id:</strong> Job id. Will be generated as uuidv4 and must be used to apply further commands to it.
+
+## References
+
+[1] https://docs.docker.com/engine/reference/builder/

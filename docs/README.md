@@ -85,6 +85,4 @@ The Job Worker Server is responsible for receiving HTTPS requests, applying vali
 
 [1] https://crosp.net/blog/software-architecture/clean-architecture-part-2-the-clean-architecture/
 
-[2] https://docs.docker.com/engine/reference/builder/
-
-[3] https://github.com/jamescooke/restapidocs
+[2] https://github.com/jamescooke/restapidocs
