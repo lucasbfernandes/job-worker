@@ -91,14 +91,14 @@ The Job Worker Server is responsible for receiving HTTPS requests, applying vali
 ### REST API
 
 #### Jobs:
-* [Create Job](api/jobs/create-job.md): `POST jobs`
-* [Get Jobs](api/jobs/get-jobs.md): `GET jobs`
-* [Stop Job](api/jobs/stop-job.md): `POST jobs/:id/stop`
-* [Get Job Status](api/jobs/get-status.md): `GET jobs/:id/status`
-* [Get Job Logs](api/jobs/get-logs.md): `GET jobs/:id/logs`
+* [Create Job](api/jobs/create-job.md): `POST /jobs`
+* [Get Jobs](api/jobs/get-jobs.md): `GET /jobs`
+* [Stop Job](api/jobs/stop-job.md): `POST /jobs/:id/stop`
+* [Get Job Status](api/jobs/get-status.md): `GET /jobs/:id/status`
+* [Get Job Logs](api/jobs/get-logs.md): `GET /jobs/:id/logs`
 
 #### Login:
-* [Login](api/login/login.md): `POST login/`
+* [Login](api/login/login.md): `POST /login`
 
 ### Security
 
