@@ -159,6 +159,7 @@ different record.
 
 * Implement mTLS;
 * Use network namespaces;
+* Improve authorization roles;
 
 ## References
 
