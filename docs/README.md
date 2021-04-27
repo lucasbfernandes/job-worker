@@ -51,7 +51,26 @@ and exhibit the responses in a structured manner. This section will:
 
 ### Managing User Secrets
 
-The Job Worker CLI will use an approach very similar to what Docker does with its default configuration mechanism. 
+The CLI login command will follow a very similar approach to what `docker login` does with its default configuration mechanism [5]. It
+receives user input in the username/password form and then invokes the [login api](api/login/login.md). If a `200 Ok` is
+received, then a new folder `$HOME/.job-worker` will be created if it doesn't exist. A `config.json` inside this folder will contain
+the current active login "session" (it won't be a real session because we are not using expiring tokens). This is what the file
+will look like:
+
+<strong>Example command:</strong> `job-worker login https://my-server.example:443`
+
+<strong>Resulting `config.json` file:</strong>
+```
+{
+  "server": https://my-server.example:443
+  "authToken": "ZGVtbzpwQDU1dzByZA=="
+}
+```
+
+The CLI config.json file will have the same permissions of the docker config.json file: `-rw-------` (i.e. only read and write permissions
+for the file owner).
+
+<strong>PS:</strong> If the `config.json` file doesn't exist, the user will be oriented to invoke the login command.
 
 ### Trade-offs
 
@@ -90,7 +109,7 @@ will take form with the following roles: `Admin`, `Maintainer`, `Developer` and 
 Every request made to the Server must contain an authorization header in the form `Authorization: Basic <credentials>`,
 where `<credentials>` is the base64 encoding of username and password joined by a single colon `:` [2].
 
-After receiving the request, Server will check if the username/password pair is valid and if it matches any given user in
+After receiving the request, the Server will check if the username/password pair is valid and if it matches any user in
 its in-memory database. If the request is not valid, a `401 Unauthorized` will be returned.
 
 #### Authorization
@@ -105,7 +124,7 @@ a set of permissions associated with it.
 | :-------------------:| :-------------------:| :-----------: |
 |  Admin | jobs.create, jobs.get, jobs.logs, jobs.stop, users.create, users.update | Can update users + all Maintainer permissions|
 |  Maintainer | jobs.create, jobs.get, jobs.logs, jobs.stop, users.create | Can create new users + all Developer permissions|
-|  Developer | jobs.create, jobs.get, jobs.logs, jobs.stop | Can create/stop jobs, view all jobs and query their logs|
+|  Developer | jobs.create, jobs.get, jobs.logs, jobs.stop | Can create/stop jobs, view jobs logs + all Reader permissions|
 |  Reader | jobs.get | Can view all jobs and their status|
 
 When receiving an authenticated request, the Server will always check if the user has enough permissions to access the resource. If not, `403 Forbidden` will be returned.
@@ -149,3 +168,5 @@ different record.
 [3] https://medium.com/bluecore-engineering/implementing-role-based-security-in-a-web-app-89b66d1410e4
 
 [4] https://golang.org/pkg/os/exec/
+
+[5] https://docs.docker.com/engine/reference/commandline/login/
