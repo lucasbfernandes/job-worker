@@ -1,15 +1,13 @@
-# POST jobs/
+# POST /jobs
 
 ### Request:
 ```
+Headers:
+Authorization: Basic ZGVtbzpwQDU1dzByZA==
+
 Body:
 {
   commmand: ["/bin/bash", "-c", "echo hello"]
-}
-
-Headers:
-{
-  Authorization: Basic ZGVtbzpwQDU1dzByZA==
 }
 ```
 
@@ -20,12 +18,12 @@ of the array will always be considered as the executable. Validations: NotNull a
 
 ### Success response:
 ```
+Status code: 201 Created
+
 Body:
 {
   id: "bdf951f2-f0d8-4e5f-a0ea-79f103391ec9"
 }
-
-Status code: 201 Created
 ```
 
 #### Body parameters:
@@ -34,4 +32,4 @@ Status code: 201 Created
 
 ## References
 
-[1] https://docs.docker.com/engine/reference/builder/
+[1] https://docs.docker.com/engine/reference/builder/#run

@@ -71,7 +71,13 @@ The Job Worker Server is responsible for receiving HTTPS requests, applying vali
 
 ### Security
 
+The Job Worker Service will use HTTPS + Basic Authentication in its initial version. Authorization
+will take form 
+
 #### Authentication
+Every request made to the Server must contain an authorization header in the form `Authorization: Basic <credentials>`,
+where `credentials` is the base64 encoding of username and password joined by a single colon `:` [3].
+
 
 #### Authorization
 
@@ -86,3 +92,5 @@ The Job Worker Server is responsible for receiving HTTPS requests, applying vali
 [1] https://crosp.net/blog/software-architecture/clean-architecture-part-2-the-clean-architecture/
 
 [2] https://github.com/jamescooke/restapidocs
+
+[3] https://en.wikipedia.org/wiki/Basic_access_authentication
