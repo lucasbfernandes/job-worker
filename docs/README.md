@@ -42,10 +42,22 @@ and exhibit the responses in a structured manner. This section will:
 
 ### Commands
 
+* [Login](cli/login/login.md): `job-worker login https://my-server.example:443`
+* [Create Job](cli/jobs/create-job.md): `job-worker exec sh -c "echo a && echo b" `
+* [List Jobs](cli/jobs/list-jobs.md): `job-worker list`
+* [Stop Job](cli/jobs/stop-job.md): `job-worker stop "1dd53ed8-34fb-469f-a7bd-245b958c86fc"`
+* [Get Job Status](cli/jobs/get-status.md): `job-worker status "1dd53ed8-34fb-469f-a7bd-245b958c86fc"`
+* [Get Job Logs](cli/jobs/get-logs.md): `job-worker logs "1dd53ed8-34fb-469f-a7bd-245b958c86fc"`
+
 ### Managing User Secrets
+
+The Job Worker CLI will use an approach very similar to what Docker does with its default configuration mechanism. 
 
 ### Trade-offs
 
+* Even with the correct file permissions, saving the basic authentication token in a file is a bad practice. A better approach would be store these secrets inside a keychain, or save a JWT token with
+an expiration time.
+  
 ### Future work
 
 ## Server
