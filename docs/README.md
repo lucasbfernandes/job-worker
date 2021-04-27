@@ -71,13 +71,17 @@ The Job Worker Server is responsible for receiving HTTPS requests, applying vali
 
 ### Security
 
-The Job Worker Service will use HTTPS + Basic Authentication in its initial version. Authorization
-will take form 
+The Job Worker Service will use HTTPS + Basic Authentication (i.e. username/password) in its initial version. Authorization
+will take form in two different roles: X and Y. Any given user can have one or both of them.
 
 #### Authentication
 Every request made to the Server must contain an authorization header in the form `Authorization: Basic <credentials>`,
 where `credentials` is the base64 encoding of username and password joined by a single colon `:` [3].
 
+Upon receiving the request, the Server will check if the username/password pair is valid and if it matches any given user in
+its in-memory database. If the request is not valid, a `401 Unauthorized` will be returned.
+
+PS: Stub users will be created as seed data when the Server starts.
 
 #### Authorization
 
