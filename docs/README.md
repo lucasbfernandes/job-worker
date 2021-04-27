@@ -76,10 +76,11 @@ for the file owner).
 
 ### Trade-offs
 
-* Even with the correct file permissions, saving the basic authentication token in a file is a bad practice. A better approach would be store these secrets inside a keychain, or save a JWT token with
-an expiration time.
+* Even with the correct file permissions, saving the basic authentication token in a file is a bad practice.
   
 ### Future work
+
+* Use tokens that expire (JWT?) or client certificates;
 
 ## Server
 
