@@ -74,7 +74,7 @@ Headers:
 }
 ```
 
-<strong>Parameters:</strong>
+<strong>Body parameters:</strong>
 
 <strong>command:</strong> Array of strings in the form `["executable", "param1", "param2", "param3]` [2]. The first element 
 of the array will always be considered as the executable. Validations: NotNull and NotEmpty.
@@ -123,6 +123,54 @@ Status code: 200 Ok
 ---
 
 #### GET jobs
+
+<strong>Request</strong>
+```
+Body:
+""
+
+Headers:"
+{
+  Authorization: Basic ZGVtbzpwQDU1dzByZA==
+}
+```
+
+<strong>Response:</strong>
+```
+Body:
+{
+  jobs: [
+    {
+      id: "da7f970f-1a09-4eb6-bfa3-4975105cb4bf",
+      command: ["/bin/bash", "-c", "echo hello"],
+      author: "username",
+      status: "RUNNING",
+      createdAt: ""2021-02-03 10:08:02"
+    },
+    {
+      id: "7f75b775-fd91-40d5-8f0f-e61fb797e46f",
+      command: ["/bin/bash", "-c", "echo hello"],
+      author: "username-2",
+      status: "STOPPED",
+      createdAt: ""2021-02-01 09:07:10"
+    },
+    {
+      id: "bcad5ae5-166c-4ee9-8aec-a08f2c46e4eb",
+      command: ["/bin/bash", "-c", "ls"],
+      author: "username",
+      status: "FAILED",
+      createdAt: ""2021-02-04 19:07:10"
+    }
+  ]
+}
+
+Status code: 200 Ok
+```
+
+<strong>Body parameters:</strong>
+
+<strong>jobs:</strong> Array of jobs. Will be returned without pagination and will contain relevant information about every requested
+job.
 
 ---
 
