@@ -51,7 +51,7 @@ and exhibit the responses in a structured manner. This section will:
 
 ### Managing User Secrets
 
-The CLI login command will follow a very similar approach to what `docker login` does with its default configuration mechanism [5]. It
+The CLI login command will follow a very similar approach to what `docker login` does with its default configuration mechanism [2]. It
 receives user input in the username/password form and then invokes the [login api](api/login/login.md). If a `200 Ok` is
 received, then a new folder `$HOME/.job-worker` will be created if it doesn't exist. A `config.json` inside this folder will contain
 the current active login "session". This is what the file
@@ -80,7 +80,7 @@ for the file owner).
   
 ### Future work
 
-* Use a credential store for user secrets [6];
+* Use a credential store for user secrets [3];
 * Use tokens that expire (JWT?) or client certificates;
 
 ## Server
@@ -111,7 +111,7 @@ will take form with the following roles: `Developer` and `Reader`.
 
 #### Authentication
 Every request made to the Server must contain an authorization header in the form `Authorization: Basic <credentials>`,
-where `<credentials>` is the base64 encoding of username and password joined by a single colon `:` [2].
+where `<credentials>` is the base64 encoding of username and password joined by a single colon `:` [4].
 
 After receiving the request, the Server will check if the username/password pair is valid and if it matches any user in
 its in-memory database. If the request is not valid, a `401 Unauthorized` will be returned.
@@ -134,7 +134,7 @@ When receiving an authenticated request, the Server will always check if the use
 
 ### Managing Linux Processes
 
-The Golang exec package [4] will be responsible for the interaction with the operating system. This package will be used by the Server in a library that could be imported by
+The Golang exec package [5] will be responsible for the interaction with the operating system. This package will be used by the Server in a library that could be imported by
 any Golang project that  wishes to do any of the following actions on linux processes: `create`, `stop`, `read logs`.
 
 In order to keep track of processes (jobs) data, the Server will persist their data and update it according to the outputs of the `exec` package commands.
@@ -165,12 +165,12 @@ different record.
 
 [1] https://crosp.net/blog/software-architecture/clean-architecture-part-2-the-clean-architecture/
 
-[2] https://en.wikipedia.org/wiki/Basic_access_authentication
+[2] https://docs.docker.com/engine/reference/commandline/login/
 
-[3] https://medium.com/bluecore-engineering/implementing-role-based-security-in-a-web-app-89b66d1410e4
+[3] https://www.techopedia.com/definition/23914/credential-store
 
-[4] https://golang.org/pkg/os/exec/
+[4] https://en.wikipedia.org/wiki/Basic_access_authentication 
 
-[5] https://docs.docker.com/engine/reference/commandline/login/
+[5] https://golang.org/pkg/os/exec/
 
-[6] https://www.techopedia.com/definition/23914/credential-store
+[6] https://medium.com/bluecore-engineering/implementing-role-based-security-in-a-web-app-89b66d1410e4
