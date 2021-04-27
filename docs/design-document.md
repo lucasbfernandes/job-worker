@@ -150,7 +150,7 @@ Body:
     {
       id: "7f75b775-fd91-40d5-8f0f-e61fb797e46f",
       command: ["/bin/bash", "-c", "echo hello"],
-      author: "username-2",
+      author: "username",
       status: "STOPPED",
       createdAt: ""2021-02-01 09:07:10"
     },
@@ -170,7 +170,7 @@ Status code: 200 Ok
 <strong>Body parameters:</strong>
 
 <strong>jobs:</strong> Array of jobs. Will be returned without pagination and will contain relevant information about every requested
-job.
+job from the authenticated user.
 
 ---
 
