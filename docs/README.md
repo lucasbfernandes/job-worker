@@ -76,12 +76,14 @@ for the file owner).
 
 ### Trade-offs
 
-* Even with the correct file permissions, saving the basic authentication token in a file is a bad practice.
-  
+* Even with the correct file permissions, saving the basic authentication token in a file is a bad practice;
+* Few command options.
+
 ### Future work
 
 * Use a credential store for user secrets [3];
 * Use tokens that expire (JWT?) or client certificates;
+* Implement more CLI commands options.
 
 ## Server
 
@@ -153,7 +155,9 @@ different record.
 
 * No network isolation between processes. This might lead to some problems such as network ports outage (i.e. only one process can listen on a port at a given time);
 * No resource pagination on the API services. This is not scalable but is not necessary for the first version;
-* Basic authentication is not enough;
+* Basic authentication is not enough but is simpler;
+* No CRUD for users;
+* No security regarding malicious executables.
 
 ### Future work
 
