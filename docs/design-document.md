@@ -102,7 +102,7 @@ Status code: 201 Created
 Body:
 ""
 
-Headers:"
+Headers:
 {
   Authorization: Basic ZGVtbzpwQDU1dzByZA==
 }
@@ -110,7 +110,7 @@ Headers:"
 
 <strong>Query parameters:</strong>
 
-<strong>id:</strong> Job id. This is the uuidv4 id returned by the "POST jobs/" request. 
+<strong>id:</strong> Job id. This is the uuidv4 id returned from the "POST jobs/" request. 
 
 <strong>Response:</strong>
 ```
@@ -126,10 +126,7 @@ Status code: 200 Ok
 
 <strong>Request</strong>
 ```
-Body:
-""
-
-Headers:"
+Headers:
 {
   Authorization: Basic ZGVtbzpwQDU1dzByZA==
 }
@@ -160,6 +157,13 @@ Body:
       author: "username",
       status: "FAILED",
       createdAt: ""2021-02-04 19:07:10"
+    },
+    {
+      id: "1dd53ed8-34fb-469f-a7bd-245b958c86fc",
+      command: ["/bin/bash", "-c", "ls"],
+      author: "username",
+      status: "COMPLETED",
+      createdAt: ""2021-02-01 14:17:10"
     }
   ]
 }
@@ -176,9 +180,67 @@ job from the authenticated user.
 
 #### GET jobs/:id/status
 
+<strong>Request</strong>
+```
+Body:
+""
+
+Headers:
+{
+  Authorization: Basic ZGVtbzpwQDU1dzByZA==
+}
+```
+
+<strong>Query parameters:</strong>
+
+<strong>id:</strong> Job id. This is the uuidv4 id returned from the "POST jobs/" request.
+
+<strong>Response:</strong>
+```
+Body:
+{
+  status: "RUNNING"
+}
+
+Status code: 200 Ok
+```
+
+<strong>Body parameters:</strong>
+
+<strong>status:</strong> Status of the job. Will be one of the following: `RUNNING`, `FAILED`, `STOPPED`, `COMPLETED`.
+
 ---
 
 #### GET jobs/:id/logs
+
+<strong>Request</strong>
+```
+Body:
+""
+
+Headers:
+{
+  Authorization: Basic ZGVtbzpwQDU1dzByZA==
+}
+```
+
+<strong>Query parameters:</strong>
+
+<strong>id:</strong> Job id. This is the uuidv4 id returned from the "POST jobs/" request.
+
+<strong>Response:</strong>
+```
+Body:
+{
+  logs: "Process exited with code 1"
+}
+
+Status code: 200 Ok
+```
+
+<strong>Body parameters:</strong>
+
+<strong>logs:</strong> Job logs. Will be retrieved from stdout and stored as a single string for this initial version.
 
 ### Security
 
