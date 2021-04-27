@@ -96,8 +96,7 @@ a set of permissions associated with it.
 |  Developer | jobs.create, jobs.get, jobs.logs, jobs.stop | Can create/stop jobs, view all jobs and query their logs|
 |  Reader | jobs.get | Can view all jobs and their status|
 
-When receiving an authenticated request, the Server will always check if the user has enough permissions to access the resource. For now, users will have only one 
-role.
+When receiving an authenticated request, the Server will always check if the user has enough permissions to access the resource. For now, a user will have only one role.
 
 ### Managing Linux Processes
 
