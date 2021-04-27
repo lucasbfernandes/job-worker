@@ -1,15 +1,15 @@
-# GET jobs/
+# GET /jobs
 
 ### Request:
 ```
 Headers:
-{
-  Authorization: Basic ZGVtbzpwQDU1dzByZA==
-}
+Authorization: Basic ZGVtbzpwQDU1dzByZA==
 ```
 
 ### Success response:
 ```
+Status code: 200 Ok
+
 Body:
 {
   jobs: [
@@ -43,8 +43,6 @@ Body:
     }
   ]
 }
-
-Status code: 200 Ok
 ```
 
 #### Body parameters:
