@@ -66,7 +66,7 @@ The Job Worker Server is responsible for receiving HTTPS requests, applying vali
 * [Get Job Status](api/jobs/get-status.md): `GET jobs/:id/status`
 * [Get Job Logs](api/jobs/get-logs.md): `GET jobs/:id/logs`
 
-### Login:
+#### Login:
 * [Login](api/login/login.md): `POST login/`
 
 ### Security
