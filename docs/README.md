@@ -42,12 +42,12 @@ and exhibit the responses in a structured manner. This section will:
 
 ### Commands
 
-* [Login](cli/login/login.md): `job-worker login https://my-server.example:443`
+* [Login](cli/login/login.md): `job-worker login SERVER_URL`
 * [Create Job](cli/jobs/create-job.md): `job-worker exec COMMAND [ARG...]`
 * [List Jobs](cli/jobs/list-jobs.md): `job-worker list`
-* [Stop Job](cli/jobs/stop-job.md): `job-worker stop "1dd53ed8-34fb-469f-a7bd-245b958c86fc"`
-* [Get Job Status](cli/jobs/get-status.md): `job-worker status "1dd53ed8-34fb-469f-a7bd-245b958c86fc"`
-* [Get Job Logs](cli/jobs/get-logs.md): `job-worker logs "1dd53ed8-34fb-469f-a7bd-245b958c86fc"`
+* [Stop Job](cli/jobs/stop-job.md): `job-worker status JOB_ID`
+* [Get Job Status](cli/jobs/get-status.md): `job-worker status JOB_ID`
+* [Get Job Logs](cli/jobs/get-logs.md): `job-worker logs JOB_ID`
 
 ### Managing User Secrets
 
