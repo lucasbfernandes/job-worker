@@ -76,7 +76,7 @@ will take form with the following roles: `Admin`, `Maintainer`, `Developer` and 
 
 #### Authentication
 Every request made to the Server must contain an authorization header in the form `Authorization: Basic <credentials>`,
-where `<credentials>` is the base64 encoding of username and password joined by a single colon `:` [3].
+where `<credentials>` is the base64 encoding of username and password joined by a single colon `:` [2].
 
 After receiving the request, Server will check if the username/password pair is valid and if it matches any given user in
 its in-memory database. If the request is not valid, a `401 Unauthorized` will be returned.
@@ -108,6 +108,6 @@ When receiving an authenticated request, the Server will always check if the use
 
 [1] https://crosp.net/blog/software-architecture/clean-architecture-part-2-the-clean-architecture/
 
-[2] https://github.com/jamescooke/restapidocs
+[2] https://en.wikipedia.org/wiki/Basic_access_authentication
 
-[3] https://en.wikipedia.org/wiki/Basic_access_authentication
+[3] https://medium.com/bluecore-engineering/implementing-role-based-security-in-a-web-app-89b66d1410e4

@@ -1,5 +1,8 @@
 # GET /jobs/:id/logs
 
+### Required permissions:
+jobs.logs
+
 ### Request:
 ```
 Headers:
@@ -23,3 +26,25 @@ Body:
 #### Body parameters:
 
 <strong>logs:</strong> Job logs. Will be retrieved from stdout and stored as a single string for this initial version.
+
+### Error response:
+
+<strong>Condition:</strong> Unauthorized user.
+
+```
+Status code: 401 Unauthorized
+```
+
+### Error response:
+
+<strong>Condition:</strong> User doesn't have enough permissions.
+
+```
+Status code: 403 Forbidden
+```
+
+## References
+
+[1] https://jsonapi.org/examples/#error-objects
+
+[2] https://github.com/jamescooke/restapidocs

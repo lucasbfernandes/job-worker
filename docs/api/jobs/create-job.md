@@ -1,5 +1,8 @@
 # POST /jobs
 
+### Required permissions: 
+jobs.create
+
 ### Request:
 ```
 Headers:
@@ -30,6 +33,45 @@ Body:
 
 <strong>id:</strong> Job id. Will be generated as uuidv4 and must be used to apply further commands to it.
 
+### Error response:
+
+<strong>Condition:</strong> Invalid command parameter (Null or empty array).
+
+```
+Status code: 400 Bad request
+
+Body:
+{
+  errors: [
+    {
+      status: "400",
+      title:  "Invalid Command",
+      detail: "Parameter command must not be null or empty"
+    }
+  ]
+}
+```
+
+### Error response:
+
+<strong>Condition:</strong> Unauthorized user.
+
+```
+Status code: 401 Unauthorized
+```
+
+### Error response:
+
+<strong>Condition:</strong> User doesn't have enough permissions.
+
+```
+Status code: 403 Forbidden
+```
+
 ## References
 
 [1] https://docs.docker.com/engine/reference/builder/#run
+
+[2] https://jsonapi.org/examples/#error-objects
+
+[3] https://github.com/jamescooke/restapidocs
