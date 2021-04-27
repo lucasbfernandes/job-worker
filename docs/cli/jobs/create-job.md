@@ -4,7 +4,7 @@
 
 <strong>job-worker exec</strong> - Create a new job execution.
 
-### Synopsys
+### Synopsis
 
 <strong>job-worker exec COMMAND [ARG...]</strong>
 
