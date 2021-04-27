@@ -80,6 +80,7 @@ for the file owner).
   
 ### Future work
 
+* Use a credential store for user secrets [6];
 * Use tokens that expire (JWT?) or client certificates;
 
 ## Server
@@ -173,3 +174,5 @@ different record.
 [4] https://golang.org/pkg/os/exec/
 
 [5] https://docs.docker.com/engine/reference/commandline/login/
+
+[6] https://www.techopedia.com/definition/23914/credential-store
