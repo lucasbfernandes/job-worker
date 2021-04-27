@@ -59,188 +59,15 @@ The Job Worker Server is responsible for receiving HTTPS requests, applying vali
 
 ### REST API
 
-#### POST jobs
+#### Jobs:
+* [Create Job](api/jobs/create-job.md): `POST jobs`
+* [Get Jobs](api/jobs/get-jobs.md): `GET jobs`
+* [Stop Job](api/jobs/stop-job.md): `POST jobs/:id/stop`
+* [Get Job Status](api/jobs/get-status.md): `GET jobs/:id/status`
+* [Get Job Logs](api/jobs/get-logs.md): `GET jobs/:id/logs`
 
-Request:
-```
-Body:
-{
-  commmand: ["/bin/bash", "-c", "echo hello"]
-}
-
-Headers:
-{
-  Authorization: Basic ZGVtbzpwQDU1dzByZA==
-}
-```
-
-Body parameters:
-
-<strong>command:</strong> Array of strings in the form `["executable", "param1", "param2", "param3]` [2]. The first element
-of the array will always be considered as the executable. Validations: NotNull and NotEmpty.
-
-Response:
-```
-Body:
-{
-  id: "bdf951f2-f0d8-4e5f-a0ea-79f103391ec9"
-}
-
-Status code: 201 Created
-```
-
-Body parameters:
-
-<strong>id:</strong> Job id. Will be generated as uuidv4 and must be used to apply further commands to it.
-
----
-
-#### POST jobs/:id/stop
-
-Request:
-```
-Body:
-""
-
-Headers:
-{
-  Authorization: Basic ZGVtbzpwQDU1dzByZA==
-}
-```
-
-Query parameters:
-
-<strong>id:</strong> Job id. This is the uuidv4 id returned from the "POST jobs/" request.
-
-Response:
-```
-Body:
-""
-
-Status code: 200 Ok
-```
-
----
-
-#### GET jobs
-
-Request:
-```
-Headers:
-{
-  Authorization: Basic ZGVtbzpwQDU1dzByZA==
-}
-```
-
-Response:
-```
-Body:
-{
-  jobs: [
-    {
-      id: "da7f970f-1a09-4eb6-bfa3-4975105cb4bf",
-      command: ["/bin/bash", "-c", "echo hello"],
-      author: "username",
-      status: "RUNNING",
-      createdAt: ""2021-02-03 10:08:02"
-    },
-    {
-      id: "7f75b775-fd91-40d5-8f0f-e61fb797e46f",
-      command: ["/bin/bash", "-c", "echo hello"],
-      author: "username",
-      status: "STOPPED",
-      createdAt: ""2021-02-01 09:07:10"
-    },
-    {
-      id: "bcad5ae5-166c-4ee9-8aec-a08f2c46e4eb",
-      command: ["/bin/bash", "-c", "ls"],
-      author: "username",
-      status: "FAILED",
-      createdAt: ""2021-02-04 19:07:10"
-    },
-    {
-      id: "1dd53ed8-34fb-469f-a7bd-245b958c86fc",
-      command: ["/bin/bash", "-c", "ls"],
-      author: "username",
-      status: "COMPLETED",
-      createdAt: ""2021-02-01 14:17:10"
-    }
-  ]
-}
-
-Status code: 200 Ok
-```
-
-Body parameters:
-
-<strong>jobs:</strong> Array of jobs. Will be returned without pagination and will contain relevant information from every job
-requested by the authenticated user.
-
----
-
-#### GET jobs/:id/status
-
-Request:
-```
-Body:
-""
-
-Headers:
-{
-  Authorization: Basic ZGVtbzpwQDU1dzByZA==
-}
-```
-
-Query parameters:
-
-<strong>id:</strong> Job id. This is the uuidv4 id returned from the "POST jobs/" request.
-
-Response:
-```
-Body:
-{
-  status: "RUNNING"
-}
-
-Status code: 200 Ok
-```
-
-Body parameters:
-
-<strong>status:</strong> Status of the job. Will be one of the following: `RUNNING`, `FAILED`, `STOPPED`, `COMPLETED`.
-
----
-
-#### GET jobs/:id/logs
-
-Request:
-```
-Body:
-""
-
-Headers:
-{
-  Authorization: Basic ZGVtbzpwQDU1dzByZA==
-}
-```
-
-Query parameters:
-
-<strong>id:</strong> Job id. This is the uuidv4 id returned from the "POST jobs/" request.
-
-Response:
-```
-Body:
-{
-  logs: "Process exited with code 1"
-}
-
-Status code: 200 Ok
-```
-
-Body parameters:
-
-<strong>logs:</strong> Job logs. Will be retrieved from stdout and stored as a single string for this initial version.
+### Login:
+* [Login](api/login/login.md): `POST login/`
 
 ### Security
 
@@ -259,3 +86,5 @@ Body parameters:
 [1] https://crosp.net/blog/software-architecture/clean-architecture-part-2-the-clean-architecture/
 
 [2] https://docs.docker.com/engine/reference/builder/
+
+[3] https://github.com/jamescooke/restapidocs
