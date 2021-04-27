@@ -163,7 +163,7 @@ different record.
 
 * Implement mTLS;
 * Use network namespaces;
-* Improve authorization roles;
+* Improve authorization roles.
 
 ## References
 
