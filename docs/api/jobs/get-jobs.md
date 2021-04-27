@@ -30,7 +30,7 @@ Body:
     {
       id: "bcad5ae5-166c-4ee9-8aec-a08f2c46e4eb",
       command: ["/bin/bash", "-c", "ls"],
-      author: "username",
+      author: "username-2",
       status: "FAILED",
       createdAt: ""2021-02-04 19:07:10"
     },
@@ -47,5 +47,5 @@ Body:
 
 #### Body parameters:
 
-<strong>jobs:</strong> Array of jobs. Will be returned without pagination and will contain relevant information from every job
-requested by the authenticated user.
+<strong>jobs:</strong> Array of jobs. Will be returned without pagination and will contain relevant information from every
+requested job.

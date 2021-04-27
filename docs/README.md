@@ -8,7 +8,7 @@ query status and also read the stdout logs</strong> of any requested process exe
 
 The application is composed of 2 components: The CLI and the Server. The former is responsible for parsing user input and translating it
 into REST HTTPS requests. The Server receives such requests, maintains internal in-memory state and manages the pool of linux processes that are spawned
-along with their statuses.
+along with their status.
 
 It's possible to see numbers 1, 2 and 3 in the image below, each representing a different step of a user request. Each step of the request will be described in
 details later in this document, but for now, here is a summary of what's happening:
@@ -71,19 +71,33 @@ The Job Worker Server is responsible for receiving HTTPS requests, applying vali
 
 ### Security
 
-The Job Worker Service will use HTTPS + Basic Authentication (i.e. username/password) in its initial version. Authorization
-will take form in two different roles: X and Y. Any given user can have one or both of them.
+The Job Worker Service will use HTTPS (TLS 1.2) + Basic Authentication (i.e. username/password) in its initial version. Authorization
+will take form with the following roles: `Admin`, `Maintainer`, `Developer` and `Reader`.
 
 #### Authentication
 Every request made to the Server must contain an authorization header in the form `Authorization: Basic <credentials>`,
-where `credentials` is the base64 encoding of username and password joined by a single colon `:` [3].
+where `<credentials>` is the base64 encoding of username and password joined by a single colon `:` [3].
 
-Upon receiving the request, the Server will check if the username/password pair is valid and if it matches any given user in
+After receiving the request, Server will check if the username/password pair is valid and if it matches any given user in
 its in-memory database. If the request is not valid, a `401 Unauthorized` will be returned.
 
-PS: Stub users will be created as seed data when the Server starts.
-
 #### Authorization
+
+The Job Worker Service will handle authorization using a simple RBAC mechanism. There will be 4 types of roles, each with
+a set of permissions associated with it.
+
+<strong>PS: Stub users will be created as seed data when the Server starts. There will be no users CRUD in the initial version. Some permissions won't be enforced until then. </strong>
+
+
+|  Roles               |  Permissions         | Description |
+| :-------------------:| :-------------------:| :-----------: |
+|  Admin | jobs.create, jobs.get, jobs.logs, jobs.stop, users.create, users.update | Can update users + all Maintainer permissions|
+|  Maintainer | jobs.create, jobs.get, jobs.logs, jobs.stop, users.create | Can create new users + all Developer permissions|
+|  Developer | jobs.create, jobs.get, jobs.logs, jobs.stop | Can create/stop jobs, view all jobs and query their logs|
+|  Reader | jobs.get | Can view all jobs and their status|
+
+When receiving an authenticated request, the Server will always check if the user has enough permissions to access the resource. For now, users will have only one 
+role.
 
 ### Managing Linux Processes
 
