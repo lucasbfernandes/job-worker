@@ -1,4 +1,4 @@
-# POST jobs/:id/stop
+# POST /jobs/:id/stop
 
 ### Required permissions:
 jobs.stop

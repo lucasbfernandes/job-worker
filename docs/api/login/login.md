@@ -1,4 +1,4 @@
-# POST login/
+# POST /login
 
 ### Request:
 ```
