@@ -98,7 +98,7 @@ a set of permissions associated with it.
 
 When receiving an authenticated request, the Server will always check if the user has enough permissions to access the resource. If not, `403 Forbidden` will be returned.
 
-<strong>PS: For now, role and user relationship will be one to many.</strong>
+<strong>PS: For now, role/user relationship will be one to many.</strong>
 
 ### Managing Linux Processes
 
@@ -119,7 +119,14 @@ different record.
 
 ### Trade-offs
 
+* No network isolation between processes. This might lead to some problems such as network ports outage (i.e. only one process can listen on a port at a given time);
+* No resource pagination on the API services. This is not scalable but is not necessary for the first version;
+* Basic authentication is not enough;
+
 ### Future work
+
+* Implement mTLS;
+* Use network namespaces;
 
 ## References
 
