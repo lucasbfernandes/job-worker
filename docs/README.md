@@ -123,7 +123,7 @@ its in-memory database. If the request is not valid, a `401 Unauthorized` will b
 Authorization will be handled with a simple RBAC mechanism. There will be 2 types of roles, each with
 a set of permissions associated with it.
 
-<strong>PS: Stub users will be created as seed data when the Server starts. There will be no users CRUD in the initial version, and for that reason there won't be any roles regarding user management.</strong>
+<strong>PS: Stub users will be created as seed data when the Server starts. There will be no users CRUD in the initial version, and for that reason there won't be any roles for user management.</strong>
 
 |  Roles               |  Permissions         | Description |
 | :-------------------:| :-------------------:| :-----------: |
