@@ -13,8 +13,8 @@ along with their status.
 It's possible to see numbers 1, 2 and 3 in the image below, each representing a different step of a user request. Each step of the request will be described in
 details later in this document, but for now, here is a summary of what's happening:
 
-* <strong>Step 1</strong>: After logging in using a basic username/password authentication mechanism, the user types a CLI command requesting one of the possible
-  interactions with a linux process.
+* <strong>Step 1</strong>: The user types a CLI command requesting one of the possible
+  interactions with a linux process. The CLI will prompt the user for a username/password pair.
 
 * <strong>Step 2</strong>: The CLI application parses the user's command and translates it into an HTTPS request for the Server. The API module of the Server receives
   the request, checks if the input is valid and verifies if the user is authorized to perform the requested operation.
@@ -42,7 +42,6 @@ and exhibit the responses in a structured manner. This section will:
 
 ### Commands
 
-* [Login](cli/login/login.md): `job-worker login SERVER_URL`
 * [Create Job](cli/jobs/create-job.md): `job-worker exec COMMAND [ARG...]`
 * [List Jobs](cli/jobs/list-jobs.md): `job-worker list`
 * [Stop Job](cli/jobs/stop-job.md): `job-worker stop JOB_ID`
@@ -51,37 +50,15 @@ and exhibit the responses in a structured manner. This section will:
 
 ### Managing User Secrets
 
-The CLI login command will follow a very similar approach to what `docker login` does with its default configuration mechanism [2]. It
-receives user input in the username/password form and then invokes the [login api](api/login/login.md). If a `200 Ok` is
-received, then a new folder `$HOME/.job-worker` will be created if it doesn't exist. A `config.json` inside this folder will contain
-the current active login "session". This is what the file
-will look like:
-
-<strong>PS:</strong> It won't be a real session because we are not using tokens that expire.
-
-<strong>Example command:</strong> `job-worker login https://my-server.example:443`
-
-<strong>Resulting `config.json` file:</strong>
-```
-{
-  "server": https://my-server.example:443
-  "authToken": "ZGVtbzpwQDU1dzByZA=="
-}
-```
-
-The CLI `config.json` file will have the same permissions of the docker `config.json` file: `-rw-------` (i.e. only read and write permissions
-for the file owner).
-
-<strong>PS:</strong> If the `config.json` file doesn't exist, the user will be oriented to invoke the login command.
+For the sake of simplicity, the CLI will request a username/password pair each time a command is invoked. It will be used to create an authorization token in the form `Authorization: Basic <credentials>`,
+where `<credentials>` is the base64 encoding of username and password joined by one colon. This token will be used to authenticate requests for the Server.
 
 ### Trade-offs
 
-* Even with the correct file permissions, saving the basic authentication token in a file is a bad practice;
 * Few command options.
 
 ### Future work
 
-* Use a credential store for user secrets [3];
 * Use tokens that expire (JWT?) or client certificates;
 * Implement more CLI commands options.
 
@@ -102,9 +79,6 @@ The Job Worker Server is responsible for receiving HTTPS requests, applying vali
 * [Stop Job](api/jobs/stop-job.md): `POST /jobs/:id/stop`
 * [Get Job Status](api/jobs/get-status.md): `GET /jobs/:id/status`
 * [Get Job Logs](api/jobs/get-logs.md): `GET /jobs/:id/logs`
-
-#### Login:
-* [Login](api/login/login.md): `POST /login`
 
 ### Security
 
