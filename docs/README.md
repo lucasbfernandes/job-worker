@@ -82,10 +82,37 @@ The Job Worker Server is responsible for receiving HTTPS requests, applying vali
 
 ### Security
 
-The Job Worker Service will use HTTPS (TLS 1.2) + Basic Authentication (i.e. username/password) in its initial version. Authorization
+The Job Worker Service will use HTTPS + Basic Authentication (i.e. username/password) in its initial version. Authorization
 will take form with the following roles: `Developer` and `Reader`.
 
+#### Transport Layer Security
+
+All communication between CLI and Server must happen in a secure channel, and for that,
+we will use HTTPS with TLS 1.3. It is the most recent protocol release and has several improvements
+when comparing with 1.2, including:
+
+* Some algorithms and ciphers that are theoretically and practically vulnerable were removed (e.g. RC4 Stream Cipher, 3DES);
+* Faster handshake (1 less RTT);
+* Eliminates RSA key exchange;
+* etc.
+
+HTTPS/TLS will be configured in the Server with the following steps:
+
+1. Both keys will be generated:
+    * Private key: `openssl genrsa -out server.key 2048`
+    * <strong>Self-signed</strong> public key: `openssl req -new -x509 -sha256 -key server.key -out server.crt -days 3650`
+  
+2. Both keys will be stored inside the git repository (This is not a good practice but will happen because of time constraints).
+3. Finally, Golang's `http.listenAndServeTLS` function will start the HTTPS server <strong>(PS: It defaults to  TLS version 1.3)</strong>:
+   ```
+      err := http.ListenAndServeTLS(":443", "server.crt", "server.key", nil)
+      if err != nil {
+          log.Fatal("Failed to start server: ", err)
+      }
+   ```
+
 #### Authentication
+
 Every request made to the Server must contain an authorization header in the form `Authorization: Basic <credentials>`,
 where `<credentials>` is the base64 encoding of username and password joined by a single colon `:` [4].
 
@@ -152,3 +179,7 @@ different record.
 [5] https://golang.org/pkg/os/exec/
 
 [6] https://medium.com/bluecore-engineering/implementing-role-based-security-in-a-web-app-89b66d1410e4
+
+[7] https://www.thesslstore.com/blog/tls-1-3-everything-possibly-needed-know/
+
+[8] https://github.com/denji/golang-tls
