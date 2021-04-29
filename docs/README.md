@@ -119,6 +119,24 @@ where `<credentials>` is the base64 encoding of username and password joined by 
 After receiving the request, the Server will check if the username/password pair is valid and if it matches any user in
 its in-memory database. If the request is not valid, a `401 Unauthorized` will be returned.
 
+Passwords will be stored in the database as a bcrypt hash. Here is an example of what will be done:
+
+```
+    import "golang.org/x/crypto/bcrypt"
+
+    userPassword := []byte("MySecret")
+    // hashedPassword will be saved in the database
+    hashedPassword, err := bcrypt.GenerateFromPassword(userPassword, bcrypt.DefaultCost)
+    if err != nil {
+        panic(err)
+    }
+
+    incomingPassword := []byte("MyWrongSecret")
+    // If err == nil, then passwords match
+    err = bcrypt.CompareHashAndPassword(hashedPassword, incomingPassword)
+    fmt.Println(err)
+```
+
 #### Authorization
 
 Authorization will be handled with a simple RBAC mechanism. There will be 2 types of roles, each with
