@@ -170,6 +170,8 @@ Jobs will have 4 possible states:
 Job states will be stored in the job object inside the in-memory database. One goroutine will be created for each job, and each will perform a database write/update on a
 different record.
 
+<strong>Stopping jobs:</strong>
+
 When a user requests a job to stop, the Server will send a `SIGTERM` signal to it in an attempt to gracefully stop it without creating any zombie processes. If this signal fails and the process keeps running,
 a `SIGKILL` signal will be sent, and the process will be forced to stop.
 
@@ -194,6 +196,26 @@ a `SIGKILL` signal will be sent, and the process will be forced to stop.
 
 <strong>PS: This should be interpreted as pseudocode. It is not meant to represent the actual code.</strong>
 
+<strong>Saving jobs logs:</strong>
+
+The Job Server will persist almost everything inside its in-memory database, except logs. These will be saved in files inside the 
+Server's executable folder in order to optimize primary memory usage. Logs will be fetched and saved in the following way:
+
+```
+cmd := exec.Command("sh", "-c", "echo hello")
+stdoutPipe, _ := cmd.StdoutPipe()
+if err := cmd.Start(); err != nil {
+   // handle error
+}
+
+jobLogFile, err := os.Create("<job-id>")
+// handle err
+defer jobLogFile.Close()
+_, err = io.Copy(jobLogFile, stdoutPipe)
+```
+
+<strong>PS: This should be interpreted as pseudocode. It is not meant to represent the actual code.</strong>
+
 ### Trade-offs
 
 * No network isolation between processes. This might lead to some problems such as network ports outage (i.e. only one process can listen on a port at a given time);
@@ -207,6 +229,7 @@ a `SIGKILL` signal will be sent, and the process will be forced to stop.
 * Implement mTLS;
 * Use network namespaces;
 * Improve authorization roles.
+* Purge mechanism for obsolete log files;
 
 ## References
 
