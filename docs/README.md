@@ -170,6 +170,30 @@ Jobs will have 4 possible states:
 Job states will be stored in the job object inside the in-memory database. One goroutine will be created for each job, and each will perform a database write/update on a
 different record.
 
+When a user requests a job to stop, the Server will send a `SIGTERM` signal to it in an attempt to gracefully stop it without creating any zombie processes. If this signal fails and the process keeps running,
+a `SIGKILL` signal will be sent, and the process will be forced to stop.
+
+```
+  // Start a process:
+  cmd := exec.Command("sleep", "5")
+  if err := cmd.Start(); err != nil {
+      log.Fatal(err)
+  }
+  
+  // Killing it with SIGTERM:
+  if err := cmd.Process.Signal(syscall.SIGTERM); err != nil {
+      log.Fatal("failed to kill process with SIGTERM: ", err)
+  }
+
+  // Killing it with SIGKILL:
+  if err := cmd.Process.Kill(); err != nil {
+      log.Fatal("failed to kill process with SIGKILL: ", err)
+  }
+  
+```
+
+<strong>PS: This should be interpreted as pseudocode. It is not meant to represent the actual code.</strong>
+
 ### Trade-offs
 
 * No network isolation between processes. This might lead to some problems such as network ports outage (i.e. only one process can listen on a port at a given time);
