@@ -44,7 +44,6 @@ Body:
 {
   errors: [
     {
-      status: "400",
       title:  "Invalid Command",
       detail: "Parameter command must not be null or empty"
     }
