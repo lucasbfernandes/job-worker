@@ -22,7 +22,8 @@ Body:
   status: "COMPLETED",
   createdAt: "2021-02-03 10:08:02",
   finishedAt: "2021-02-03 10:28:02",
-  author: "username"
+  author: "username",
+  exitStatus: 0
 }
 ```
 
@@ -32,7 +33,8 @@ Body:
 * <strong>createdAt:</strong> Job creation date;
 * <strong>finishedAt:</strong> Date when job went from the `RUNNING` status to one of the following: `FAILED`, `STOPPED` or `COMPLETED`. Will be
   `null` when job status is `RUNNING`;
-* <strong>author:</strong> Job execution requester.
+* <strong>author:</strong> Job execution requester;
+* <strong>exitStatus:</strong> Process exit status. Might be null if currently in the `RUNNING` state.
 
 ### Error response:
 
