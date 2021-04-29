@@ -42,11 +42,11 @@ and exhibit the responses in a structured manner. This section will:
 
 ### Commands
 
-* [Create Job](cli/jobs/create-job.md): `job-worker exec COMMAND [ARG...]`
-* [List Jobs](cli/jobs/list-jobs.md): `job-worker list`
-* [Stop Job](cli/jobs/stop-job.md): `job-worker stop JOB_ID`
-* [Get Job Status](cli/jobs/get-status.md): `job-worker status JOB_ID`
-* [Get Job Logs](cli/jobs/get-logs.md): `job-worker logs JOB_ID`
+* [Create Job](cli/jobs/create-job.md): `job-worker exec -s SERVER_URL -c EXECUTABLE [ARG...]`
+* [List Jobs](cli/jobs/list-jobs.md): `job-worker list -s SERVER_URL`
+* [Stop Job](cli/jobs/stop-job.md): `job-worker stop -s SERVER_URL -i JOB_ID`
+* [Get Job Status](cli/jobs/get-status.md): `job-worker status -s SERVER_URL -i JOB_ID`
+* [Get Job Logs](cli/jobs/get-logs.md): `job-worker logs -s SERVER_URL -i JOB_ID`
 
 ### Managing User Secrets
 

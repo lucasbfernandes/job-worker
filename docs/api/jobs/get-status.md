@@ -19,7 +19,7 @@ Status code: 200 Ok
 
 Body:
 {
-  status: "RUNNING",
+  status: "COMPLETED",
   createdAt: "2021-02-03 10:08:02",
   finishedAt: "2021-02-03 10:28:02",
   author: "username"
