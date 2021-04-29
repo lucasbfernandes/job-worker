@@ -18,9 +18,7 @@ Authorization: Basic ZGVtbzpwQDU1dzByZA==
 Status code: 200 Ok
 
 Body:
-{
-  logs: "Process exited with code 1"
-}
+Process exited with code 1
 ```
 
 #### Body parameters:
