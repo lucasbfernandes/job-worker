@@ -214,7 +214,26 @@ defer jobStderrLogFile.Close()
 _, err = io.Copy(jobStderrLogFile, stderrPipe)
 ```
 
-<strong>PS: This should be interpreted as pseudocode. It is not meant to represent the actual code.</strong>
+The Job Id will be used to uniquely identify a job. It will be generated as a UUIDV4 string in the following way:
+
+```
+package main
+
+import (
+    "fmt"
+    "github.com/google/uuid"
+)
+
+// This generates a UUIDV4 string
+// https://github.com/google/uuid/blob/bfb86fa49a73e4194d93bea18d7acfe3694438ce/version4.go#L13
+func main() {
+    id := uuid.New()
+    fmt.Println(id.String())
+}
+```
+
+
+<strong>PS: All code examples should be interpreted as pseudocode. They are not meant to represent the actual code.</strong>
 
 ### Trade-offs
 
