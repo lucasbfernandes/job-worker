@@ -6,21 +6,20 @@
 
 ### Synopsis
 
-<strong>job-worker list -s SERVER_URL</strong>
+<strong>job-worker list -s SERVER_URL -u USERNAME -p PASSWORD </strong>
 
 ### Description:
 
 * <strong>-s:</strong> Server url. Must start with `https`, otherwise command will return with an error.
+* <strong>-u:</strong> Username;
+* <strong>-p:</strong> Password.
 
 ### Examples
 
-<strong>Command:</strong> `job-worker list -s https://server-url.com`
+<strong>Command:</strong> `job-worker list -s https://server-url.com -u user -p pass`
 
 <strong>Expected successful output:</strong>
 ```
-    username:
-    password:
-
     1:
     id: da7f970f-1a09-4eb6-bfa3-4975105cb4bf,
     command: ["/bin/bash", "-c", "echo hello"]
@@ -40,18 +39,12 @@
 
 <strong>Expected authentication error output:</strong>
 ```
-    username:
-    password:
-    
     Failed to fetch jobs.
     Error: Username and/or password are wrong.
 ```
 
 <strong>Expected server error output:</strong>
 ```
-    username:
-    password:
-    
     Failed to fetch jobs.
     Error: <error-message>.
 ```

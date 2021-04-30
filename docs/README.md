@@ -14,7 +14,7 @@ It's possible to see numbers 1, 2 and 3 in the image below, each representing a 
 details later in this document, but for now, here is a summary of what's happening:
 
 * <strong>Step 1</strong>: The user types a CLI command requesting one of the possible
-  interactions with a linux process. The CLI will prompt the user for a username/password pair.
+  interactions with a linux process. Username and password will be provided as CLI flags.
 
 * <strong>Step 2</strong>: The CLI application parses the user's command and translates it into an HTTPS request for the Server. The API module of the Server receives
   the request, checks if the input is valid and verifies if the user is authorized to perform the requested operation.
@@ -42,15 +42,15 @@ and exhibit the responses in a structured manner. This section will:
 
 ### Commands
 
-* [Create Job](cli/jobs/create-job.md): `job-worker exec -s SERVER_URL -c EXECUTABLE [ARG...]`
-* [List Jobs](cli/jobs/list-jobs.md): `job-worker list -s SERVER_URL`
-* [Stop Job](cli/jobs/stop-job.md): `job-worker stop -s SERVER_URL -i JOB_ID`
-* [Get Job Status](cli/jobs/get-status.md): `job-worker status -s SERVER_URL -i JOB_ID`
-* [Get Job Logs](cli/jobs/get-logs.md): `job-worker logs -s SERVER_URL -i JOB_ID`
+* [Create Job](cli/jobs/create-job.md): `job-worker exec -s SERVER_URL -u USERNAME -p PASSWORD -c EXECUTABLE [ARG...]`
+* [List Jobs](cli/jobs/list-jobs.md): `job-worker list -s SERVER_URL -u USERNAME -p PASSWORD`
+* [Stop Job](cli/jobs/stop-job.md): `job-worker stop -s SERVER_URL -u USERNAME -p PASSWORD -i JOB_ID`
+* [Get Job Status](cli/jobs/get-status.md): `job-worker status -s SERVER_URL -u USERNAME -p PASSWORD -i JOB_ID`
+* [Get Job Logs](cli/jobs/get-logs.md): `job-worker logs -s SERVER_URL -u USERNAME -p PASSWORD -i JOB_ID`
 
 ### Managing User Secrets
 
-For the sake of simplicity, the CLI will request a username/password pair each time a command is invoked. It will be used to create an authorization token in the form `Authorization: Basic <credentials>`,
+For the sake of simplicity, the CLI will receive a username/password pair each time a command is invoked. It will be used to create an authorization token in the form `Authorization: Basic <credentials>`,
 where `<credentials>` is the base64 encoding of username and password joined by one colon. This token will be used to authenticate requests for the Server.
 
 ### Trade-offs
