@@ -172,19 +172,13 @@ different record.
 
 <strong>Stopping jobs:</strong>
 
-When a user requests a job to stop, the Server will send a `SIGTERM` signal to it in an attempt to gracefully stop it without creating any zombie processes. If this signal fails and the process keeps running,
-a `SIGKILL` signal will be sent, and the process will be forced to stop.
+For simplicity, when a user requests a job to stop, <strong>the Server will always send a `SIGKILL` signal to it right away</strong>. A future improvement would be sending a `SIGTERM` signal in an attempt to gracefully stop it without creating any zombie processes.
 
 ```
   // Start a process:
   cmd := exec.Command("sleep", "5")
   if err := cmd.Start(); err != nil {
       log.Fatal(err)
-  }
-  
-  // Killing it with SIGTERM:
-  if err := cmd.Process.Signal(syscall.SIGTERM); err != nil {
-      log.Fatal("failed to kill process with SIGTERM: ", err)
   }
 
   // Killing it with SIGKILL:
