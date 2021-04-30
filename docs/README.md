@@ -198,14 +198,20 @@ Server's executable folder in order to optimize primary memory usage. Logs will 
 ```
 cmd := exec.Command("sh", "-c", "echo hello")
 stdoutPipe, _ := cmd.StdoutPipe()
+stderrPipe, _ := cmd.StderrPipe()
 if err := cmd.Start(); err != nil {
    // handle error
 }
 
-jobLogFile, err := os.Create("<job-id>")
+jobStdoutLogFile, err := os.Create("<job-id>-out")
 // handle err
-defer jobLogFile.Close()
-_, err = io.Copy(jobLogFile, stdoutPipe)
+defer jobStdoutLogFile.Close()
+_, err = io.Copy(jobStdoutLogFile, stdoutPipe)
+
+jobStderrLogFile, err := os.Create("<job-id>-err")
+// handle err
+defer jobStderrLogFile.Close()
+_, err = io.Copy(jobStderrLogFile, stderrPipe)
 ```
 
 <strong>PS: This should be interpreted as pseudocode. It is not meant to represent the actual code.</strong>
