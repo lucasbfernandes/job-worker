@@ -242,13 +242,15 @@ func main() {
 * Basic authentication is not enough but is simpler;
 * No CRUD for users;
 * No security regarding malicious executables.
+* Running a KDF (bcrypt) everytime a new request arrives at the server is not scalable. This is not optimal but will be considered as a trade-off.
 
 ### Future work
 
 * Implement mTLS;
 * Use network namespaces;
-* Improve authorization roles.
+* Improve authorization roles;
 * Purge mechanism for obsolete log files;
+* Implement Bearer token authentication.
 
 ## References
 
