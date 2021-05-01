@@ -1,0 +1,4 @@
+package interactors
+
+func GetJobs() {
+}
