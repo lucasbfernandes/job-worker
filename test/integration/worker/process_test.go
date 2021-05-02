@@ -12,8 +12,6 @@ func TestShouldCreateProcessWithCorrectParameters(t *testing.T) {
 	process, err := worker.NewProcess([]string{"ls", "-la"}, 2)
 	assert.Nil(t, err, "Failed to create process.")
 
-	assert.NotNil(t, process.StdoutPipe, "StdoutPipe is nil.")
-	assert.NotNil(t, process.StderrPipe, "StderrPipe is nil.")
 	assert.NotNil(t, process.ExitChannel, "ExitChannel is nil.")
 	assert.Equal(t, []string{"ls", "-la"}, process.Command, "Invalid value for Command.")
 	assert.Equal(t, time.Duration(2), process.TimeoutInSeconds, "Invalid value for TimeoutInSeconds.")

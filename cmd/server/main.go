@@ -2,9 +2,14 @@ package main
 
 import (
 	"github.com/gin-gonic/gin"
+	"job-worker/internal/database"
 
 	"job-worker/internal/controllers"
 )
+
+func createDB() {
+	database.CreateDB()
+}
 
 func startAPI() {
 	router := gin.Default()
@@ -17,5 +22,6 @@ func startAPI() {
 }
 
 func main() {
+	createDB()
 	startAPI()
 }
