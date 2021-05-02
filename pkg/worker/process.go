@@ -47,11 +47,11 @@ func NewProcess(command []string, timeoutInSeconds time.Duration) (Process, erro
 	}
 
 	return Process{
-		ExitChannel:      	make(chan ExitReason, 1),
-		TimeoutInSeconds: 	timeoutInSeconds,
-		Command:          	command,
+		ExitChannel:		make(chan ExitReason, 1),
+		TimeoutInSeconds:	timeoutInSeconds,
+		Command:			command,
 		StdoutPipe:			stdoutPipe,
 		StderrPipe:			stderrPipe,
-		execCmd:          	execCmd,
+		execCmd:			execCmd,
 	}, nil
 }
