@@ -2,7 +2,6 @@ package worker
 
 import (
 	"log"
-
 	"time"
 )
 

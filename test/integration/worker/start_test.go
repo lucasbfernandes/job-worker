@@ -4,7 +4,6 @@ import (
 	"github.com/stretchr/testify/assert"
 
 	"job-worker/pkg/worker"
-
 	"testing"
 )
 

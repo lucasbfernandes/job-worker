@@ -5,7 +5,6 @@ import (
 	"io"
 	"log"
 	"os/exec"
-
 	"time"
 )
 
@@ -47,11 +46,11 @@ func NewProcess(command []string, timeoutInSeconds time.Duration) (Process, erro
 	}
 
 	return Process{
-		ExitChannel:		make(chan ExitReason, 1),
-		TimeoutInSeconds:	timeoutInSeconds,
-		Command:			command,
-		StdoutPipe:			stdoutPipe,
-		StderrPipe:			stderrPipe,
-		execCmd:			execCmd,
+		ExitChannel:      make(chan ExitReason, 1),
+		TimeoutInSeconds: timeoutInSeconds,
+		Command:          command,
+		StdoutPipe:       stdoutPipe,
+		StderrPipe:       stderrPipe,
+		execCmd:          execCmd,
 	}, nil
 }
