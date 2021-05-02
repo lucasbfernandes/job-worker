@@ -9,9 +9,10 @@ import (
 )
 
 func TestSuccessfulExecutionShouldReturnCorrectStatus(t *testing.T) {
-	process := worker.NewProcess([]string{"ls", "-la"}, 2)
+	process, err := worker.NewProcess([]string{"ls", "-la"}, 2)
+	assert.Nil(t, err, "Failed to create process.")
 
-	err := process.Start()
+	err = process.Start()
 	assert.Nil(t, err, "Process failed to start.")
 
 	exitReason := <-process.ExitChannel
@@ -19,9 +20,10 @@ func TestSuccessfulExecutionShouldReturnCorrectStatus(t *testing.T) {
 }
 
 func TestTimeoutExecutionShouldReturnCorrectStatus(t *testing.T) {
-	process := worker.NewProcess([]string{"sleep", "10"}, 2)
+	process, err := worker.NewProcess([]string{"sleep", "10"}, 2)
+	assert.Nil(t, err, "Failed to create process.")
 
-	err := process.Start()
+	err = process.Start()
 	assert.Nil(t, err, "Process failed to start.")
 
 	exitReason := <-process.ExitChannel
@@ -29,9 +31,10 @@ func TestTimeoutExecutionShouldReturnCorrectStatus(t *testing.T) {
 }
 
 func TestFailedExecutionShouldReturnCorrectStatus(t *testing.T) {
-	process := worker.NewProcess([]string{"ls", "10"}, 2)
+	process, err := worker.NewProcess([]string{"ls", "10"}, 2)
+	assert.Nil(t, err, "Failed to create process.")
 
-	err := process.Start()
+	err = process.Start()
 	assert.Nil(t, err, "Process failed to start.")
 
 	exitReason := <-process.ExitChannel

@@ -1,4 +1,4 @@
-package integration_worker
+package integration_worker_test
 
 import (
 	"github.com/stretchr/testify/assert"
@@ -8,9 +8,10 @@ import (
 )
 
 func TestSuccessfulStopShouldReturnCorrectStatus(t *testing.T) {
-	process := worker.NewProcess([]string{"sleep", "10"}, 20)
+	process, err := worker.NewProcess([]string{"sleep", "10"}, 20)
+	assert.Nil(t, err, "Failed to create process.")
 
-	err := process.Start()
+	err = process.Start()
 	assert.Nil(t, err, "Process failed to start.")
 
 	err = process.Stop()
@@ -21,9 +22,10 @@ func TestSuccessfulStopShouldReturnCorrectStatus(t *testing.T) {
 }
 
 func TestShouldFailStopWhenProcessHasAlreadyStopped(t *testing.T) {
-	process := worker.NewProcess([]string{"sleep", "5"}, 1)
+	process, err := worker.NewProcess([]string{"sleep", "5"}, 1)
+	assert.Nil(t, err, "Failed to create process.")
 
-	err := process.Start()
+	err = process.Start()
 	assert.Nil(t, err, "Process failed to start.")
 
 	time.Sleep(2 * time.Second)
@@ -33,7 +35,9 @@ func TestShouldFailStopWhenProcessHasAlreadyStopped(t *testing.T) {
 }
 
 func TestShouldReturnErrorWhenProcessHasntStarted(t *testing.T) {
-	process := worker.NewProcess([]string{"ls", "-la"}, 2)
-	err := process.Stop()
+	process, err := worker.NewProcess([]string{"ls", "-la"}, 2)
+	assert.Nil(t, err, "Failed to create process.")
+
+	err = process.Stop()
 	assert.NotNil(t, err, "Should have failed because process hasn't started yet.")
 }
