@@ -18,4 +18,4 @@ RUN go build -o ./out/server cmd/server/*.go
 
 EXPOSE 8080
 
-ENTRYPOINT ["./out/server"]
+CMD ["./out/server"]
