@@ -2,9 +2,9 @@ package main
 
 import (
 	"github.com/gin-gonic/gin"
-	"job-worker/internal/database"
 
 	"job-worker/internal/controllers"
+	"job-worker/internal/database"
 )
 
 func createDB() {

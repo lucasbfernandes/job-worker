@@ -2,6 +2,7 @@ package dto
 
 import (
 	"github.com/google/uuid"
+
 	"job-worker/internal/models/job"
 	"time"
 )

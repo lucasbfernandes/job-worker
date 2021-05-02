@@ -2,6 +2,7 @@ package database
 
 import (
 	"github.com/hashicorp/go-memdb"
+
 	"log"
 	"sync"
 )

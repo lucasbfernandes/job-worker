@@ -33,7 +33,7 @@ func CreateJob(createJobRequest dto.CreateJobRequest) (dto.CreateJobResponse, er
 
 	// TODO trigger goroutine that will watch process exit reason channel
 	setJobStatus(job, jobEntity.RUNNING)
-	return dto.CreateJobResponse{ ID: job.Id }, nil
+	return dto.CreateJobResponse{ID: job.ID}, nil
 }
 
 func persistJob(request dto.CreateJobRequest) (jobEntity.Job, error) {
@@ -73,5 +73,4 @@ func setWorkerProcessOutputFiles(process worker.Process) error {
 }
 
 func setJobStatus(job jobEntity.Job, status string) {
-
 }
