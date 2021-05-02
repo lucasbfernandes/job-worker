@@ -16,24 +16,29 @@ func (p *Process) Start() error {
 	return nil
 }
 
+// TODO check for goroutines leaks. Maybe implement goroutine timeout?
 func (p *Process) waitExecution() {
 	doneChannel := make(chan error, 1)
+
 	go func() {
 		doneChannel <- p.execCmd.Wait()
 	}()
 
-	select {
-	case <-time.After(p.TimeoutInSeconds * time.Second):
-		p.handleTimeout()
+	go func() {
+		select {
+		case <-time.After(p.TimeoutInSeconds * time.Second):
+			p.handleTimeout()
 
-	case err := <-doneChannel:
-		p.handleFinishedExecution(err)
-	}
+		case err := <-doneChannel:
+			p.handleFinishedExecution(err)
+		}
+	}()
 }
 
 func (p *Process) handleTimeout() {
 	err := p.execCmd.Process.Kill()
 	if err != nil {
+		// TODO maybe retry? Otherwise the goroutine may run forever
 		log.Printf("failed to kill process after timeout: %s\n", err)
 	}
 	p.ExitChannel <- ExitReason{
