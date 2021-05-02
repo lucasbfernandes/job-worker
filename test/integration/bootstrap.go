@@ -34,7 +34,7 @@ func RollbackState() error {
 
 func setTestLogsDirEnv() error {
 	_, b, _, _ := runtime.Caller(0)
-	basepath   := filepath.Dir(b)
+	basepath := filepath.Dir(b)
 
 	err := os.Setenv("LOGS_DIR", path.Join(basepath, "logs-test"))
 	if err != nil {

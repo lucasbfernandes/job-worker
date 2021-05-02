@@ -2,17 +2,18 @@ package integration_interactors_test
 
 import (
 	"fmt"
+
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/suite"
+
 	"job-worker/internal/dto"
 	"job-worker/internal/interactors"
 	jobEntity "job-worker/internal/models/job"
 	"job-worker/internal/repository"
 	"job-worker/internal/storage"
 	"job-worker/test/integration"
-	"time"
-
 	"testing"
+	"time"
 )
 
 type CreateJobInteractorIntegrationTestSuite struct {
@@ -39,7 +40,7 @@ func (suite *CreateJobInteractorIntegrationTestSuite) TearDownTest() {
 
 func (suite *CreateJobInteractorIntegrationTestSuite) TestShouldPersistJobWithCorrectParameters() {
 	request := dto.CreateJobRequest{
-		Command: []string{"ls", "-la"},
+		Command:          []string{"ls", "-la"},
 		TimeoutInSeconds: 2,
 	}
 
@@ -58,7 +59,7 @@ func (suite *CreateJobInteractorIntegrationTestSuite) TestShouldPersistJobWithCo
 
 func (suite *CreateJobInteractorIntegrationTestSuite) TestShouldNotPersistJobWhenCreateProcessFails() {
 	request := dto.CreateJobRequest{
-		Command: []string{},
+		Command:          []string{},
 		TimeoutInSeconds: 1,
 	}
 

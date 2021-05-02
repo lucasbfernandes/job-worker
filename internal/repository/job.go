@@ -1,8 +1,8 @@
 package repository
 
 import (
-	"job-worker/internal/storage"
 	jobEntity "job-worker/internal/models/job"
+	"job-worker/internal/storage"
 	"log"
 )
 

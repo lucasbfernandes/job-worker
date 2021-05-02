@@ -1,7 +1,6 @@
 package interactors
 
 import (
-	"errors"
 	"fmt"
 	"job-worker/internal/dto"
 	jobEntity "job-worker/internal/models/job"
@@ -32,7 +31,7 @@ func CreateJob(createJobRequest dto.CreateJobRequest) (dto.CreateJobResponse, er
 	if err != nil {
 		log.Printf("could not start process %s\n", err)
 		finishJobWithStatus(savedJob, jobEntity.FAILED)
-		return dto.CreateJobResponse{}, errors.New(fmt.Sprintf("couldn't start process for job %s with error: %s\n", savedJob.ID, err))
+		return dto.CreateJobResponse{}, fmt.Errorf("couldn't start process for job %s with error: %s", savedJob.ID, err)
 	}
 
 	// TODO trigger goroutine that will watch process exit reason channel
@@ -49,26 +48,26 @@ func persistJob(job jobEntity.Job) (jobEntity.Job, error) {
 	return job, nil
 }
 
-func createWorkerProcess(command []string, timeoutInSeconds time.Duration, jobId string) (worker.Process, error) {
+func createWorkerProcess(command []string, timeoutInSeconds time.Duration, jobID string) (worker.Process, error) {
 	process, err := worker.NewProcess(command, timeoutInSeconds)
 	if err != nil {
 		return worker.Process{}, err
 	}
-	err = createWorkerProcessOutputFiles(process, jobId)
+	err = createWorkerProcessOutputFiles(process, jobID)
 	if err != nil {
 		return worker.Process{}, err
 	}
 	return process, nil
 }
 
-func createWorkerProcessOutputFiles(process worker.Process, jobId string) error {
+func createWorkerProcessOutputFiles(process worker.Process, jobID string) error {
 	logsDIR := os.Getenv("LOGS_DIR")
 
-	stdout, err := os.Create(path.Join(logsDIR, jobId + "-stdout"))
+	stdout, err := os.Create(path.Join(logsDIR, jobID+"-stdout"))
 	if err != nil {
 		return err
 	}
-	stderr, err := os.Create(path.Join(logsDIR, jobId + "-stderr"))
+	stderr, err := os.Create(path.Join(logsDIR, jobID+"-stderr"))
 	if err != nil {
 		return err
 	}
