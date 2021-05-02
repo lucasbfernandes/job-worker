@@ -7,8 +7,6 @@ import (
 	"job-worker/internal/repository"
 	"job-worker/pkg/worker"
 	"log"
-	"os"
-	"path"
 	"time"
 )
 
@@ -61,13 +59,11 @@ func createWorkerProcess(command []string, timeoutInSeconds time.Duration, jobID
 }
 
 func createWorkerProcessOutputFiles(process worker.Process, jobID string) error {
-	logsDIR := os.Getenv("LOGS_DIR")
-
-	stdout, err := os.Create(path.Join(logsDIR, jobID+"-stdout"))
+	stdout, err := repository.CreateStdoutLogFile(jobID)
 	if err != nil {
 		return err
 	}
-	stderr, err := os.Create(path.Join(logsDIR, jobID+"-stderr"))
+	stderr, err := repository.CreateStderrLogFile(jobID)
 	if err != nil {
 		return err
 	}

@@ -10,8 +10,12 @@ const (
 	logsDirPermission = 0700
 )
 
+func GetLogsDir() string {
+	return os.Getenv("LOGS_DIR")
+}
+
 func CreateLogsDir() {
-	logsDIR := os.Getenv("LOGS_DIR")
+	logsDIR := GetLogsDir()
 
 	if _, err := os.Stat(logsDIR); os.IsNotExist(err) {
 		err = os.Mkdir(logsDIR, logsDirPermission)
@@ -22,7 +26,7 @@ func CreateLogsDir() {
 }
 
 func DeleteLogsDir() error {
-	logsDIR := os.Getenv("LOGS_DIR")
+	logsDIR := GetLogsDir()
 
 	err := os.RemoveAll(logsDIR)
 	if err != nil {

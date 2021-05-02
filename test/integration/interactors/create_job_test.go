@@ -2,6 +2,8 @@ package integration_interactors_test
 
 import (
 	"fmt"
+	"log"
+	"os"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/suite"
@@ -72,6 +74,52 @@ func (suite *CreateJobInteractorIntegrationTestSuite) TestShouldNotPersistJobWhe
 	assert.Equal(suite.T(), 0, len(jobs))
 }
 
+func (suite *CreateJobInteractorIntegrationTestSuite) TestShouldCreateOutputFilesSuccessfuly() {
+	request := dto.CreateJobRequest{
+		Command:          []string{"ls", "-la"},
+		TimeoutInSeconds: 2,
+	}
+
+	response, err := interactors.CreateJob(request)
+	assert.Nil(suite.T(), err, "create job interactor returned with error")
+
+	stdoutFile, err := repository.GetStdoutLogFile(response.ID)
+	assert.Nil(suite.T(), err, "get stdout file returned with error")
+	assert.NotNil(suite.T(), stdoutFile, "stdout file is nil")
+	defer closeFile(stdoutFile)
+
+	stderrFile, err := repository.GetStderrLogFile(response.ID)
+	assert.Nil(suite.T(), err, "get stderr file returned with error")
+	assert.NotNil(suite.T(), stderrFile, "stderr file is nil")
+	defer closeFile(stderrFile)
+}
+
+func (suite *CreateJobInteractorIntegrationTestSuite) TestShouldNotCreateOutputFilesWhenCreateJobFails() {
+	request := dto.CreateJobRequest{
+		Command:          []string{},
+		TimeoutInSeconds: 1,
+	}
+
+	response, err := interactors.CreateJob(request)
+	assert.NotNil(suite.T(), err, "create job interactor returned without error")
+	assert.Equal(suite.T(), response, dto.CreateJobResponse{}, "returned non empty job response")
+
+	stdoutFile, err := repository.GetStdoutLogFile(response.ID)
+	assert.NotNil(suite.T(), err, "get stdout file returned without error")
+	assert.Nil(suite.T(), stdoutFile, "stdout file is not nil")
+
+	stderrFile, err := repository.GetStderrLogFile(response.ID)
+	assert.NotNil(suite.T(), err, "get stderr file returned without error")
+	assert.Nil(suite.T(), stderrFile, "stderr file is not nil")
+}
+
 func TestCreateJobInteractorIntegrationTest(t *testing.T) {
 	suite.Run(t, new(CreateJobInteractorIntegrationTestSuite))
+}
+
+func closeFile(file *os.File) {
+	err := file.Close()
+	if err != nil {
+		log.Printf("failed to close file with error: %s\n", err)
+	}
 }
