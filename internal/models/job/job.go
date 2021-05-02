@@ -7,7 +7,7 @@ import (
 )
 
 type Job struct {
-	ID               uuid.UUID
+	ID               string
 	Command          []string
 	Status           string
 	TimeoutInSeconds time.Duration
@@ -17,7 +17,7 @@ type Job struct {
 
 func NewJob(command []string, timeoutInSeconds time.Duration) Job {
 	return Job{
-		ID:               uuid.New(),
+		ID:               uuid.New().String(),
 		Command:          command,
 		Status:           CREATED,
 		TimeoutInSeconds: timeoutInSeconds,

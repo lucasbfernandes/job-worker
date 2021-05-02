@@ -1,8 +1,6 @@
 package dto
 
 import (
-	"github.com/google/uuid"
-
 	"job-worker/internal/models/job"
 	"time"
 )
@@ -13,7 +11,7 @@ type CreateJobRequest struct {
 }
 
 type CreateJobResponse struct {
-	ID uuid.UUID
+	ID string
 }
 
 func (request *CreateJobRequest) ToJob() job.Job {

@@ -10,7 +10,7 @@ var DBSchema = &memdb.DBSchema{
 				"id": {
 					Name:    "id",
 					Unique:  true,
-					Indexer: &memdb.StringFieldIndex{Field: "Id"},
+					Indexer: &memdb.StringFieldIndex{Field: "ID"},
 				},
 			},
 		},
