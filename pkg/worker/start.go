@@ -40,16 +40,17 @@ func (p *Process) handleTimeout() {
 		// TODO maybe retry? Otherwise the goroutine may run forever
 		log.Printf("failed to kill process after timeout: %s\n", err)
 	}
-	p.ExitChannel <- ExitReason{
-		ExitCode:  p.execCmd.ProcessState.ExitCode(),
-		Timestamp: time.Now(),
-	}
+	p.emitExitReason()
 }
 
 func (p *Process) handleFinishedExecution(err error) {
 	if err != nil {
 		log.Printf("process finished with error: %s\n", err)
 	}
+	p.emitExitReason()
+}
+
+func (p *Process) emitExitReason() {
 	p.ExitChannel <- ExitReason{
 		ExitCode:  p.execCmd.ProcessState.ExitCode(),
 		Timestamp: time.Now(),
