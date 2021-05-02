@@ -16,12 +16,12 @@ func CreateJob(context *gin.Context) {
 		context.JSON(400, gin.H{"error": err})
 	}
 
-	jobID, err := interactors.CreateJob(createJobRequest)
+	createJobResponse, err := interactors.CreateJob(createJobRequest)
 	if err != nil {
 		log.Printf("failed to create job: %s\n", err)
 		context.JSON(500, gin.H{"error": err})
 	}
-	context.JSON(201, dto.CreateJobResponse{ID: jobID})
+	context.JSON(201, createJobResponse)
 }
 
 func StopJob(context *gin.Context) {

@@ -2,35 +2,76 @@ package interactors
 
 import (
 	"job-worker/internal/dto"
+	jobEntity "job-worker/internal/models/job"
+	"job-worker/internal/repository"
 	"job-worker/pkg/worker"
 	"log"
 	"os"
 	"time"
 )
 
-func CreateJob(createJobRequest dto.CreateJobRequest) (string, error) {
-	stdout, err := os.Create("./out/stdout.txt")
+func CreateJob(createJobRequest dto.CreateJobRequest) (dto.CreateJobResponse, error) {
+	job, err := persistJob(createJobRequest)
 	if err != nil {
-		panic(err)
-	}
-	stderr, err := os.Create("./out/stderr.txt")
-	if err != nil {
-		panic(err)
+		log.Printf("could not persist job %s\n", err)
+		return dto.CreateJobResponse{}, err
 	}
 
-	// create process with lib
-	process, err := worker.NewProcess(createJobRequest.Command, time.Duration(createJobRequest.TimeoutInSeconds))
+	process, err := createWorkerProcess(createJobRequest.Command, time.Duration(createJobRequest.TimeoutInSeconds))
 	if err != nil {
 		log.Printf("could not create process %s\n", err)
-		return "", err
+		setJobStatus(job, jobEntity.FAILED)
+		return dto.CreateJobResponse{}, err
 	}
-	process.SetStdoutWriter(stdout)
-	process.SetStderrWriter(stderr)
 
 	err = process.Start()
 	if err != nil {
 		log.Printf("could not start process %s\n", err)
-		return "", err
+		setJobStatus(job, jobEntity.FAILED)
+		return dto.CreateJobResponse{}, err
 	}
-	return "", nil
+
+	// TODO trigger goroutine that will watch process exit reason channel
+	setJobStatus(job, jobEntity.RUNNING)
+	return dto.CreateJobResponse{ ID: job.Id }, nil
+}
+
+func persistJob(request dto.CreateJobRequest) (jobEntity.Job, error) {
+	job := request.ToJob()
+	err := repository.CreateJob(job)
+	if err != nil {
+		return jobEntity.Job{}, err
+	}
+	return job, nil
+}
+
+func createWorkerProcess(command []string, timeoutInSeconds time.Duration) (worker.Process, error) {
+	process, err := worker.NewProcess(command, timeoutInSeconds)
+	if err != nil {
+		return worker.Process{}, err
+	}
+	err = setWorkerProcessOutputFiles(process)
+	if err != nil {
+		return worker.Process{}, err
+	}
+	return process, nil
+}
+
+func setWorkerProcessOutputFiles(process worker.Process) error {
+	// TODO create logs folder if it does not exist
+	stdout, err := os.Create("./logs/stdout.txt")
+	if err != nil {
+		return err
+	}
+	stderr, err := os.Create("./logs/stderr.txt")
+	if err != nil {
+		return err
+	}
+	process.SetStdoutWriter(stdout)
+	process.SetStderrWriter(stderr)
+	return nil
+}
+
+func setJobStatus(job jobEntity.Job, status string) {
+
 }
