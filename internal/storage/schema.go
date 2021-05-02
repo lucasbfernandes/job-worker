@@ -1,4 +1,4 @@
-package database
+package storage
 
 import "github.com/hashicorp/go-memdb"
 

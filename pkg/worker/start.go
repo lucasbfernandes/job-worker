@@ -59,3 +59,4 @@ func (p *Process) emitExitReason() {
 		Timestamp: time.Now(),
 	}
 }
+

@@ -9,17 +9,20 @@ import (
 	"job-worker/pkg/worker"
 	"log"
 	"os"
+	"path"
 	"time"
 )
 
 func CreateJob(createJobRequest dto.CreateJobRequest) (dto.CreateJobResponse, error) {
-	process, err := createWorkerProcess(createJobRequest.Command, time.Duration(createJobRequest.TimeoutInSeconds))
+	job := createJobRequest.ToJob()
+
+	process, err := createWorkerProcess(createJobRequest.Command, time.Duration(createJobRequest.TimeoutInSeconds), job.ID)
 	if err != nil {
 		log.Printf("could not create process %s\n", err)
 		return dto.CreateJobResponse{}, err
 	}
 
-	job, err := persistJob(createJobRequest)
+	savedJob, err := persistJob(job)
 	if err != nil {
 		log.Printf("could not persist job %s\n", err)
 		return dto.CreateJobResponse{}, err
@@ -28,18 +31,17 @@ func CreateJob(createJobRequest dto.CreateJobRequest) (dto.CreateJobResponse, er
 	err = process.Start()
 	if err != nil {
 		log.Printf("could not start process %s\n", err)
-		finishJobWithStatus(job, jobEntity.FAILED)
-		return dto.CreateJobResponse{}, errors.New(fmt.Sprintf("failed to start job %s with error: %s\n", job.ID, err))
+		finishJobWithStatus(savedJob, jobEntity.FAILED)
+		return dto.CreateJobResponse{}, errors.New(fmt.Sprintf("couldn't start process for job %s with error: %s\n", savedJob.ID, err))
 	}
 
 	// TODO trigger goroutine that will watch process exit reason channel
 
-	setJobStatusRunning(job)
-	return dto.CreateJobResponse{ID: job.ID}, nil
+	setJobStatusRunning(savedJob)
+	return dto.CreateJobResponse{ID: savedJob.ID}, nil
 }
 
-func persistJob(request dto.CreateJobRequest) (jobEntity.Job, error) {
-	job := request.ToJob()
+func persistJob(job jobEntity.Job) (jobEntity.Job, error) {
 	err := repository.UpsertJob(job)
 	if err != nil {
 		return jobEntity.Job{}, err
@@ -47,30 +49,33 @@ func persistJob(request dto.CreateJobRequest) (jobEntity.Job, error) {
 	return job, nil
 }
 
-func createWorkerProcess(command []string, timeoutInSeconds time.Duration) (worker.Process, error) {
+func createWorkerProcess(command []string, timeoutInSeconds time.Duration, jobId string) (worker.Process, error) {
 	process, err := worker.NewProcess(command, timeoutInSeconds)
 	if err != nil {
 		return worker.Process{}, err
 	}
-	//err = setWorkerProcessOutputFiles(process)
-	//if err != nil {
-	//	return worker.Process{}, err
-	//}
+	err = createWorkerProcessOutputFiles(process, jobId)
+	if err != nil {
+		return worker.Process{}, err
+	}
 	return process, nil
 }
 
-func setWorkerProcessOutputFiles(process worker.Process) error {
-	// TODO create logs folder if it does not exist
-	stdout, err := os.Create("./logs/stdout.txt")
+func createWorkerProcessOutputFiles(process worker.Process, jobId string) error {
+	logsDIR := os.Getenv("LOGS_DIR")
+
+	stdout, err := os.Create(path.Join(logsDIR, jobId + "-stdout"))
 	if err != nil {
 		return err
 	}
-	stderr, err := os.Create("./logs/stderr.txt")
+	stderr, err := os.Create(path.Join(logsDIR, jobId + "-stderr"))
 	if err != nil {
 		return err
 	}
+
 	process.SetStdoutWriter(stdout)
 	process.SetStderrWriter(stderr)
+
 	return nil
 }
 

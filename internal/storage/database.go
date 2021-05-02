@@ -1,4 +1,4 @@
-package database
+package storage
 
 import (
 	"github.com/hashicorp/go-memdb"
@@ -14,7 +14,7 @@ func CreateDB() {
 	once.Do(func() {
 		db, err := memdb.NewMemDB(DBSchema)
 		if err != nil {
-			log.Fatalf("failed to create database: %s\n", err)
+			log.Fatalf("failed to create storage: %s\n", err)
 		}
 		memDBInstance = db
 	})

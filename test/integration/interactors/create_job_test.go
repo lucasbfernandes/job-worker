@@ -1,13 +1,15 @@
-package interactors
+package integration_interactors_test
 
 import (
+	"fmt"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/suite"
-	"job-worker/internal/database"
 	"job-worker/internal/dto"
 	"job-worker/internal/interactors"
 	jobEntity "job-worker/internal/models/job"
 	"job-worker/internal/repository"
+	"job-worker/internal/storage"
+	"job-worker/test/integration"
 	"time"
 
 	"testing"
@@ -18,19 +20,26 @@ type CreateJobInteractorIntegrationTestSuite struct {
 }
 
 func (suite *CreateJobInteractorIntegrationTestSuite) SetupSuite() {
-	database.CreateDB()
+	err := integration.BootstrapTestEnvironment()
+	if err != nil {
+		suite.FailNow(fmt.Sprintf("failed to setup test suite: %s", err))
+	}
+}
+
+func (suite *CreateJobInteractorIntegrationTestSuite) SetupTest() {
+	storage.CreateLogsDir()
 }
 
 func (suite *CreateJobInteractorIntegrationTestSuite) TearDownTest() {
-	err := repository.DeleteAllJobs()
+	err := integration.RollbackState()
 	if err != nil {
-		suite.FailNow("failed to tear down test: %s", err)
+		suite.FailNow(fmt.Sprintf("failed to tear down test: %s", err))
 	}
 }
 
 func (suite *CreateJobInteractorIntegrationTestSuite) TestShouldPersistJobWithCorrectParameters() {
 	request := dto.CreateJobRequest{
-		Command: []string{"sleep", "5"},
+		Command: []string{"ls", "-la"},
 		TimeoutInSeconds: 2,
 	}
 
@@ -41,7 +50,7 @@ func (suite *CreateJobInteractorIntegrationTestSuite) TestShouldPersistJobWithCo
 	assert.Nil(suite.T(), err, "get job returned with error")
 
 	assert.Equal(suite.T(), response.ID, job.ID, "persisted wrong ID")
-	assert.Equal(suite.T(), []string{"sleep", "5"}, job.Command, "persisted wrong command")
+	assert.Equal(suite.T(), []string{"ls", "-la"}, job.Command, "persisted wrong command")
 	assert.Equal(suite.T(), time.Duration(2), job.TimeoutInSeconds, "persisted wrong timeout")
 	assert.Equal(suite.T(), time.Time{}, job.FinishedAt, "persisted wrong finishedAt")
 	assert.Equal(suite.T(), jobEntity.RUNNING, job.Status, "persisted wrong status")

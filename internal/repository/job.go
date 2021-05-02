@@ -1,13 +1,13 @@
 package repository
 
 import (
-	"job-worker/internal/database"
+	"job-worker/internal/storage"
 	jobEntity "job-worker/internal/models/job"
 	"log"
 )
 
 func UpsertJob(job jobEntity.Job) error {
-	db := database.GetDB()
+	db := storage.GetDB()
 	txn := db.Txn(true)
 	err := txn.Insert("job", job)
 	if err != nil {
@@ -19,7 +19,7 @@ func UpsertJob(job jobEntity.Job) error {
 }
 
 func DeleteAllJobs() error {
-	db := database.GetDB()
+	db := storage.GetDB()
 	txn := db.Txn(true)
 	_, err := txn.DeleteAll("job", "id")
 	if err != nil {
@@ -31,7 +31,7 @@ func DeleteAllJobs() error {
 }
 
 func GetJob(id string) (jobEntity.Job, error) {
-	db := database.GetDB()
+	db := storage.GetDB()
 	txn := db.Txn(false)
 	defer txn.Abort()
 
@@ -47,7 +47,7 @@ func GetJob(id string) (jobEntity.Job, error) {
 func GetAllJobs() ([]jobEntity.Job, error) {
 	jobs := make([]jobEntity.Job, 0)
 
-	db := database.GetDB()
+	db := storage.GetDB()
 	txn := db.Txn(false)
 	defer txn.Abort()
 
