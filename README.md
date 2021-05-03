@@ -33,5 +33,5 @@ Example:
 
 Resulting files:
 
-* /app/servers/logs/<job-id>-stdout
-* /app/servers/logs/<job-id>-stderr
+* /app/servers/logs/\<job-id\>-stdout
+* /app/servers/logs/\<job-id\>-stderr
