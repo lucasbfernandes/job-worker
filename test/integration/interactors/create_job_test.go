@@ -173,6 +173,63 @@ func (suite *CreateJobInteractorIntegrationTestSuite) TestStderrShouldHaveConten
 	assert.Greater(suite.T(), stderrInfo.Size(), int64(0), "stderr should have content")
 }
 
+func (suite *CreateJobInteractorIntegrationTestSuite) TestShouldPersistCorrectJobWhenProcessFailsExecution() {
+	request := dto.CreateJobRequest{
+		Command:          []string{"ls", "100000asdas"},
+		TimeoutInSeconds: 1,
+	}
+
+	response, err := interactors.CreateJob(request)
+	assert.Nil(suite.T(), err, "create job interactor returned with error")
+
+	time.Sleep(2 * time.Second)
+
+	job, err := repository.GetJob(response.ID)
+	assert.Nil(suite.T(), err, "get job returned with error")
+
+	assert.NotEqual(suite.T(), time.Time{}, job.FinishedAt, "persisted wrong finishedAt")
+	assert.Equal(suite.T(), jobEntity.FAILED, job.Status, "persisted wrong status")
+	assert.Equal(suite.T(), 1, job.ExitCode, "persisted wrong exit code")
+}
+
+func (suite *CreateJobInteractorIntegrationTestSuite) TestShouldPersistCorrectJobWhenProcessTimeoutsExecution() {
+	request := dto.CreateJobRequest{
+		Command:          []string{"sleep", "4"},
+		TimeoutInSeconds: 1,
+	}
+
+	response, err := interactors.CreateJob(request)
+	assert.Nil(suite.T(), err, "create job interactor returned with error")
+
+	time.Sleep(2 * time.Second)
+
+	job, err := repository.GetJob(response.ID)
+	assert.Nil(suite.T(), err, "get job returned with error")
+
+	assert.NotEqual(suite.T(), time.Time{}, job.FinishedAt, "persisted wrong finishedAt")
+	assert.Equal(suite.T(), jobEntity.STOPPED, job.Status, "persisted wrong status")
+	assert.Equal(suite.T(), -1, job.ExitCode, "persisted wrong exit code")
+}
+
+func (suite *CreateJobInteractorIntegrationTestSuite) TestShouldPersistCorrectJobWhenProcessSucceedsExecution() {
+	request := dto.CreateJobRequest{
+		Command:          []string{"echo", "hello test world"},
+		TimeoutInSeconds: 1,
+	}
+
+	response, err := interactors.CreateJob(request)
+	assert.Nil(suite.T(), err, "create job interactor returned with error")
+
+	time.Sleep(2 * time.Second)
+
+	job, err := repository.GetJob(response.ID)
+	assert.Nil(suite.T(), err, "get job returned with error")
+
+	assert.NotEqual(suite.T(), time.Time{}, job.FinishedAt, "persisted wrong finishedAt")
+	assert.Equal(suite.T(), jobEntity.COMPLETED, job.Status, "persisted wrong status")
+	assert.Equal(suite.T(), 0, job.ExitCode, "persisted wrong exit code")
+}
+
 func TestCreateJobInteractorIntegrationTest(t *testing.T) {
 	suite.Run(t, new(CreateJobInteractorIntegrationTestSuite))
 }

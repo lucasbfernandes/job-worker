@@ -37,20 +37,20 @@ func (p *Process) waitExecution() {
 }
 
 func (p *Process) handleTimeout() error {
+	p.emitExitReason()
 	err := p.execCmd.Process.Kill()
 	if err != nil {
 		log.Printf("failed to kill process after timeout: %s\n", err)
 		return err
 	}
-	p.emitExitReason()
 	return nil
 }
 
 func (p *Process) handleFinishedExecution(err error) {
+	p.emitExitReason()
 	if err != nil {
 		log.Printf("process finished with error: %s\n", err)
 	}
-	p.emitExitReason()
 }
 
 func (p *Process) emitExitReason() {

@@ -28,14 +28,30 @@ func CreateJob(createJobRequest dto.CreateJobRequest) (dto.CreateJobResponse, er
 	err = process.Start()
 	if err != nil {
 		log.Printf("could not start process %s\n", err)
-		finishJobWithStatus(savedJob, jobEntity.FAILED)
+		setJobStatusFailed(savedJob)
 		return dto.CreateJobResponse{}, fmt.Errorf("couldn't start process for job %s with error: %s", savedJob.ID, err)
 	}
 
-	// TODO trigger goroutine that will watch process exit reason channel
-
 	setJobStatusRunning(savedJob)
+	go waitForExitReason(savedJob, process)
+
 	return dto.CreateJobResponse{ID: savedJob.ID}, nil
+}
+
+// This will never wait forever because of timeout constraints inside the worker library.
+func waitForExitReason(job jobEntity.Job, process worker.Process) {
+	exitReason := <-process.ExitChannel
+
+	switch exitReason.ExitCode {
+	case 1:
+		finishJobWithStatusAndCode(job, jobEntity.FAILED, exitReason.ExitCode)
+	case 0:
+		finishJobWithStatusAndCode(job, jobEntity.COMPLETED, exitReason.ExitCode)
+	case -1:
+		finishJobWithStatusAndCode(job, jobEntity.STOPPED, exitReason.ExitCode)
+	default:
+		finishJobWithStatusAndCode(job, jobEntity.FAILED, exitReason.ExitCode)
+	}
 }
 
 func persistJob(job jobEntity.Job) (jobEntity.Job, error) {
@@ -74,9 +90,10 @@ func createWorkerProcessOutputFiles(process worker.Process, jobID string) error 
 	return nil
 }
 
-func finishJobWithStatus(job jobEntity.Job, status string) {
+func finishJobWithStatusAndCode(job jobEntity.Job, status string, exitCode int) {
 	job.Status = status
 	job.FinishedAt = time.Now()
+	job.ExitCode = exitCode
 	err := repository.UpsertJob(job)
 	if err != nil {
 		log.Printf("failed to update job with status %s: %s\n", status, err)
@@ -88,5 +105,13 @@ func setJobStatusRunning(job jobEntity.Job) {
 	err := repository.UpsertJob(job)
 	if err != nil {
 		log.Printf("failed to update job status to running: %s\n", err)
+	}
+}
+
+func setJobStatusFailed(job jobEntity.Job) {
+	job.Status = jobEntity.FAILED
+	err := repository.UpsertJob(job)
+	if err != nil {
+		log.Printf("failed to update job status to failed: %s\n", err)
 	}
 }
