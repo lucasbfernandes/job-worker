@@ -2,8 +2,8 @@ package job
 
 import (
 	"github.com/google/uuid"
-	"job-worker/pkg/worker"
 
+	"job-worker/pkg/worker"
 	"time"
 )
 
@@ -31,7 +31,7 @@ func NewJob(command []string, timeoutInSeconds time.Duration) Job {
 		CreatedAt:        time.Now(),
 		FinishedAt:       time.Time{},
 
-		process: 		  nil,
+		process: nil,
 	}
 }
 

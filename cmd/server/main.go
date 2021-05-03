@@ -2,25 +2,10 @@ package main
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/joho/godotenv"
 
-	"fmt"
 	"job-worker/internal/controllers"
 	"job-worker/internal/storage"
-	"log"
-	"os"
 )
-
-// TODO this configuration method should be refactored for production releases
-func setupEnv() {
-	env := os.Getenv("GO_ENV")
-	if "" == env {
-		err := godotenv.Load(".env.dev")
-		if err != nil {
-			log.Fatalf(fmt.Sprintf("failed to load .env: %s\n", err))
-		}
-	}
-}
 
 func createLogsDir() {
 	storage.CreateLogsDir()
@@ -41,7 +26,6 @@ func startAPI() {
 }
 
 func main() {
-	setupEnv()
 	createLogsDir()
 	createDB()
 	startAPI()
