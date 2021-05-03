@@ -11,7 +11,7 @@ type CreateJobRequest struct {
 }
 
 type CreateJobResponse struct {
-	ID string
+	ID string `json:"id"`
 }
 
 func (request *CreateJobRequest) ToJob() jobEntity.Job {
