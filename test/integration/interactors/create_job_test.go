@@ -207,8 +207,8 @@ func (suite *CreateJobInteractorIntegrationTestSuite) TestShouldPersistCorrectJo
 	assert.Nil(suite.T(), err, "get job returned with error")
 
 	assert.NotEqual(suite.T(), time.Time{}, job.FinishedAt, "persisted wrong finishedAt")
-	assert.Equal(suite.T(), jobEntity.STOPPED, job.Status, "persisted wrong status")
-	assert.Equal(suite.T(), -1, job.ExitCode, "persisted wrong exit code")
+	assert.Equal(suite.T(), jobEntity.TIMEOUT, job.Status, "persisted wrong status")
+	assert.Equal(suite.T(), 124, job.ExitCode, "persisted wrong exit code")
 }
 
 func (suite *CreateJobInteractorIntegrationTestSuite) TestShouldPersistCorrectJobWhenProcessSucceedsExecution() {

@@ -66,8 +66,6 @@ func (suite *StopJobInteractorIntegrationTestSuite) TestShouldStopJobSuccessfull
 	assert.Equal(suite.T(), -1, job.ExitCode, "job exit code should be -1")
 }
 
-// TODO
-
 func TestStopJobInteractorIntegrationTest(t *testing.T) {
 	suite.Run(t, new(StopJobInteractorIntegrationTestSuite))
 }

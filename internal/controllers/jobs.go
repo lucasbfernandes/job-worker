@@ -54,4 +54,11 @@ func GetJobStatus(context *gin.Context) {
 }
 
 func GetJobLogs(context *gin.Context) {
+	jobID := context.Param("id")
+	getJobLogsResponse, err := interactors.GetJobLogs(jobID)
+	if err != nil {
+		log.Printf("failed to get job logs: %s\n", err)
+		context.JSON(500, gin.H{"error": err})
+	}
+	context.String(200, getJobLogsResponse)
 }
