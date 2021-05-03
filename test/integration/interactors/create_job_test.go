@@ -55,7 +55,7 @@ func (suite *CreateJobInteractorIntegrationTestSuite) TestShouldPersistJobWithCo
 	assert.Equal(suite.T(), response.ID, job.ID, "persisted wrong ID")
 	assert.Equal(suite.T(), []string{"ls", "-la"}, job.Command, "persisted wrong command")
 	assert.Equal(suite.T(), time.Duration(2), job.TimeoutInSeconds, "persisted wrong timeout")
-	assert.Equal(suite.T(), time.Time{}, job.FinishedAt, "persisted wrong finishedAt")
+	assert.Nil(suite.T(), job.FinishedAt, "persisted wrong finishedAt")
 	assert.Equal(suite.T(), jobEntity.RUNNING, job.Status, "persisted wrong status")
 }
 
@@ -187,7 +187,7 @@ func (suite *CreateJobInteractorIntegrationTestSuite) TestShouldPersistCorrectJo
 	job, err := repository.GetJobOrFail(response.ID)
 	assert.Nil(suite.T(), err, "get job returned with error")
 
-	assert.NotEqual(suite.T(), time.Time{}, job.FinishedAt, "persisted wrong finishedAt")
+	assert.NotNil(suite.T(), job.FinishedAt, "persisted wrong finishedAt")
 	assert.Equal(suite.T(), jobEntity.FAILED, job.Status, "persisted wrong status")
 	assert.Equal(suite.T(), 1, job.ExitCode, "persisted wrong exit code")
 }
@@ -206,7 +206,7 @@ func (suite *CreateJobInteractorIntegrationTestSuite) TestShouldPersistCorrectJo
 	job, err := repository.GetJobOrFail(response.ID)
 	assert.Nil(suite.T(), err, "get job returned with error")
 
-	assert.NotEqual(suite.T(), time.Time{}, job.FinishedAt, "persisted wrong finishedAt")
+	assert.NotNil(suite.T(), job.FinishedAt, "persisted wrong finishedAt")
 	assert.Equal(suite.T(), jobEntity.TIMEOUT, job.Status, "persisted wrong status")
 	assert.Equal(suite.T(), 124, job.ExitCode, "persisted wrong exit code")
 }
@@ -225,7 +225,7 @@ func (suite *CreateJobInteractorIntegrationTestSuite) TestShouldPersistCorrectJo
 	job, err := repository.GetJobOrFail(response.ID)
 	assert.Nil(suite.T(), err, "get job returned with error")
 
-	assert.NotEqual(suite.T(), time.Time{}, job.FinishedAt, "persisted wrong finishedAt")
+	assert.NotNil(suite.T(), job.FinishedAt, "persisted wrong finishedAt")
 	assert.Equal(suite.T(), jobEntity.COMPLETED, job.Status, "persisted wrong status")
 	assert.Equal(suite.T(), 0, job.ExitCode, "persisted wrong exit code")
 }

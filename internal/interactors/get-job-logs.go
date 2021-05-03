@@ -10,6 +10,12 @@ import (
 
 // TODO Improve memory utilization. This is loading both files entirely in memory.
 func GetJobLogs(jobID string) (string, error) {
+	_, err := repository.GetJobOrFail(jobID)
+	if err != nil {
+		log.Printf("could not get job logs: %s\n", err)
+		return "", err
+	}
+
 	stdoutFile, err := repository.GetStdoutLogFile(jobID)
 	if err != nil {
 		log.Printf("could not get stdout file: %s\n", err)

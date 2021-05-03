@@ -6,59 +6,68 @@ import (
 	"job-worker/internal/dto"
 	"job-worker/internal/interactors"
 	"log"
+	"net/http"
 )
 
 func CreateJob(context *gin.Context) {
 	var createJobRequest dto.CreateJobRequest
-	err := context.Bind(&createJobRequest)
+	err := context.ShouldBindJSON(&createJobRequest)
 	if err != nil {
 		log.Printf("failed to create job request object: %s\n", err)
-		context.JSON(400, gin.H{"error": err})
+		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
 	}
 
 	createJobResponse, err := interactors.CreateJob(createJobRequest)
 	if err != nil {
 		log.Printf("failed to create job: %s\n", err)
-		context.JSON(500, gin.H{"error": err})
+		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
 	}
-	context.JSON(201, createJobResponse)
+
+	context.JSON(http.StatusCreated, createJobResponse)
 }
 
+// TODO return 404 code when job doesn't exist
 func StopJob(context *gin.Context) {
 	jobID := context.Param("id")
 	err := interactors.StopJob(jobID)
 	if err != nil {
 		log.Printf("failed to stop job: %s\n", err)
-		context.JSON(500, gin.H{"error": err})
+		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
 	}
-	context.String(200, "")
+	context.String(http.StatusOK, "")
 }
 
 func GetJobs(context *gin.Context) {
 	getJobsResponse, err := interactors.GetJobs()
 	if err != nil {
 		log.Printf("failed to get jobs: %s\n", err)
-		context.JSON(500, gin.H{"error": err})
+		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 	}
-	context.JSON(200, getJobsResponse)
+	context.JSON(http.StatusOK, getJobsResponse)
 }
 
+// TODO return 404 code when job doesn't exist
 func GetJobStatus(context *gin.Context) {
 	jobID := context.Param("id")
 	getJobStatusResponse, err := interactors.GetJobStatus(jobID)
 	if err != nil {
 		log.Printf("failed to get job status: %s\n", err)
-		context.JSON(500, gin.H{"error": err})
+		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
 	}
-	context.JSON(200, getJobStatusResponse)
+	context.JSON(http.StatusOK, getJobStatusResponse)
 }
 
+// TODO return 404 code when job doesn't exist
 func GetJobLogs(context *gin.Context) {
 	jobID := context.Param("id")
 	getJobLogsResponse, err := interactors.GetJobLogs(jobID)
 	if err != nil {
 		log.Printf("failed to get job logs: %s\n", err)
-		context.JSON(500, gin.H{"error": err})
+		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 	}
-	context.String(200, getJobLogsResponse)
+	context.String(http.StatusOK, getJobLogsResponse)
 }

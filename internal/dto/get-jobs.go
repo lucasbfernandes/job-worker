@@ -11,8 +11,8 @@ type JobResponse struct {
 	Status           string        `json:"status"`
 	ExitCode         int           `json:"exitCode"`
 	TimeoutInSeconds time.Duration `json:"timeoutInSeconds"`
-	CreatedAt        time.Time     `json:"createdAt"`
-	FinishedAt       time.Time     `json:"finishedAt"`
+	CreatedAt        *time.Time    `json:"createdAt"`
+	FinishedAt       *time.Time    `json:"finishedAt"`
 }
 
 type GetJobsResponse struct {

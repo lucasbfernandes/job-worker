@@ -95,9 +95,12 @@ func createWorkerProcessOutputFiles(process worker.Process, jobID string) error 
 }
 
 func finishJobWithStatusAndCode(job jobEntity.Job, status string, exitCode int) {
+	finishedAt := time.Now()
+
 	job.Status = status
-	job.FinishedAt = time.Now()
+	job.FinishedAt = &finishedAt
 	job.ExitCode = exitCode
+
 	err := repository.UpsertJob(job)
 	if err != nil {
 		log.Printf("failed to update job with status %s: %s\n", status, err)

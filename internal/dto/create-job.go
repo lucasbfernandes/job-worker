@@ -6,8 +6,8 @@ import (
 )
 
 type CreateJobRequest struct {
-	Command          []string
-	TimeoutInSeconds int
+	Command          []string `json:"command" binding:"required,min=1,dive,min=1"`
+	TimeoutInSeconds int      `json:"timeoutInSeconds" binding:"required,min=1"`
 }
 
 type CreateJobResponse struct {

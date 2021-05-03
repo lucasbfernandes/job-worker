@@ -6,10 +6,10 @@ import (
 )
 
 type GetJobStatusResponse struct {
-	Status     string    `json:"status"`
-	ExitCode   int       `json:"exitCode"`
-	CreatedAt  time.Time `json:"createdAt"`
-	FinishedAt time.Time `json:"finishedAt"`
+	Status     string     `json:"status"`
+	ExitCode   int        `json:"exitCode"`
+	CreatedAt  *time.Time `json:"createdAt"`
+	FinishedAt *time.Time `json:"finishedAt"`
 }
 
 func JobStatusResponseFromJob(job jobEntity.Job) GetJobStatusResponse {
