@@ -31,7 +31,7 @@ func (suite *StartProcessIntegrationTestSuite) TestTimeoutExecutionShouldReturnC
 	assert.Nil(suite.T(), err, "Process failed to start.")
 
 	exitReason := <-process.ExitChannel
-	assert.Equal(suite.T(), -1, exitReason.ExitCode, "Process should've returned with error code = -1")
+	assert.Equal(suite.T(), 124, exitReason.ExitCode, "Process should've returned with error code = -1")
 }
 
 func (suite *StartProcessIntegrationTestSuite) TestFailedExecutionShouldReturnCorrectStatus() {

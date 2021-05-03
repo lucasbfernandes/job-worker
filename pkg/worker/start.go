@@ -36,8 +36,10 @@ func (p *Process) waitExecution() {
 	}()
 }
 
+// Exit code 124 was chosen to resemble the timeout command behaviour
+// (i.e. https://man7.org/linux/man-pages/man1/timeout.1.html)
 func (p *Process) handleTimeout() error {
-	p.emitExitReason()
+	p.emitExitReason(124)
 	err := p.execCmd.Process.Kill()
 	if err != nil {
 		log.Printf("failed to kill process after timeout: %s\n", err)
@@ -47,15 +49,15 @@ func (p *Process) handleTimeout() error {
 }
 
 func (p *Process) handleFinishedExecution(err error) {
-	p.emitExitReason()
+	p.emitExitReason(p.execCmd.ProcessState.ExitCode())
 	if err != nil {
 		log.Printf("process finished with error: %s\n", err)
 	}
 }
 
-func (p *Process) emitExitReason() {
+func (p *Process) emitExitReason(exitCode int) {
 	p.ExitChannel <- ExitReason{
-		ExitCode:  p.execCmd.ProcessState.ExitCode(),
+		ExitCode:  exitCode,
 		Timestamp: time.Now(),
 	}
 }

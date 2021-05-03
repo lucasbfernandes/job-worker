@@ -2,6 +2,7 @@ package job
 
 import (
 	"github.com/google/uuid"
+	"job-worker/pkg/worker"
 
 	"time"
 )
@@ -14,6 +15,8 @@ type Job struct {
 	TimeoutInSeconds time.Duration
 	CreatedAt        time.Time
 	FinishedAt       time.Time
+
+	process *worker.Process
 }
 
 // Jobs will start with a -1 ExitCode because this is the default value for
@@ -27,5 +30,15 @@ func NewJob(command []string, timeoutInSeconds time.Duration) Job {
 		TimeoutInSeconds: timeoutInSeconds,
 		CreatedAt:        time.Now(),
 		FinishedAt:       time.Time{},
+
+		process: 		  nil,
 	}
+}
+
+func (job *Job) SetProcess(process *worker.Process) {
+	job.process = process
+}
+
+func (job *Job) GetProcess() *worker.Process {
+	return job.process
 }

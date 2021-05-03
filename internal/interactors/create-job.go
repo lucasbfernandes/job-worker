@@ -19,7 +19,7 @@ func CreateJob(createJobRequest dto.CreateJobRequest) (dto.CreateJobResponse, er
 		return dto.CreateJobResponse{}, err
 	}
 
-	savedJob, err := persistJob(job)
+	savedJob, err := persistJob(job, process)
 	if err != nil {
 		log.Printf("could not persist job %s\n", err)
 		return dto.CreateJobResponse{}, err
@@ -43,18 +43,22 @@ func waitForExitReason(job jobEntity.Job, process worker.Process) {
 	exitReason := <-process.ExitChannel
 
 	switch exitReason.ExitCode {
-	case 1:
-		finishJobWithStatusAndCode(job, jobEntity.FAILED, exitReason.ExitCode)
-	case 0:
-		finishJobWithStatusAndCode(job, jobEntity.COMPLETED, exitReason.ExitCode)
 	case -1:
 		finishJobWithStatusAndCode(job, jobEntity.STOPPED, exitReason.ExitCode)
+	case 0:
+		finishJobWithStatusAndCode(job, jobEntity.COMPLETED, exitReason.ExitCode)
+	case 1:
+		finishJobWithStatusAndCode(job, jobEntity.FAILED, exitReason.ExitCode)
+	case 124:
+		finishJobWithStatusAndCode(job, jobEntity.TIMED_OUT, exitReason.ExitCode)
 	default:
 		finishJobWithStatusAndCode(job, jobEntity.FAILED, exitReason.ExitCode)
 	}
 }
 
-func persistJob(job jobEntity.Job) (jobEntity.Job, error) {
+func persistJob(job jobEntity.Job, process worker.Process) (jobEntity.Job, error) {
+	job.SetProcess(&process)
+
 	err := repository.UpsertJob(job)
 	if err != nil {
 		return jobEntity.Job{}, err

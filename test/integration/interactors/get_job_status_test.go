@@ -93,8 +93,8 @@ func (suite *GetJobStatusInteractorIntegrationTestSuite) TestShouldReturnCorrect
 	statusResponse, err := interactors.GetJobStatus(createJobResponse.ID)
 	assert.Nil(suite.T(), err, "get job status interactor should not return with error")
 
-	assert.Equal(suite.T(), job.STOPPED, statusResponse.Status, "wrong status, should be STOPPED")
-	assert.Equal(suite.T(), -1, statusResponse.ExitCode, "wrong exit code, should be -1")
+	assert.Equal(suite.T(), job.TIMED_OUT, statusResponse.Status, "wrong status, should be STOPPED")
+	assert.Equal(suite.T(), 124, statusResponse.ExitCode, "wrong exit code, should be -1")
 }
 
 func TestGetJobStatusInteractorIntegrationTest(t *testing.T) {

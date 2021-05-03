@@ -25,6 +25,13 @@ func CreateJob(context *gin.Context) {
 }
 
 func StopJob(context *gin.Context) {
+	jobID := context.Param("id")
+	err := interactors.StopJob(jobID)
+	if err != nil {
+		log.Printf("failed to stop job: %s\n", err)
+		context.JSON(500, gin.H{"error": err})
+	}
+	context.String(200, "")
 }
 
 func GetJobs(context *gin.Context) {
