@@ -49,7 +49,7 @@ func (suite *CreateJobInteractorIntegrationTestSuite) TestShouldPersistJobWithCo
 	response, err := interactors.CreateJob(request)
 	assert.Nil(suite.T(), err, "create job interactor returned with error")
 
-	job, err := repository.GetJob(response.ID)
+	job, err := repository.GetJobOrFail(response.ID)
 	assert.Nil(suite.T(), err, "get job returned with error")
 
 	assert.Equal(suite.T(), response.ID, job.ID, "persisted wrong ID")
@@ -184,7 +184,7 @@ func (suite *CreateJobInteractorIntegrationTestSuite) TestShouldPersistCorrectJo
 
 	time.Sleep(2 * time.Second)
 
-	job, err := repository.GetJob(response.ID)
+	job, err := repository.GetJobOrFail(response.ID)
 	assert.Nil(suite.T(), err, "get job returned with error")
 
 	assert.NotEqual(suite.T(), time.Time{}, job.FinishedAt, "persisted wrong finishedAt")
@@ -203,7 +203,7 @@ func (suite *CreateJobInteractorIntegrationTestSuite) TestShouldPersistCorrectJo
 
 	time.Sleep(2 * time.Second)
 
-	job, err := repository.GetJob(response.ID)
+	job, err := repository.GetJobOrFail(response.ID)
 	assert.Nil(suite.T(), err, "get job returned with error")
 
 	assert.NotEqual(suite.T(), time.Time{}, job.FinishedAt, "persisted wrong finishedAt")
@@ -222,7 +222,7 @@ func (suite *CreateJobInteractorIntegrationTestSuite) TestShouldPersistCorrectJo
 
 	time.Sleep(2 * time.Second)
 
-	job, err := repository.GetJob(response.ID)
+	job, err := repository.GetJobOrFail(response.ID)
 	assert.Nil(suite.T(), err, "get job returned with error")
 
 	assert.NotEqual(suite.T(), time.Time{}, job.FinishedAt, "persisted wrong finishedAt")

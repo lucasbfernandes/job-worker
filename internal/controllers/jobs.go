@@ -28,9 +28,22 @@ func StopJob(context *gin.Context) {
 }
 
 func GetJobs(context *gin.Context) {
+	getJobsResponse, err := interactors.GetJobs()
+	if err != nil {
+		log.Printf("failed to get jobs: %s\n", err)
+		context.JSON(500, gin.H{"error": err})
+	}
+	context.JSON(200, getJobsResponse)
 }
 
 func GetJobStatus(context *gin.Context) {
+	jobID := context.Param("id")
+	getJobStatusResponse, err := interactors.GetJobStatus(jobID)
+	if err != nil {
+		log.Printf("failed to get job status: %s\n", err)
+		context.JSON(500, gin.H{"error": err})
+	}
+	context.JSON(200, getJobStatusResponse)
 }
 
 func GetJobLogs(context *gin.Context) {

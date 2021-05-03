@@ -1,7 +1,7 @@
 package dto
 
 import (
-	"job-worker/internal/models/job"
+	jobEntity "job-worker/internal/models/job"
 	"time"
 )
 
@@ -14,8 +14,8 @@ type CreateJobResponse struct {
 	ID string
 }
 
-func (request *CreateJobRequest) ToJob() job.Job {
-	return job.NewJob(
+func (request *CreateJobRequest) ToJob() jobEntity.Job {
+	return jobEntity.NewJob(
 		request.Command,
 		time.Duration(request.TimeoutInSeconds),
 	)

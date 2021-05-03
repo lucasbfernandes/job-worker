@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"fmt"
 	jobEntity "job-worker/internal/models/job"
 	"job-worker/internal/storage"
 	"log"
@@ -30,15 +31,19 @@ func DeleteAllJobs() error {
 	return nil
 }
 
-func GetJob(id string) (jobEntity.Job, error) {
+func GetJobOrFail(id string) (jobEntity.Job, error) {
 	db := storage.GetDB()
 	txn := db.Txn(false)
 	defer txn.Abort()
 
 	raw, err := txn.First("job", "id", id)
 	if err != nil {
-		log.Printf("failed to delete all jobs: %s\n", err)
+		log.Printf("failed to get job: %s\n", err)
 		return jobEntity.Job{}, nil
+	}
+	if raw == nil {
+		log.Printf("could not find job\n")
+		return jobEntity.Job{}, fmt.Errorf("could not find job with id %s", id)
 	}
 
 	return raw.(jobEntity.Job), nil
