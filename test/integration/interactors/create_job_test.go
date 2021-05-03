@@ -122,7 +122,7 @@ func (suite *CreateJobInteractorIntegrationTestSuite) TestStdoutShouldHaveConten
 	response, err := interactors.CreateJob(request)
 	assert.Nil(suite.T(), err, "create job interactor returned with error")
 
-	time.Sleep(2 * time.Second)
+	time.Sleep(250 * time.Millisecond)
 
 	stdoutFile, err := repository.GetStdoutLogFile(response.ID)
 	assert.Nil(suite.T(), err, "get stdout file returned with error")
@@ -152,7 +152,7 @@ func (suite *CreateJobInteractorIntegrationTestSuite) TestStderrShouldHaveConten
 	response, err := interactors.CreateJob(request)
 	assert.Nil(suite.T(), err, "create job interactor returned with error")
 
-	time.Sleep(2 * time.Second)
+	time.Sleep(250 * time.Millisecond)
 
 	stdoutFile, err := repository.GetStdoutLogFile(response.ID)
 	assert.Nil(suite.T(), err, "get stdout file returned with error")
@@ -182,7 +182,7 @@ func (suite *CreateJobInteractorIntegrationTestSuite) TestShouldPersistCorrectJo
 	response, err := interactors.CreateJob(request)
 	assert.Nil(suite.T(), err, "create job interactor returned with error")
 
-	time.Sleep(2 * time.Second)
+	time.Sleep(250 * time.Millisecond)
 
 	job, err := repository.GetJobOrFail(response.ID)
 	assert.Nil(suite.T(), err, "get job returned with error")
@@ -201,7 +201,7 @@ func (suite *CreateJobInteractorIntegrationTestSuite) TestShouldPersistCorrectJo
 	response, err := interactors.CreateJob(request)
 	assert.Nil(suite.T(), err, "create job interactor returned with error")
 
-	time.Sleep(2 * time.Second)
+	time.Sleep(1100 * time.Millisecond)
 
 	job, err := repository.GetJobOrFail(response.ID)
 	assert.Nil(suite.T(), err, "get job returned with error")
@@ -220,7 +220,7 @@ func (suite *CreateJobInteractorIntegrationTestSuite) TestShouldPersistCorrectJo
 	response, err := interactors.CreateJob(request)
 	assert.Nil(suite.T(), err, "create job interactor returned with error")
 
-	time.Sleep(2 * time.Second)
+	time.Sleep(250 * time.Millisecond)
 
 	job, err := repository.GetJobOrFail(response.ID)
 	assert.Nil(suite.T(), err, "get job returned with error")

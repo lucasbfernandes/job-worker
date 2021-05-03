@@ -34,7 +34,7 @@ func (suite *StopProcessIntegrationTestSuite) TestShouldFailStopWhenProcessHasAl
 	err = process.Start()
 	assert.Nil(suite.T(), err, "Process failed to start.")
 
-	time.Sleep(2 * time.Second)
+	time.Sleep(1100 * time.Millisecond)
 
 	err = process.Stop()
 	assert.NotNil(suite.T(), err, "Should have failed because process has already stopped.")

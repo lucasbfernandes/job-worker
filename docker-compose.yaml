@@ -9,4 +9,4 @@ services:
     ports:
       - 8080:8080
     environment:
-      - LOGS_DIR: /app/server/logs
+      - LOGS_DIR=/app/server/logs

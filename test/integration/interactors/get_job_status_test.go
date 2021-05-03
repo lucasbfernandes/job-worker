@@ -52,7 +52,7 @@ func (suite *GetJobStatusInteractorIntegrationTestSuite) TestShouldReturnCorrect
 	createJobResponse, err := interactors.CreateJob(request)
 	assert.Nil(suite.T(), err, "create job interactor returned with error")
 
-	time.Sleep(2 * time.Second)
+	time.Sleep(250 * time.Millisecond)
 
 	statusResponse, err := interactors.GetJobStatus(createJobResponse.ID)
 	assert.Nil(suite.T(), err, "get job status interactor should not return with error")
@@ -70,7 +70,7 @@ func (suite *GetJobStatusInteractorIntegrationTestSuite) TestShouldReturnCorrect
 	createJobResponse, err := interactors.CreateJob(request)
 	assert.Nil(suite.T(), err, "create job interactor returned with error")
 
-	time.Sleep(2 * time.Second)
+	time.Sleep(250 * time.Millisecond)
 
 	statusResponse, err := interactors.GetJobStatus(createJobResponse.ID)
 	assert.Nil(suite.T(), err, "get job status interactor should not return with error")
@@ -88,7 +88,7 @@ func (suite *GetJobStatusInteractorIntegrationTestSuite) TestShouldReturnCorrect
 	createJobResponse, err := interactors.CreateJob(request)
 	assert.Nil(suite.T(), err, "create job interactor returned with error")
 
-	time.Sleep(2 * time.Second)
+	time.Sleep(1100 * time.Millisecond)
 
 	statusResponse, err := interactors.GetJobStatus(createJobResponse.ID)
 	assert.Nil(suite.T(), err, "get job status interactor should not return with error")

@@ -52,12 +52,12 @@ func (suite *StopJobInteractorIntegrationTestSuite) TestShouldStopJobSuccessfull
 	createJobResponse, err := interactors.CreateJob(request)
 	assert.Nil(suite.T(), err, "create job interactor returned with error")
 
-	time.Sleep(2 * time.Second)
+	time.Sleep(250 * time.Millisecond)
 
 	err = interactors.StopJob(createJobResponse.ID)
 	assert.Nil(suite.T(), err, "stop interactor should not return with error")
 
-	time.Sleep(2 * time.Second)
+	time.Sleep(250 * time.Millisecond)
 
 	job, err := repository.GetJobOrFail(createJobResponse.ID)
 	assert.Nil(suite.T(), err, "get job should not return with error")
