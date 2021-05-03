@@ -24,7 +24,7 @@ You can also run and test the application outside a docker environment. In order
 <strong>PS:</strong>
 
 The Server uses the `LOGS_DIR` environment variable to create the folder that will contain process logs files. This is the
-absolute path of the directory, and if it already exists, it won't be created again. It is important to note that the server
+absolute path of the directory, and it won't be created again if it already exists. It is important to note that the server
 must have enough permissions to create the dir in that location.
 
 Example:
