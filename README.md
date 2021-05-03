@@ -21,4 +21,17 @@ You can also run and test the application outside a docker environment. In order
 2. `go build -o ./out/server cmd/server/*.go`
 3. `LOGS_DIR=<path-to-logs-dir> ./out/server`
 
-PS: The Server uses the `LOGS_DIR` environment variable to create the folder that will contain process logs files.
+<strong>PS:</strong>
+
+The Server uses the `LOGS_DIR` environment variable to create the folder that will contain process logs files. This is the
+absolute path of the directory, and if it already exists, it won't be created again. It is important to note that the server
+must have enough permissions to create the dir in that location.
+
+Example:
+
+`LOGS_DIR = /app/server/logs`
+
+Resulting files:
+
+* /app/servers/logs/<job-id>-stdout
+* /app/servers/logs/<job-id>-stderr
