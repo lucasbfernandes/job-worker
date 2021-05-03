@@ -1,12 +1,12 @@
 package integration_interactors_test
 
 import (
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/suite"
+
 	"fmt"
 	"log"
 	"os"
-
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/suite"
 
 	"job-worker/internal/dto"
 	"job-worker/internal/interactors"
@@ -67,7 +67,7 @@ func (suite *CreateJobInteractorIntegrationTestSuite) TestShouldNotPersistJobWhe
 
 	response, err := interactors.CreateJob(request)
 	assert.NotNil(suite.T(), err, "create job interactor returned without error")
-	assert.Equal(suite.T(), response, dto.CreateJobResponse{}, "returned non empty job response")
+	assert.Equal(suite.T(), dto.CreateJobResponse{}, response, "returned non empty job response")
 
 	jobs, err := repository.GetAllJobs()
 	assert.Nil(suite.T(), err, "get all jobs returned with error")
@@ -102,7 +102,7 @@ func (suite *CreateJobInteractorIntegrationTestSuite) TestShouldNotCreateOutputF
 
 	response, err := interactors.CreateJob(request)
 	assert.NotNil(suite.T(), err, "create job interactor returned without error")
-	assert.Equal(suite.T(), response, dto.CreateJobResponse{}, "returned non empty job response")
+	assert.Equal(suite.T(), dto.CreateJobResponse{}, response, "returned non empty job response")
 
 	stdoutFile, err := repository.GetStdoutLogFile(response.ID)
 	assert.NotNil(suite.T(), err, "get stdout file returned without error")
@@ -111,6 +111,66 @@ func (suite *CreateJobInteractorIntegrationTestSuite) TestShouldNotCreateOutputF
 	stderrFile, err := repository.GetStderrLogFile(response.ID)
 	assert.NotNil(suite.T(), err, "get stderr file returned without error")
 	assert.Nil(suite.T(), stderrFile, "stderr file is not nil")
+}
+
+func (suite *CreateJobInteractorIntegrationTestSuite) TestStdoutShouldHaveContentWhenProcessIsSuccessful() {
+	request := dto.CreateJobRequest{
+		Command:          []string{"ls", "-la"},
+		TimeoutInSeconds: 1,
+	}
+
+	response, err := interactors.CreateJob(request)
+	assert.Nil(suite.T(), err, "create job interactor returned with error")
+
+	time.Sleep(2 * time.Second)
+
+	stdoutFile, err := repository.GetStdoutLogFile(response.ID)
+	assert.Nil(suite.T(), err, "get stdout file returned with error")
+	assert.NotNil(suite.T(), stdoutFile, "stdout file is nil")
+	defer closeFile(stdoutFile)
+
+	stdoutInfo, err := stdoutFile.Stat()
+	assert.Nil(suite.T(), err, "get file info failed for stdout")
+	assert.Greater(suite.T(), stdoutInfo.Size(), int64(0), "stdout should have content")
+
+	stderrFile, err := repository.GetStderrLogFile(response.ID)
+	assert.Nil(suite.T(), err, "get stderr file returned with error")
+	assert.NotNil(suite.T(), stderrFile, "stderr file is nil")
+	defer closeFile(stderrFile)
+
+	stderrInfo, err := stderrFile.Stat()
+	assert.Nil(suite.T(), err, "get file info failed for stderr")
+	assert.Equal(suite.T(), int64(0), stderrInfo.Size(), "stderr shouldn't have content")
+}
+
+func (suite *CreateJobInteractorIntegrationTestSuite) TestStderrShouldHaveContentWhenProcessFails() {
+	request := dto.CreateJobRequest{
+		Command:          []string{"ls", "1000assa"},
+		TimeoutInSeconds: 1,
+	}
+
+	response, err := interactors.CreateJob(request)
+	assert.Nil(suite.T(), err, "create job interactor returned with error")
+
+	time.Sleep(2 * time.Second)
+
+	stdoutFile, err := repository.GetStdoutLogFile(response.ID)
+	assert.Nil(suite.T(), err, "get stdout file returned with error")
+	assert.NotNil(suite.T(), stdoutFile, "stdout file is nil")
+	defer closeFile(stdoutFile)
+
+	stdoutInfo, err := stdoutFile.Stat()
+	assert.Nil(suite.T(), err, "get file info failed for stdout")
+	assert.Equal(suite.T(), int64(0), stdoutInfo.Size(), "stdout shouldn't have content")
+
+	stderrFile, err := repository.GetStderrLogFile(response.ID)
+	assert.Nil(suite.T(), err, "get stderr file returned with error")
+	assert.NotNil(suite.T(), stderrFile, "stderr file is nil")
+	defer closeFile(stderrFile)
+
+	stderrInfo, err := stderrFile.Stat()
+	assert.Nil(suite.T(), err, "get file info failed for stderr")
+	assert.Greater(suite.T(), stderrInfo.Size(), int64(0), "stderr should have content")
 }
 
 func TestCreateJobInteractorIntegrationTest(t *testing.T) {
