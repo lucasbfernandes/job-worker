@@ -6,13 +6,12 @@
 
 ### Synopsis
 
-<strong>job-worker list -s SERVER_URL -u USERNAME -p PASSWORD </strong>
+<strong>job-worker list -s SERVER_URL -u USERNAME</strong>
 
 ### Description:
 
 * <strong>-s:</strong> Server url. Must start with `https`, otherwise command will return with an error.
 * <strong>-u:</strong> Username;
-* <strong>-p:</strong> Password.
 
 ### Examples
 
@@ -40,7 +39,7 @@
 <strong>Expected authentication error output:</strong>
 ```
     Failed to fetch jobs.
-    Error: Username and/or password are wrong.
+    Error: Invalid username.
 ```
 
 <strong>Expected server error output:</strong>

@@ -6,13 +6,12 @@
 
 ### Synopsis
 
-<strong>job-worker stop -s SERVER_URL -u USERNAME -p PASSWORD -i JOB_ID</strong>
+<strong>job-worker stop -s SERVER_URL -u USERNAME -i JOB_ID</strong>
 
 ### Description
 
 * <strong>-s:</strong> Server url. Must start with `https`, otherwise command will return with an error.
 * <strong>-u:</strong> Username;
-* <strong>-p:</strong> Password;
 * <strong>-i:</strong> UUIDV4 string representing the Job ID. This id can be found after running the [list jobs command](list-jobs.md).
 
 ### Examples
@@ -27,7 +26,7 @@
 <strong>Expected authentication error output:</strong>
 ```
     Failed to stop job.
-    Error: Username and/or password are wrong.
+    Error: Invalid username.
 ```
 
 <strong>Expected server error output:</strong>

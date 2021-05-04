@@ -14,7 +14,7 @@ It's possible to see numbers 1, 2 and 3 in the image below, each representing a 
 details later in this document, but for now, here is a summary of what's happening:
 
 * <strong>Step 1</strong>: The user types a CLI command requesting one of the possible
-  interactions with a linux process. Username and password will be provided as CLI flags.
+  interactions with a linux process. Username will be provided as a CLI flag.
 
 * <strong>Step 2</strong>: The CLI application parses the user's command and translates it into an HTTPS request for the Server. The API module of the Server receives
   the request, checks if the input is valid and verifies if the user is authorized to perform the requested operation.
@@ -37,30 +37,32 @@ The Job Worker CLI is the user interface of the Job Worker Service. Its responsi
 and exhibit the responses in a structured manner. This section will:
 
 1. Describe which commands are available for the user and how to use them;
-2. Describe how the CLI will manage user secrets (i.e. username/password);
+2. Describe how the CLI will manage user secrets;
 4. Show the trade-offs and what could and should be done for future work.
 
 ### Commands
 
-* [Create Job](cli/jobs/create-job.md): `job-worker exec -s SERVER_URL -u USERNAME -p PASSWORD -c EXECUTABLE [ARG...]`
-* [List Jobs](cli/jobs/list-jobs.md): `job-worker list -s SERVER_URL -u USERNAME -p PASSWORD`
-* [Stop Job](cli/jobs/stop-job.md): `job-worker stop -s SERVER_URL -u USERNAME -p PASSWORD -i JOB_ID`
-* [Get Job Status](cli/jobs/get-status.md): `job-worker status -s SERVER_URL -u USERNAME -p PASSWORD -i JOB_ID`
-* [Get Job Logs](cli/jobs/get-logs.md): `job-worker logs -s SERVER_URL -u USERNAME -p PASSWORD -i JOB_ID`
+* [Create Job](cli/jobs/create-job.md): `job-worker exec -s SERVER_URL -u USERNAME -c EXECUTABLE [ARG...]`
+* [List Jobs](cli/jobs/list-jobs.md): `job-worker list -s SERVER_URL -u USERNAME`
+* [Stop Job](cli/jobs/stop-job.md): `job-worker stop -s SERVER_URL -u USERNAME -i JOB_ID`
+* [Get Job Status](cli/jobs/get-status.md): `job-worker status -s SERVER_URL -u USERNAME -i JOB_ID`
+* [Get Job Logs](cli/jobs/get-logs.md): `job-worker logs -s SERVER_URL -u USERNAME -i JOB_ID`
 
 ### Managing User Secrets
 
-For the sake of simplicity, the CLI will receive a username/password pair each time a command is invoked. It will be used to create an authorization token in the form `Authorization: Basic <credentials>`,
-where `<credentials>` is the base64 encoding of username and password joined by one colon. This token will be used to authenticate requests for the Server.
+For the sake of simplicity, the CLI will receive a username input each time a command is invoked. This username will be matched against a set of seed users,
+and if a match happens, a hardcoded JWT token will be sent in the form `Authorization: Bearer <jwtToken>`. This token will be used to authenticate requests with the Server and
+its generation will be explained in Server Security section.
 
 ### Trade-offs
 
-* Few command options.
+* Few command options;
+* Password won't be required since we are mocking JWT tokens.
 
 ### Future work
 
-* Use tokens that expire (JWT?) or client certificates;
-* Implement more CLI commands options.
+* Implement more CLI commands options;
+* Implement login step.
 
 ## Server
 
@@ -82,7 +84,7 @@ The Job Worker Server is responsible for receiving HTTPS requests, applying vali
 
 ### Security
 
-The Job Worker Service will use HTTPS + Basic Authentication (i.e. username/password) in its initial version. Authorization
+The Job Worker Service will use HTTPS + Bearer Authentication (JWT) in its initial version. Authorization
 will take form with the following roles: `Developer` and `Reader`.
 
 #### Transport Layer Security
@@ -113,29 +115,35 @@ HTTPS/TLS will be configured in the Server with the following steps:
 
 #### Authentication
 
-Every request made to the Server must contain an authorization header in the form `Authorization: Basic <credentials>`,
-where `<credentials>` is the base64 encoding of username and password joined by a single colon `:` [4].
+Every request made to the Server must contain an authorization header in the form `Authorization: Bearer <jwtToken>`,
+where `<jwtToken>` is a JWT token with `username` and `role` claims. The token will be signed using the RSA algorithm
+and SHA-512 hash algorithm.
 
-After receiving the request, the Server will check if the username/password pair is valid and if it matches any user in
+Claims example:
+```
+{
+  "username": "someuser",
+  "role": "admin" // we'll have 2 possible roles - will be used to enforce authorization
+}
+```
+
+After receiving the request, the Server will check if the token is valid and if the `username` claim matches any user in
 its in-memory database. If the request is not valid, a `401 Unauthorized` will be returned.
 
-Passwords will be stored in the database as a bcrypt hash. Here is an example of what will be done:
+As explained before, JWT tokens will be mocked in the initial Job Worker version. Since there won't be a login step, tokens
+will be mocked inside the CLI and will be generated with the following steps:
 
-```
-    import "golang.org/x/crypto/bcrypt"
+1. A pair of public/private keys will be generated:
+    * Private key: `openssl genrsa -out server.key 2048`
+    * <strong>Self-signed</strong> public key: `openssl req -new -x509 -sha256 -key server.key -out server.crt -days 3650`
+2. Private key will be used to create RS512 JWT tokens on https://jwt.io/.
+3. Public key will be stored inside the git repository and will be used by the [jwt-go](https://github.com/dgrijalva/jwt-go) lib 
+to verify incoming tokens on the server (Private key won't be stored inside the git repository).
 
-    userPassword := []byte("MySecret")
-    // hashedPassword will be saved in the database
-    hashedPassword, err := bcrypt.GenerateFromPassword(userPassword, bcrypt.DefaultCost)
-    if err != nil {
-        panic(err)
-    }
+<strong>PS:</strong>
 
-    incomingPassword := []byte("MyWrongSecret")
-    // If err == nil, then passwords match
-    err = bcrypt.CompareHashAndPassword(hashedPassword, incomingPassword)
-    fmt.Println(err)
-```
+* JWT key pairs will be different from the ones used for TLS;
+* Passwords won't be stored in the initial version. A login step with username/password must be created in future versions.
 
 #### Authorization
 
@@ -239,10 +247,9 @@ func main() {
 
 * No network isolation between processes. This might lead to some problems such as network ports outage (i.e. only one process can listen on a port at a given time);
 * No resource pagination on the API services. This is not scalable but is not necessary for the first version;
-* Basic authentication is not enough but is simpler;
+* JWT tokens are mocked;
 * No CRUD for users;
 * No security regarding malicious executables.
-* Running a KDF (bcrypt) everytime a new request arrives at the server is not scalable. This is not optimal but will be considered as a trade-off.
 
 ### Future work
 
@@ -250,7 +257,7 @@ func main() {
 * Use network namespaces;
 * Improve authorization roles;
 * Purge mechanism for obsolete log files;
-* Implement Bearer token authentication.
+* Implement login API.
 
 ## References
 
@@ -269,3 +276,5 @@ func main() {
 [7] https://www.thesslstore.com/blog/tls-1-3-everything-possibly-needed-know/
 
 [8] https://github.com/denji/golang-tls
+
+[9] https://betterprogramming.pub/hands-on-with-jwt-in-golang-8c986d1bb4c0
