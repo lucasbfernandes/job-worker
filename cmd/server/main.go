@@ -3,16 +3,24 @@ package main
 import (
 	"github.com/gin-gonic/gin"
 
+	"log"
+
 	"job-worker/internal/controllers"
 	"job-worker/internal/storage"
 )
 
 func createLogsDir() {
-	storage.CreateLogsDir()
+	err := storage.CreateLogsDir()
+	if err != nil {
+		log.Fatalf("failed to create logs dir %s\n", err)
+	}
 }
 
 func createDB() {
-	storage.CreateDB()
+	err := storage.CreateDB()
+	if err != nil {
+		log.Fatalf("failed to create db %s\n", err)
+	}
 }
 
 func startAPI() {

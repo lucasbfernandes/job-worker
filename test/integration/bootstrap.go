@@ -3,6 +3,7 @@ package integration
 import (
 	"job-worker/internal/repository"
 	"job-worker/internal/storage"
+	"log"
 	"os"
 	"path"
 	"path/filepath"
@@ -14,7 +15,10 @@ func BootstrapTestEnvironment() error {
 	if err != nil {
 		return err
 	}
-	storage.CreateDB()
+	err = storage.CreateDB()
+	if err != nil {
+		return err
+	}
 	return nil
 }
 
@@ -24,7 +28,7 @@ func RollbackState() error {
 		return err
 	}
 
-	err = storage.DeleteLogsDir()
+	err = deleteLogsDir()
 	if err != nil {
 		return err
 	}
@@ -40,5 +44,17 @@ func setTestLogsDirEnv() error {
 	if err != nil {
 		return err
 	}
+	return nil
+}
+
+func deleteLogsDir() error {
+	logsDIR := storage.GetLogsDir()
+
+	err := os.RemoveAll(logsDIR)
+	if err != nil {
+		log.Printf("failed to delete files inside logs dir: %s\n", err)
+		return err
+	}
+
 	return nil
 }

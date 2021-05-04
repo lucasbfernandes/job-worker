@@ -26,7 +26,10 @@ func (suite *GetJobLogsInteractorIntegrationTestSuite) SetupSuite() {
 }
 
 func (suite *GetJobLogsInteractorIntegrationTestSuite) SetupTest() {
-	storage.CreateLogsDir()
+	err := storage.CreateLogsDir()
+	if err != nil {
+		suite.FailNow(fmt.Sprintf("failed to setup test: %s", err))
+	}
 }
 
 func (suite *GetJobLogsInteractorIntegrationTestSuite) TearDownTest() {

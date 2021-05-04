@@ -30,7 +30,10 @@ func (suite *CreateJobInteractorIntegrationTestSuite) SetupSuite() {
 }
 
 func (suite *CreateJobInteractorIntegrationTestSuite) SetupTest() {
-	storage.CreateLogsDir()
+	err := storage.CreateLogsDir()
+	if err != nil {
+		suite.FailNow(fmt.Sprintf("failed to setup test: %s", err))
+	}
 }
 
 func (suite *CreateJobInteractorIntegrationTestSuite) TearDownTest() {
