@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "77785640-5830-4b58-acd8-3dc3b8679ff3",
+		"_postman_id": "4e03d9a1-9671-4d60-8c9d-3f282da7ba2b",
 		"name": "Job Worker Server",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -24,7 +24,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"command\": [\"sh\", \"-c\", \"echo hello test! && ls wrongfile\"],\n    \"timeoutInSeconds\": 10\n}",
+					"raw": "{\n    \"command\": [\"sh\", \"-c\", \"echo hello test! && ls wrongfile\"]\n}",
 					"options": {
 						"raw": {
 							"language": "json"

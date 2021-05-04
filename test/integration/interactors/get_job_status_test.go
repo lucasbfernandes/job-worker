@@ -48,8 +48,7 @@ func (suite *GetJobStatusInteractorIntegrationTestSuite) TestShouldReturnErrorWh
 
 func (suite *GetJobStatusInteractorIntegrationTestSuite) TestShouldReturnCorrectStatusWhenJobSuccessfullyFinishes() {
 	request := dto.CreateJobRequest{
-		Command:          []string{"echo", "hello test world"},
-		TimeoutInSeconds: 1,
+		Command: []string{"echo", "hello test world"},
 	}
 
 	createJobResponse, err := interactors.CreateJob(request)
@@ -66,8 +65,7 @@ func (suite *GetJobStatusInteractorIntegrationTestSuite) TestShouldReturnCorrect
 
 func (suite *GetJobStatusInteractorIntegrationTestSuite) TestShouldReturnCorrectStatusWhenJobFinishesWithError() {
 	request := dto.CreateJobRequest{
-		Command:          []string{"cat", "hello test world"},
-		TimeoutInSeconds: 1,
+		Command: []string{"cat", "hello test world"},
 	}
 
 	createJobResponse, err := interactors.CreateJob(request)
@@ -82,10 +80,9 @@ func (suite *GetJobStatusInteractorIntegrationTestSuite) TestShouldReturnCorrect
 	assert.Equal(suite.T(), 1, statusResponse.ExitCode, "wrong exit code, should be 1")
 }
 
-func (suite *GetJobStatusInteractorIntegrationTestSuite) TestShouldReturnCorrectStatusWhenJobTimeouts() {
+func (suite *GetJobStatusInteractorIntegrationTestSuite) TestShouldReturnCorrectStatusWhenJobRemainsRunning() {
 	request := dto.CreateJobRequest{
-		Command:          []string{"sleep", "10"},
-		TimeoutInSeconds: 1,
+		Command: []string{"sleep", "10"},
 	}
 
 	createJobResponse, err := interactors.CreateJob(request)
@@ -96,8 +93,8 @@ func (suite *GetJobStatusInteractorIntegrationTestSuite) TestShouldReturnCorrect
 	statusResponse, err := interactors.GetJobStatus(createJobResponse.ID)
 	assert.Nil(suite.T(), err, "get job status interactor should not return with error")
 
-	assert.Equal(suite.T(), job.TIMEOUT, statusResponse.Status, "wrong status, should be STOPPED")
-	assert.Equal(suite.T(), 124, statusResponse.ExitCode, "wrong exit code, should be -1")
+	assert.Equal(suite.T(), job.RUNNING, statusResponse.Status, "wrong status, should be RUNNING")
+	assert.Equal(suite.T(), -1, statusResponse.ExitCode, "wrong exit code, should be -1")
 }
 
 func TestGetJobStatusInteractorIntegrationTest(t *testing.T) {

@@ -13,7 +13,7 @@ type StartProcessIntegrationTestSuite struct {
 }
 
 func (suite *StartProcessIntegrationTestSuite) TestSuccessfulExecutionShouldReturnCorrectStatus() {
-	process, err := worker.NewProcess([]string{"ls", "-la"}, 2)
+	process, err := worker.NewProcess([]string{"ls", "-la"})
 	assert.Nil(suite.T(), err, "Failed to create process.")
 
 	err = process.Start()
@@ -23,19 +23,8 @@ func (suite *StartProcessIntegrationTestSuite) TestSuccessfulExecutionShouldRetu
 	assert.Equal(suite.T(), 0, exitReason.ExitCode, "Process should've returned with error code = 0")
 }
 
-func (suite *StartProcessIntegrationTestSuite) TestTimeoutExecutionShouldReturnCorrectStatus() {
-	process, err := worker.NewProcess([]string{"sleep", "10"}, 2)
-	assert.Nil(suite.T(), err, "Failed to create process.")
-
-	err = process.Start()
-	assert.Nil(suite.T(), err, "Process failed to start.")
-
-	exitReason := <-process.ExitChannel
-	assert.Equal(suite.T(), 124, exitReason.ExitCode, "Process should've returned with error code = -1")
-}
-
 func (suite *StartProcessIntegrationTestSuite) TestFailedExecutionShouldReturnCorrectStatus() {
-	process, err := worker.NewProcess([]string{"ls", "10"}, 2)
+	process, err := worker.NewProcess([]string{"ls", "10"})
 	assert.Nil(suite.T(), err, "Failed to create process.")
 
 	err = process.Start()

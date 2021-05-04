@@ -14,7 +14,7 @@ type StopProcessIntegrationTestSuite struct {
 }
 
 func (suite *StopProcessIntegrationTestSuite) TestSuccessfulStopShouldReturnCorrectStatus() {
-	process, err := worker.NewProcess([]string{"sleep", "10"}, 20)
+	process, err := worker.NewProcess([]string{"sleep", "10"})
 	assert.Nil(suite.T(), err, "Failed to create process.")
 
 	err = process.Start()
@@ -28,11 +28,14 @@ func (suite *StopProcessIntegrationTestSuite) TestSuccessfulStopShouldReturnCorr
 }
 
 func (suite *StopProcessIntegrationTestSuite) TestShouldFailStopWhenProcessHasAlreadyStopped() {
-	process, err := worker.NewProcess([]string{"sleep", "5"}, 1)
+	process, err := worker.NewProcess([]string{"sleep", "5"})
 	assert.Nil(suite.T(), err, "Failed to create process.")
 
 	err = process.Start()
 	assert.Nil(suite.T(), err, "Process failed to start.")
+
+	err = process.Stop()
+	assert.Nil(suite.T(), err, "Process stop should not fail.")
 
 	time.Sleep(1100 * time.Millisecond)
 
@@ -41,7 +44,7 @@ func (suite *StopProcessIntegrationTestSuite) TestShouldFailStopWhenProcessHasAl
 }
 
 func (suite *StopProcessIntegrationTestSuite) TestShouldReturnErrorWhenProcessHasntStarted() {
-	process, err := worker.NewProcess([]string{"ls", "-la"}, 2)
+	process, err := worker.NewProcess([]string{"ls", "-la"})
 	assert.Nil(suite.T(), err, "Failed to create process.")
 
 	err = process.Stop()

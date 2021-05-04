@@ -49,7 +49,7 @@ func (suite *GetJobsInteractorIntegrationTestSuite) TestShouldReturnEmptyArrayWh
 }
 
 func (suite *GetJobsInteractorIntegrationTestSuite) TestShouldReturnCorrectArrayWhenOneJobIsPersisted() {
-	job := jobEntity.NewJob([]string{"ls", "-la"}, 2)
+	job := jobEntity.NewJob([]string{"ls", "-la"})
 
 	err := repository.UpsertJob(job)
 	assert.Nil(suite.T(), err, "upsert job returned with error")

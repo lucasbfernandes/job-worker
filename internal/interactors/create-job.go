@@ -13,7 +13,7 @@ import (
 func CreateJob(createJobRequest dto.CreateJobRequest) (*dto.CreateJobResponse, error) {
 	job := createJobRequest.ToJob()
 
-	process, err := createWorkerProcess(createJobRequest.Command, time.Duration(createJobRequest.TimeoutInSeconds), job.ID)
+	process, err := createWorkerProcess(createJobRequest.Command, job.ID)
 	if err != nil {
 		log.Printf("could not create process %s\n", err)
 		return nil, err
@@ -38,7 +38,6 @@ func CreateJob(createJobRequest dto.CreateJobRequest) (*dto.CreateJobResponse, e
 	return &dto.CreateJobResponse{ID: savedJob.ID}, nil
 }
 
-// This will never wait forever because of timeout constraints inside the worker library.
 func waitForExitReason(job *jobEntity.Job, process *worker.Process) {
 	exitReason := <-process.ExitChannel
 
@@ -49,8 +48,6 @@ func waitForExitReason(job *jobEntity.Job, process *worker.Process) {
 		finishJobWithStatusAndCode(job, jobEntity.COMPLETED, exitReason.ExitCode)
 	case 1:
 		finishJobWithStatusAndCode(job, jobEntity.FAILED, exitReason.ExitCode)
-	case 124:
-		finishJobWithStatusAndCode(job, jobEntity.TIMEOUT, exitReason.ExitCode)
 	default:
 		finishJobWithStatusAndCode(job, jobEntity.FAILED, exitReason.ExitCode)
 	}
@@ -66,8 +63,8 @@ func persistJob(job *jobEntity.Job, process *worker.Process) (*jobEntity.Job, er
 	return job, nil
 }
 
-func createWorkerProcess(command []string, timeoutInSeconds time.Duration, jobID string) (*worker.Process, error) {
-	process, err := worker.NewProcess(command, timeoutInSeconds)
+func createWorkerProcess(command []string, jobID string) (*worker.Process, error) {
+	process, err := worker.NewProcess(command)
 	if err != nil {
 		return nil, err
 	}

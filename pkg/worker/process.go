@@ -16,24 +16,21 @@ type ExitReason struct {
 type Process struct {
 	ExitChannel chan ExitReason
 
-	TimeoutInSeconds time.Duration
-
 	Command []string
 
 	execCmd *exec.Cmd
 }
 
-func NewProcess(command []string, timeoutInSeconds time.Duration) (*Process, error) {
-	if len(command) == 0 || timeoutInSeconds <= 0 {
-		return nil, errors.New("non empty command array and timeout greater than zero required")
+func NewProcess(command []string) (*Process, error) {
+	if len(command) == 0 {
+		return nil, errors.New("command array cannot be empty")
 	}
 	execCmd := exec.Command(command[0], command[1:]...)
 
 	return &Process{
-		ExitChannel:      make(chan ExitReason, 1),
-		TimeoutInSeconds: timeoutInSeconds,
-		Command:          command,
-		execCmd:          execCmd,
+		ExitChannel: make(chan ExitReason, 1),
+		Command:     command,
+		execCmd:     execCmd,
 	}, nil
 }
 

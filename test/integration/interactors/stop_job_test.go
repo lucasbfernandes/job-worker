@@ -48,8 +48,7 @@ func (suite *StopJobInteractorIntegrationTestSuite) TestShouldReturnErrorWhenJob
 
 func (suite *StopJobInteractorIntegrationTestSuite) TestShouldStopJobSuccessfully() {
 	request := dto.CreateJobRequest{
-		Command:          []string{"sleep", "10"},
-		TimeoutInSeconds: 20,
+		Command: []string{"sleep", "10"},
 	}
 
 	createJobResponse, err := interactors.CreateJob(request)

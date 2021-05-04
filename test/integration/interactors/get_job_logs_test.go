@@ -41,8 +41,7 @@ func (suite *GetJobLogsInteractorIntegrationTestSuite) TearDownTest() {
 
 func (suite *GetJobLogsInteractorIntegrationTestSuite) TestShouldReturnLogsCorrectlyWhenStderrIsEmpty() {
 	request := dto.CreateJobRequest{
-		Command:          []string{"echo", "this is a test"},
-		TimeoutInSeconds: 20,
+		Command: []string{"echo", "this is a test"},
 	}
 
 	createJobResponse, err := interactors.CreateJob(request)
@@ -59,8 +58,7 @@ func (suite *GetJobLogsInteractorIntegrationTestSuite) TestShouldReturnLogsCorre
 
 func (suite *GetJobLogsInteractorIntegrationTestSuite) TestShouldReturnLogsCorrectlyWhenStdoutIsEmpty() {
 	request := dto.CreateJobRequest{
-		Command:          []string{"ls", "abobora"},
-		TimeoutInSeconds: 20,
+		Command: []string{"ls", "abobora"},
 	}
 
 	createJobResponse, err := interactors.CreateJob(request)
@@ -77,8 +75,7 @@ func (suite *GetJobLogsInteractorIntegrationTestSuite) TestShouldReturnLogsCorre
 
 func (suite *GetJobLogsInteractorIntegrationTestSuite) TestShouldReturnLogsCorrectlyWhenStdoutAndStderrArentEmpty() {
 	request := dto.CreateJobRequest{
-		Command:          []string{"sh", "-c", "echo hello test! && ls what"},
-		TimeoutInSeconds: 20,
+		Command: []string{"sh", "-c", "echo hello test! && ls what"},
 	}
 
 	createJobResponse, err := interactors.CreateJob(request)

@@ -45,8 +45,7 @@ func (suite *CreateJobInteractorIntegrationTestSuite) TearDownTest() {
 
 func (suite *CreateJobInteractorIntegrationTestSuite) TestShouldPersistJobWithCorrectParameters() {
 	request := dto.CreateJobRequest{
-		Command:          []string{"ls", "-la"},
-		TimeoutInSeconds: 2,
+		Command: []string{"ls", "-la"},
 	}
 
 	response, err := interactors.CreateJob(request)
@@ -57,15 +56,13 @@ func (suite *CreateJobInteractorIntegrationTestSuite) TestShouldPersistJobWithCo
 
 	assert.Equal(suite.T(), response.ID, job.ID, "persisted wrong ID")
 	assert.Equal(suite.T(), []string{"ls", "-la"}, job.Command, "persisted wrong command")
-	assert.Equal(suite.T(), time.Duration(2), job.TimeoutInSeconds, "persisted wrong timeout")
 	assert.Nil(suite.T(), job.FinishedAt, "persisted wrong finishedAt")
 	assert.Equal(suite.T(), jobEntity.RUNNING, job.Status, "persisted wrong status")
 }
 
 func (suite *CreateJobInteractorIntegrationTestSuite) TestShouldNotPersistJobWhenCreateProcessFails() {
 	request := dto.CreateJobRequest{
-		Command:          []string{},
-		TimeoutInSeconds: 1,
+		Command: []string{},
 	}
 
 	response, err := interactors.CreateJob(request)
@@ -79,8 +76,7 @@ func (suite *CreateJobInteractorIntegrationTestSuite) TestShouldNotPersistJobWhe
 
 func (suite *CreateJobInteractorIntegrationTestSuite) TestShouldCreateOutputFilesSuccessfuly() {
 	request := dto.CreateJobRequest{
-		Command:          []string{"ls", "-la"},
-		TimeoutInSeconds: 2,
+		Command: []string{"ls", "-la"},
 	}
 
 	response, err := interactors.CreateJob(request)
@@ -94,8 +90,7 @@ func (suite *CreateJobInteractorIntegrationTestSuite) TestShouldCreateOutputFile
 
 func (suite *CreateJobInteractorIntegrationTestSuite) TestShouldNotCreateOutputFilesWhenCreateJobFails() {
 	request := dto.CreateJobRequest{
-		Command:          []string{},
-		TimeoutInSeconds: 1,
+		Command: []string{},
 	}
 
 	response, err := interactors.CreateJob(request)
@@ -109,8 +104,7 @@ func (suite *CreateJobInteractorIntegrationTestSuite) TestShouldNotCreateOutputF
 
 func (suite *CreateJobInteractorIntegrationTestSuite) TestStdoutShouldHaveContentWhenProcessIsSuccessful() {
 	request := dto.CreateJobRequest{
-		Command:          []string{"ls", "-la"},
-		TimeoutInSeconds: 1,
+		Command: []string{"ls", "-la"},
 	}
 
 	response, err := interactors.CreateJob(request)
@@ -130,8 +124,7 @@ func (suite *CreateJobInteractorIntegrationTestSuite) TestStdoutShouldHaveConten
 
 func (suite *CreateJobInteractorIntegrationTestSuite) TestStderrShouldHaveContentWhenProcessFails() {
 	request := dto.CreateJobRequest{
-		Command:          []string{"ls", "1000assa"},
-		TimeoutInSeconds: 1,
+		Command: []string{"ls", "1000assa"},
 	}
 
 	response, err := interactors.CreateJob(request)
@@ -151,8 +144,7 @@ func (suite *CreateJobInteractorIntegrationTestSuite) TestStderrShouldHaveConten
 
 func (suite *CreateJobInteractorIntegrationTestSuite) TestShouldPersistCorrectJobWhenProcessFailsExecution() {
 	request := dto.CreateJobRequest{
-		Command:          []string{"ls", "100000asdas"},
-		TimeoutInSeconds: 1,
+		Command: []string{"ls", "100000asdas"},
 	}
 
 	response, err := interactors.CreateJob(request)
@@ -168,10 +160,9 @@ func (suite *CreateJobInteractorIntegrationTestSuite) TestShouldPersistCorrectJo
 	assert.Equal(suite.T(), 1, job.ExitCode, "persisted wrong exit code")
 }
 
-func (suite *CreateJobInteractorIntegrationTestSuite) TestShouldPersistCorrectJobWhenProcessTimeoutsExecution() {
+func (suite *CreateJobInteractorIntegrationTestSuite) TestShouldPersistCorrectJobWhenProcessStateRemainsRunning() {
 	request := dto.CreateJobRequest{
-		Command:          []string{"sleep", "4"},
-		TimeoutInSeconds: 1,
+		Command: []string{"sleep", "4"},
 	}
 
 	response, err := interactors.CreateJob(request)
@@ -182,15 +173,14 @@ func (suite *CreateJobInteractorIntegrationTestSuite) TestShouldPersistCorrectJo
 	job, err := repository.GetJobOrFail(response.ID)
 	assert.Nil(suite.T(), err, "get job returned with error")
 
-	assert.NotNil(suite.T(), job.FinishedAt, "persisted wrong finishedAt")
-	assert.Equal(suite.T(), jobEntity.TIMEOUT, job.Status, "persisted wrong status")
-	assert.Equal(suite.T(), 124, job.ExitCode, "persisted wrong exit code")
+	assert.Nil(suite.T(), job.FinishedAt, "persisted wrong finishedAt")
+	assert.Equal(suite.T(), jobEntity.RUNNING, job.Status, "persisted wrong status")
+	assert.Equal(suite.T(), -1, job.ExitCode, "persisted wrong exit code")
 }
 
 func (suite *CreateJobInteractorIntegrationTestSuite) TestShouldPersistCorrectJobWhenProcessSucceedsExecution() {
 	request := dto.CreateJobRequest{
-		Command:          []string{"echo", "hello test world"},
-		TimeoutInSeconds: 1,
+		Command: []string{"echo", "hello test world"},
 	}
 
 	response, err := interactors.CreateJob(request)
