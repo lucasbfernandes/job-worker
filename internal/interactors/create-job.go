@@ -51,6 +51,8 @@ func waitForExitReason(job *jobEntity.Job, process *worker.Process) {
 	default:
 		finishJobWithStatusAndCode(job, jobEntity.FAILED, exitReason.ExitCode)
 	}
+
+	close(process.ExitChannel)
 }
 
 func persistJob(job *jobEntity.Job, process *worker.Process) (*jobEntity.Job, error) {

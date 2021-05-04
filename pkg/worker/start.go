@@ -18,20 +18,12 @@ func (p *Process) Start() error {
 func (p *Process) waitExecution() {
 	go func() {
 		err := p.execCmd.Wait()
-		p.handleFinishedExecution(err)
+		if err != nil {
+			log.Printf("process finished with error: %s\n", err)
+		}
+		p.ExitChannel <- ExitReason{
+			ExitCode:  p.execCmd.ProcessState.ExitCode(),
+			Timestamp: time.Now(),
+		}
 	}()
-}
-
-func (p *Process) handleFinishedExecution(err error) {
-	p.emitExitReason(p.execCmd.ProcessState.ExitCode())
-	if err != nil {
-		log.Printf("process finished with error: %s\n", err)
-	}
-}
-
-func (p *Process) emitExitReason(exitCode int) {
-	p.ExitChannel <- ExitReason{
-		ExitCode:  exitCode,
-		Timestamp: time.Now(),
-	}
 }
