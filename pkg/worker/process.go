@@ -19,6 +19,8 @@ type Process struct {
 	Command []string
 
 	execCmd *exec.Cmd
+
+	finishedChannel chan struct{}
 }
 
 func NewProcess(command []string) (*Process, error) {
@@ -28,9 +30,10 @@ func NewProcess(command []string) (*Process, error) {
 	execCmd := exec.Command(command[0], command[1:]...)
 
 	return &Process{
-		ExitChannel: make(chan ExitReason, 1),
-		Command:     command,
-		execCmd:     execCmd,
+		ExitChannel:     make(chan ExitReason, 1),
+		Command:         command,
+		execCmd:         execCmd,
+		finishedChannel: make(chan struct{}, 1),
 	}, nil
 }
 

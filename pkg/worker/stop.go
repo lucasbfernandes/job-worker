@@ -15,5 +15,9 @@ func (p *Process) Stop() error {
 		log.Printf("failed to kill process: %s\n", err)
 		return err
 	}
+
+	<-p.finishedChannel
+	close(p.finishedChannel)
+
 	return nil
 }

@@ -6,7 +6,6 @@ import (
 
 	"job-worker/pkg/worker"
 	"testing"
-	"time"
 )
 
 type StopProcessIntegrationTestSuite struct {
@@ -36,8 +35,6 @@ func (suite *StopProcessIntegrationTestSuite) TestShouldFailStopWhenProcessHasAl
 
 	err = process.Stop()
 	assert.Nil(suite.T(), err, "Process stop should not fail.")
-
-	time.Sleep(1100 * time.Millisecond)
 
 	err = process.Stop()
 	assert.NotNil(suite.T(), err, "Should have failed because process has already stopped.")

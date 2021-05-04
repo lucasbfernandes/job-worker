@@ -68,6 +68,23 @@ func (suite *StopJobInteractorIntegrationTestSuite) TestShouldStopJobSuccessfull
 	assert.Equal(suite.T(), -1, job.ExitCode, "job exit code should be -1")
 }
 
+func (suite *StopJobInteractorIntegrationTestSuite) TestShouldFailWhenJobHasAlreadyFinished() {
+	request := dto.CreateJobRequest{
+		Command: []string{"sleep", "10"},
+	}
+
+	createJobResponse, err := interactors.CreateJob(request)
+	assert.Nil(suite.T(), err, "create job interactor returned with error")
+
+	time.Sleep(250 * time.Millisecond)
+
+	err = interactors.StopJob(createJobResponse.ID)
+	assert.Nil(suite.T(), err, "stop interactor should not return with error")
+
+	err = interactors.StopJob(createJobResponse.ID)
+	assert.NotNil(suite.T(), err, "stop interactor should return with error")
+}
+
 func TestStopJobInteractorIntegrationTest(t *testing.T) {
 	suite.Run(t, new(StopJobInteractorIntegrationTestSuite))
 }

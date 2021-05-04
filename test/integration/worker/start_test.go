@@ -34,6 +34,17 @@ func (suite *StartProcessIntegrationTestSuite) TestFailedExecutionShouldReturnCo
 	assert.Equal(suite.T(), 1, exitReason.ExitCode, "Process should've returned with error code = 1")
 }
 
+func (suite *StartProcessIntegrationTestSuite) TestShouldFailWithStartSequence() {
+	process, err := worker.NewProcess([]string{"sleep", "5"})
+	assert.Nil(suite.T(), err, "Failed to create process.")
+
+	err = process.Start()
+	assert.Nil(suite.T(), err, "Process failed to start.")
+
+	err = process.Start()
+	assert.NotNil(suite.T(), err, "Process should fail to start again.")
+}
+
 func TestStartProcessIntegrationTest(t *testing.T) {
 	suite.Run(t, new(StartProcessIntegrationTestSuite))
 }

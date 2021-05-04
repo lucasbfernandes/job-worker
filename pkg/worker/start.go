@@ -21,6 +21,7 @@ func (p *Process) waitExecution() {
 		if err != nil {
 			log.Printf("process finished with error: %s\n", err)
 		}
+		p.finishedChannel <- struct{}{}
 		p.ExitChannel <- ExitReason{
 			ExitCode:  p.execCmd.ProcessState.ExitCode(),
 			Timestamp: time.Now(),
