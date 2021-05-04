@@ -53,7 +53,7 @@ func (suite *GetJobLogsInteractorIntegrationTestSuite) TestShouldReturnLogsCorre
 	getJobLogsResponse, err := interactors.GetJobLogs(createJobResponse.ID)
 	assert.Nil(suite.T(), err, "get job logs interactor should not return with error")
 
-	expectedLogs := "stdout:\nthis is a test\n\nstderr:\n"
+	expectedLogs := "this is a test\n"
 	assert.Equal(suite.T(), expectedLogs, getJobLogsResponse, "")
 }
 
@@ -71,7 +71,7 @@ func (suite *GetJobLogsInteractorIntegrationTestSuite) TestShouldReturnLogsCorre
 	getJobLogsResponse, err := interactors.GetJobLogs(createJobResponse.ID)
 	assert.Nil(suite.T(), err, "get job logs interactor should not return with error")
 
-	expectedLogs := "stdout:\n\nstderr:\nls: abobora: No such file or directory\n"
+	expectedLogs := "ls: abobora: No such file or directory\n"
 	assert.Equal(suite.T(), expectedLogs, getJobLogsResponse, "")
 }
 
@@ -89,7 +89,7 @@ func (suite *GetJobLogsInteractorIntegrationTestSuite) TestShouldReturnLogsCorre
 	getJobLogsResponse, err := interactors.GetJobLogs(createJobResponse.ID)
 	assert.Nil(suite.T(), err, "get job logs interactor should not return with error")
 
-	expectedLogs := "stdout:\nhello test!\n\nstderr:\nls: what: No such file or directory\n"
+	expectedLogs := "hello test!\nls: what: No such file or directory\n"
 	assert.Equal(suite.T(), expectedLogs, getJobLogsResponse, "")
 }
 

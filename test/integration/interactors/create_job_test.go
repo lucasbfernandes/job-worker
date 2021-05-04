@@ -86,15 +86,10 @@ func (suite *CreateJobInteractorIntegrationTestSuite) TestShouldCreateOutputFile
 	response, err := interactors.CreateJob(request)
 	assert.Nil(suite.T(), err, "create job interactor returned with error")
 
-	stdoutFile, err := repository.GetStdoutLogFile(response.ID)
-	assert.Nil(suite.T(), err, "get stdout file returned with error")
-	assert.NotNil(suite.T(), stdoutFile, "stdout file is nil")
-	defer closeFile(stdoutFile)
-
-	stderrFile, err := repository.GetStderrLogFile(response.ID)
-	assert.Nil(suite.T(), err, "get stderr file returned with error")
-	assert.NotNil(suite.T(), stderrFile, "stderr file is nil")
-	defer closeFile(stderrFile)
+	logFile, err := repository.GetLogFile(response.ID)
+	assert.Nil(suite.T(), err, "get log file returned with error")
+	assert.NotNil(suite.T(), logFile, "log file file is nil")
+	defer closeFile(logFile)
 }
 
 func (suite *CreateJobInteractorIntegrationTestSuite) TestShouldNotCreateOutputFilesWhenCreateJobFails() {
@@ -107,13 +102,9 @@ func (suite *CreateJobInteractorIntegrationTestSuite) TestShouldNotCreateOutputF
 	assert.NotNil(suite.T(), err, "create job interactor returned without error")
 	assert.Equal(suite.T(), dto.CreateJobResponse{}, response, "returned non empty job response")
 
-	stdoutFile, err := repository.GetStdoutLogFile(response.ID)
-	assert.NotNil(suite.T(), err, "get stdout file returned without error")
-	assert.Nil(suite.T(), stdoutFile, "stdout file is not nil")
-
-	stderrFile, err := repository.GetStderrLogFile(response.ID)
-	assert.NotNil(suite.T(), err, "get stderr file returned without error")
-	assert.Nil(suite.T(), stderrFile, "stderr file is not nil")
+	logFile, err := repository.GetLogFile(response.ID)
+	assert.NotNil(suite.T(), err, "get log file returned without error")
+	assert.Nil(suite.T(), logFile, "log file is not nil")
 }
 
 func (suite *CreateJobInteractorIntegrationTestSuite) TestStdoutShouldHaveContentWhenProcessIsSuccessful() {
@@ -127,23 +118,14 @@ func (suite *CreateJobInteractorIntegrationTestSuite) TestStdoutShouldHaveConten
 
 	time.Sleep(250 * time.Millisecond)
 
-	stdoutFile, err := repository.GetStdoutLogFile(response.ID)
-	assert.Nil(suite.T(), err, "get stdout file returned with error")
-	assert.NotNil(suite.T(), stdoutFile, "stdout file is nil")
-	defer closeFile(stdoutFile)
+	logFile, err := repository.GetLogFile(response.ID)
+	assert.Nil(suite.T(), err, "get log file returned with error")
+	assert.NotNil(suite.T(), logFile, "log file is nil")
+	defer closeFile(logFile)
 
-	stdoutInfo, err := stdoutFile.Stat()
-	assert.Nil(suite.T(), err, "get file info failed for stdout")
-	assert.Greater(suite.T(), stdoutInfo.Size(), int64(0), "stdout should have content")
-
-	stderrFile, err := repository.GetStderrLogFile(response.ID)
-	assert.Nil(suite.T(), err, "get stderr file returned with error")
-	assert.NotNil(suite.T(), stderrFile, "stderr file is nil")
-	defer closeFile(stderrFile)
-
-	stderrInfo, err := stderrFile.Stat()
-	assert.Nil(suite.T(), err, "get file info failed for stderr")
-	assert.Equal(suite.T(), int64(0), stderrInfo.Size(), "stderr shouldn't have content")
+	logFileInfo, err := logFile.Stat()
+	assert.Nil(suite.T(), err, "get file info failed for log file")
+	assert.Greater(suite.T(), logFileInfo.Size(), int64(0), "log file should have content")
 }
 
 func (suite *CreateJobInteractorIntegrationTestSuite) TestStderrShouldHaveContentWhenProcessFails() {
@@ -157,23 +139,14 @@ func (suite *CreateJobInteractorIntegrationTestSuite) TestStderrShouldHaveConten
 
 	time.Sleep(250 * time.Millisecond)
 
-	stdoutFile, err := repository.GetStdoutLogFile(response.ID)
-	assert.Nil(suite.T(), err, "get stdout file returned with error")
-	assert.NotNil(suite.T(), stdoutFile, "stdout file is nil")
-	defer closeFile(stdoutFile)
-
-	stdoutInfo, err := stdoutFile.Stat()
-	assert.Nil(suite.T(), err, "get file info failed for stdout")
-	assert.Equal(suite.T(), int64(0), stdoutInfo.Size(), "stdout shouldn't have content")
-
-	stderrFile, err := repository.GetStderrLogFile(response.ID)
+	logFile, err := repository.GetLogFile(response.ID)
 	assert.Nil(suite.T(), err, "get stderr file returned with error")
-	assert.NotNil(suite.T(), stderrFile, "stderr file is nil")
-	defer closeFile(stderrFile)
+	assert.NotNil(suite.T(), logFile, "stderr file is nil")
+	defer closeFile(logFile)
 
-	stderrInfo, err := stderrFile.Stat()
-	assert.Nil(suite.T(), err, "get file info failed for stderr")
-	assert.Greater(suite.T(), stderrInfo.Size(), int64(0), "stderr should have content")
+	logFileInfo, err := logFile.Stat()
+	assert.Nil(suite.T(), err, "get file info failed for log file")
+	assert.Greater(suite.T(), logFileInfo.Size(), int64(0), "log file should have content")
 }
 
 func (suite *CreateJobInteractorIntegrationTestSuite) TestShouldPersistCorrectJobWhenProcessFailsExecution() {

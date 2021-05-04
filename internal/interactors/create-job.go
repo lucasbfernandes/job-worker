@@ -79,18 +79,12 @@ func createWorkerProcess(command []string, timeoutInSeconds time.Duration, jobID
 }
 
 func createWorkerProcessOutputFiles(process worker.Process, jobID string) error {
-	stdout, err := repository.CreateStdoutLogFile(jobID)
+	outfile, err := repository.CreateLogFile(jobID)
 	if err != nil {
 		return err
 	}
-	stderr, err := repository.CreateStderrLogFile(jobID)
-	if err != nil {
-		return err
-	}
-
-	process.SetStdoutWriter(stdout)
-	process.SetStderrWriter(stderr)
-
+	process.SetStdoutWriter(outfile)
+	process.SetStderrWriter(outfile)
 	return nil
 }
 
