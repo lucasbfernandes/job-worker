@@ -36,4 +36,4 @@ Resulting files:
 * /app/servers/logs/\<job-id\>-stdout
 * /app/servers/logs/\<job-id\>-stderr
 
-If no LOGS_DIR is not provided, files will be created inside the folder `logs` in the current directory.
+If LOGS_DIR is not provided, files will be created inside the folder `logs` in the current directory.
