@@ -1,13 +1,12 @@
 package interactors
 
 import (
-	"io/ioutil"
+	"io"
 	"job-worker/internal/repository"
 	"log"
 	"os"
 )
 
-// TODO Improve memory utilization. This is loading both files entirely in memory.
 func GetJobLogs(jobID string) (*string, error) {
 	_, err := repository.GetJobOrFail(jobID)
 	if err != nil {
@@ -22,14 +21,13 @@ func GetJobLogs(jobID string) (*string, error) {
 	}
 	defer closeFile(logFile)
 
-	logFileContent, err := ioutil.ReadAll(logFile)
+	logFileContent, err := getLogContent(logFile)
 	if err != nil {
 		log.Printf("could not get log file content: %s\n", err)
 		return nil, err
 	}
 
-	logs := string(logFileContent)
-	return &logs, nil
+	return logFileContent, nil
 }
 
 func closeFile(file *os.File) {
@@ -37,4 +35,24 @@ func closeFile(file *os.File) {
 	if err != nil {
 		log.Printf("failed to close file with error: %s\n", err)
 	}
+}
+
+func getLogContent(logFile *os.File) (*string, error) {
+	bufferSize := 100
+	contentBytes := make([]byte, 0)
+	buffer := make([]byte, bufferSize)
+
+	for {
+		numberOfBytes, err := logFile.Read(buffer)
+		if err != nil {
+			if err == io.EOF {
+				break
+			}
+			return nil, err
+		}
+		contentBytes = append(contentBytes, buffer[:numberOfBytes]...)
+	}
+
+	logContent := string(contentBytes)
+	return &logContent, nil
 }
