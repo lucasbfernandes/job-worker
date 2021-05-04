@@ -44,7 +44,7 @@ func (suite *GetJobsInteractorIntegrationTestSuite) TestShouldReturnEmptyArrayWh
 	response, err := interactors.GetJobs()
 	assert.Nil(suite.T(), err, "get jobs interactor returned with error")
 
-	assert.Equal(suite.T(), dto.GetJobsResponse{Jobs: []dto.JobResponse{}}, response, "wrong get jobs response")
+	assert.Equal(suite.T(), &dto.GetJobsResponse{Jobs: []dto.JobResponse{}}, response, "wrong get jobs response")
 	assert.Equal(suite.T(), 0, len(response.Jobs), "get jobs returned with wrong number of elements")
 }
 
@@ -57,7 +57,7 @@ func (suite *GetJobsInteractorIntegrationTestSuite) TestShouldReturnCorrectArray
 	response, err := interactors.GetJobs()
 	assert.Nil(suite.T(), err, "get jobs interactor returned with error")
 
-	expectedResponse := dto.GetJobsResponse{Jobs: []dto.JobResponse{dto.JobResponseFromJob(job)}}
+	expectedResponse := &dto.GetJobsResponse{Jobs: []dto.JobResponse{dto.JobResponseFromJob(job)}}
 	assert.Equal(suite.T(), expectedResponse, response, "wrong get jobs response")
 	assert.Equal(suite.T(), 1, len(response.Jobs), "get jobs returned with wrong number of elements")
 }

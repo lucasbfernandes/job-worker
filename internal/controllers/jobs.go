@@ -68,6 +68,7 @@ func GetJobLogs(context *gin.Context) {
 	if err != nil {
 		log.Printf("failed to get job logs: %s\n", err)
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
 	}
-	context.String(http.StatusOK, getJobLogsResponse)
+	context.String(http.StatusOK, *getJobLogsResponse)
 }

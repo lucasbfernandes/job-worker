@@ -19,7 +19,7 @@ type GetJobsResponse struct {
 	Jobs []JobResponse `json:"jobs"`
 }
 
-func JobResponseFromJob(job jobEntity.Job) JobResponse {
+func JobResponseFromJob(job *jobEntity.Job) JobResponse {
 	return JobResponse{
 		ID:               job.ID,
 		Command:          job.Command,

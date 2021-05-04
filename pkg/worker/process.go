@@ -23,13 +23,13 @@ type Process struct {
 	execCmd *exec.Cmd
 }
 
-func NewProcess(command []string, timeoutInSeconds time.Duration) (Process, error) {
+func NewProcess(command []string, timeoutInSeconds time.Duration) (*Process, error) {
 	if len(command) == 0 || timeoutInSeconds <= 0 {
-		return Process{}, errors.New("non empty command array and timeout greater than zero required")
+		return nil, errors.New("non empty command array and timeout greater than zero required")
 	}
 	execCmd := exec.Command(command[0], command[1:]...)
 
-	return Process{
+	return &Process{
 		ExitChannel:      make(chan ExitReason, 1),
 		TimeoutInSeconds: timeoutInSeconds,
 		Command:          command,

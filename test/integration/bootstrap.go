@@ -1,6 +1,7 @@
 package integration
 
 import (
+	"io/ioutil"
 	"job-worker/internal/repository"
 	"job-worker/internal/storage"
 	"log"
@@ -45,6 +46,15 @@ func setTestLogsDirEnv() error {
 		return err
 	}
 	return nil
+}
+
+func GetNumberOfLogFiles() (*int, error) {
+	files, err := ioutil.ReadDir(storage.GetLogsDir())
+	if err != nil {
+		return nil, err
+	}
+	filesNumber := len(files)
+	return &filesNumber, nil
 }
 
 func deleteLogsDir() error {

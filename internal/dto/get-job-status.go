@@ -12,7 +12,7 @@ type GetJobStatusResponse struct {
 	FinishedAt *time.Time `json:"finishedAt"`
 }
 
-func JobStatusResponseFromJob(job jobEntity.Job) GetJobStatusResponse {
+func JobStatusResponseFromJob(job *jobEntity.Job) GetJobStatusResponse {
 	return GetJobStatusResponse{
 		Status:     job.Status,
 		ExitCode:   job.ExitCode,

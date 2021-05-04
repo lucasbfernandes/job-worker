@@ -8,27 +8,28 @@ import (
 )
 
 // TODO Improve memory utilization. This is loading both files entirely in memory.
-func GetJobLogs(jobID string) (string, error) {
+func GetJobLogs(jobID string) (*string, error) {
 	_, err := repository.GetJobOrFail(jobID)
 	if err != nil {
 		log.Printf("could not get job logs: %s\n", err)
-		return "", err
+		return nil, err
 	}
 
 	logFile, err := repository.GetLogFile(jobID)
 	if err != nil {
 		log.Printf("could not get stdout file: %s\n", err)
-		return "", err
+		return nil, err
 	}
 	defer closeFile(logFile)
 
 	logFileContent, err := ioutil.ReadAll(logFile)
 	if err != nil {
 		log.Printf("could not get log file content: %s\n", err)
-		return "", err
+		return nil, err
 	}
 
-	return string(logFileContent), nil
+	logs := string(logFileContent)
+	return &logs, nil
 }
 
 func closeFile(file *os.File) {

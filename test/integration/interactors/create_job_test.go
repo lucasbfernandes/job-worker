@@ -70,7 +70,7 @@ func (suite *CreateJobInteractorIntegrationTestSuite) TestShouldNotPersistJobWhe
 
 	response, err := interactors.CreateJob(request)
 	assert.NotNil(suite.T(), err, "create job interactor returned without error")
-	assert.Equal(suite.T(), dto.CreateJobResponse{}, response, "returned non empty job response")
+	assert.Nil(suite.T(), response, "returned non empty job response")
 
 	jobs, err := repository.GetAllJobs()
 	assert.Nil(suite.T(), err, "get all jobs returned with error")
@@ -100,11 +100,11 @@ func (suite *CreateJobInteractorIntegrationTestSuite) TestShouldNotCreateOutputF
 
 	response, err := interactors.CreateJob(request)
 	assert.NotNil(suite.T(), err, "create job interactor returned without error")
-	assert.Equal(suite.T(), dto.CreateJobResponse{}, response, "returned non empty job response")
+	assert.Nil(suite.T(), response, "returned non empty job response")
 
-	logFile, err := repository.GetLogFile(response.ID)
-	assert.NotNil(suite.T(), err, "get log file returned without error")
-	assert.Nil(suite.T(), logFile, "log file is not nil")
+	filesNumber, err := integration.GetNumberOfLogFiles()
+	assert.Nil(suite.T(), err, "get number of log files returned with error")
+	assert.Equal(suite.T(), 0, *filesNumber, "number of log files should be 0")
 }
 
 func (suite *CreateJobInteractorIntegrationTestSuite) TestStdoutShouldHaveContentWhenProcessIsSuccessful() {

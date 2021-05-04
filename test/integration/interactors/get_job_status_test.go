@@ -43,7 +43,7 @@ func (suite *GetJobStatusInteractorIntegrationTestSuite) TearDownTest() {
 func (suite *GetJobStatusInteractorIntegrationTestSuite) TestShouldReturnErrorWhenJobDoesNotExist() {
 	response, err := interactors.GetJobStatus("1233")
 	assert.NotNil(suite.T(), err, "get job status interactor should return with error")
-	assert.Equal(suite.T(), dto.GetJobStatusResponse{}, response, "wrong response for get job status")
+	assert.Nil(suite.T(), response, "wrong response for get job status")
 }
 
 func (suite *GetJobStatusInteractorIntegrationTestSuite) TestShouldReturnCorrectStatusWhenJobSuccessfullyFinishes() {

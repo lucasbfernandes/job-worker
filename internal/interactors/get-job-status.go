@@ -6,11 +6,12 @@ import (
 	"log"
 )
 
-func GetJobStatus(jobID string) (dto.GetJobStatusResponse, error) {
+func GetJobStatus(jobID string) (*dto.GetJobStatusResponse, error) {
 	job, err := repository.GetJobOrFail(jobID)
 	if err != nil {
 		log.Printf("failed to get job status: %s\n", err)
-		return dto.GetJobStatusResponse{}, err
+		return nil, err
 	}
-	return dto.JobStatusResponseFromJob(job), nil
+	statusResponse := dto.JobStatusResponseFromJob(job)
+	return &statusResponse, nil
 }

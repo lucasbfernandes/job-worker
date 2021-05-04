@@ -21,9 +21,9 @@ type Job struct {
 
 // Jobs will start with a -1 ExitCode because this is the default value for
 // when processes hasn't exited yet (https://golang.org/pkg/os/#ProcessState.ExitCode)
-func NewJob(command []string, timeoutInSeconds time.Duration) Job {
+func NewJob(command []string, timeoutInSeconds time.Duration) *Job {
 	createdAt := time.Now()
-	return Job{
+	return &Job{
 		ID:               uuid.New().String(),
 		Command:          command,
 		Status:           CREATED,
