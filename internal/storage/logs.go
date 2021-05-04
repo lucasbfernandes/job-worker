@@ -13,8 +13,8 @@ const (
 )
 
 func GetLogsDir() string {
-	envLogsDIR := os.Getenv("LOGS_DIR")
-	if envLogsDIR != "" {
+	envLogsDIR, envExists := os.LookupEnv("LOGS_DIR")
+	if envExists {
 		return envLogsDIR
 	}
 	return defaultLogsDir
@@ -27,5 +27,17 @@ func CreateLogsDir() error {
 		log.Printf("failed to create logs directory: %s\n", err)
 		return err
 	}
+	return nil
+}
+
+func DeleteLogsDir() error {
+	logsDIR := GetLogsDir()
+
+	err := os.RemoveAll(logsDIR)
+	if err != nil {
+		log.Printf("failed to delete logs dir: %s\n", err)
+		return err
+	}
+
 	return nil
 }

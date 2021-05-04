@@ -4,7 +4,6 @@ import (
 	"io/ioutil"
 	"job-worker/internal/repository"
 	"job-worker/internal/storage"
-	"log"
 	"os"
 	"path"
 	"path/filepath"
@@ -29,7 +28,7 @@ func RollbackState() error {
 		return err
 	}
 
-	err = deleteLogsDir()
+	err = storage.DeleteLogsDir()
 	if err != nil {
 		return err
 	}
@@ -55,16 +54,4 @@ func GetNumberOfLogFiles() (*int, error) {
 	}
 	filesNumber := len(files)
 	return &filesNumber, nil
-}
-
-func deleteLogsDir() error {
-	logsDIR := storage.GetLogsDir()
-
-	err := os.RemoveAll(logsDIR)
-	if err != nil {
-		log.Printf("failed to delete files inside logs dir: %s\n", err)
-		return err
-	}
-
-	return nil
 }

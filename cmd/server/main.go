@@ -3,11 +3,27 @@ package main
 import (
 	"github.com/gin-gonic/gin"
 
-	"log"
-
+	"fmt"
 	"job-worker/internal/controllers"
 	"job-worker/internal/storage"
+	"log"
+	"os"
+	"os/signal"
+	"syscall"
 )
+
+func handleTerminationSignals() {
+	terminationSignal := make(chan os.Signal)
+	signal.Notify(terminationSignal, os.Interrupt, syscall.SIGTERM)
+	go func() {
+		<-terminationSignal
+		err := storage.DeleteLogsDir()
+		if err != nil {
+			fmt.Printf("failed to cleanup state before exiting %s\n", err)
+		}
+		os.Exit(1)
+	}()
+}
 
 func createLogsDir() {
 	err := storage.CreateLogsDir()
@@ -34,6 +50,7 @@ func startAPI() {
 }
 
 func main() {
+	handleTerminationSignals()
 	createLogsDir()
 	createDB()
 	startAPI()
