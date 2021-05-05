@@ -19,7 +19,7 @@ You can also run and test the application outside a docker environment. In order
 
 1. `go test -v ./...`
 2. `go build -o ./out/server cmd/server/*.go`
-3. `LOGS_DIR=<path-to-logs-dir> ./out/server`
+3. `LOGS_DIR=<path-to-logs-dir> ./out/server -port=8080`
 
 <strong>PS:</strong>
 

@@ -46,8 +46,6 @@ func waitForExitReason(job *jobEntity.Job, process *worker.Process) {
 		finishJobWithStatusAndCode(*job, jobEntity.STOPPED, exitReason.ExitCode)
 	case 0:
 		finishJobWithStatusAndCode(*job, jobEntity.COMPLETED, exitReason.ExitCode)
-	case 1:
-		finishJobWithStatusAndCode(*job, jobEntity.FAILED, exitReason.ExitCode)
 	default:
 		finishJobWithStatusAndCode(*job, jobEntity.FAILED, exitReason.ExitCode)
 	}

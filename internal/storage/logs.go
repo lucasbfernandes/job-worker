@@ -14,7 +14,7 @@ const (
 
 func GetLogsDir() string {
 	envLogsDIR, envExists := os.LookupEnv("LOGS_DIR")
-	if envExists {
+	if envExists && envLogsDIR != "" {
 		return envLogsDIR
 	}
 	return defaultLogsDir

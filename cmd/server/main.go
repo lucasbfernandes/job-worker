@@ -3,12 +3,14 @@ package main
 import (
 	"github.com/gin-gonic/gin"
 
+	"flag"
 	"fmt"
 	"job-worker/internal/controllers"
 	"job-worker/internal/storage"
 	"log"
 	"os"
 	"os/signal"
+	"strconv"
 	"syscall"
 )
 
@@ -39,19 +41,27 @@ func createDB() {
 	}
 }
 
-func startAPI() {
+func startAPI(appPort int) {
 	router := gin.Default()
+
 	router.POST("/jobs", controllers.CreateJob)
 	router.POST("/jobs/:id/stop", controllers.StopJob)
 	router.GET("/jobs", controllers.GetJobs)
 	router.GET("/jobs/:id/status", controllers.GetJobStatus)
 	router.GET("/jobs/:id/logs", controllers.GetJobLogs)
-	router.Run(":8080")
+
+	err := router.Run(":" + strconv.Itoa(appPort))
+	if err != nil {
+		log.Fatalf("failed to start api: %s\n", err)
+	}
 }
 
 func main() {
+	appPort := flag.Int("port", 8080, "application port")
+	flag.Parse()
+
 	handleTerminationSignals()
 	createLogsDir()
 	createDB()
-	startAPI()
+	startAPI(*appPort)
 }
