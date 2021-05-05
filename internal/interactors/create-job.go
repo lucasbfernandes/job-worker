@@ -43,13 +43,13 @@ func waitForExitReason(job *jobEntity.Job, process *worker.Process) {
 
 	switch exitReason.ExitCode {
 	case -1:
-		finishJobWithStatusAndCode(job, jobEntity.STOPPED, exitReason.ExitCode)
+		finishJobWithStatusAndCode(*job, jobEntity.STOPPED, exitReason.ExitCode)
 	case 0:
-		finishJobWithStatusAndCode(job, jobEntity.COMPLETED, exitReason.ExitCode)
+		finishJobWithStatusAndCode(*job, jobEntity.COMPLETED, exitReason.ExitCode)
 	case 1:
-		finishJobWithStatusAndCode(job, jobEntity.FAILED, exitReason.ExitCode)
+		finishJobWithStatusAndCode(*job, jobEntity.FAILED, exitReason.ExitCode)
 	default:
-		finishJobWithStatusAndCode(job, jobEntity.FAILED, exitReason.ExitCode)
+		finishJobWithStatusAndCode(*job, jobEntity.FAILED, exitReason.ExitCode)
 	}
 
 	close(process.ExitChannel)
@@ -87,14 +87,14 @@ func createWorkerProcessOutputFiles(process *worker.Process, jobID string) error
 	return nil
 }
 
-func finishJobWithStatusAndCode(job *jobEntity.Job, status string, exitCode int) {
+func finishJobWithStatusAndCode(job jobEntity.Job, status string, exitCode int) {
 	finishedAt := time.Now()
 
 	job.Status = status
 	job.FinishedAt = &finishedAt
 	job.ExitCode = exitCode
 
-	err := repository.UpsertJob(job)
+	err := repository.UpsertJob(&job)
 	if err != nil {
 		log.Printf("failed to update job with status %s: %s\n", status, err)
 	}
