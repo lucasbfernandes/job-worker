@@ -2,39 +2,48 @@ package interactors
 
 import (
 	"bytes"
+	"cli/internal/dto"
 	"encoding/json"
-	"fmt"
-	"io"
 	"io/ioutil"
 	"net/http"
 )
 
 func CreateJob(serverURL string, command []string) (*string, error) {
-	postBody, err := json.Marshal(map[string][]string{
-		"command": command,
-	})
+	createJobRequest := dto.NewCreateJobRequest(command)
+	responseBody, err := requestCreateJob(serverURL, createJobRequest)
 	if err != nil {
 		return nil, err
 	}
 
-	httpResponse, err := http.Post(serverURL, "application/json", bytes.NewBuffer(postBody))
-	if err != nil {
-		return nil, err
-	}
-	defer closeBody(httpResponse.Body)
-
-	body, err := ioutil.ReadAll(httpResponse.Body)
+	var createJobResponse dto.CreateJobResponse
+	err = json.Unmarshal(responseBody, &createJobResponse)
 	if err != nil {
 		return nil, err
 	}
 
-	responseObject := string(body)
-	return &responseObject, nil
+	return &createJobResponse.ID, nil
 }
 
-func closeBody(response io.ReadCloser) {
-	err := response.Close()
+func requestCreateJob(serverURL string, createJobRequest *dto.CreateJobRequest) ([]byte, error) {
+	postBody, err := json.Marshal(createJobRequest)
 	if err != nil {
-		fmt.Printf("failed to close http response body: %s\n", err)
+		return nil, err
 	}
+
+	request, err := http.NewRequest("POST", serverURL, bytes.NewBuffer(postBody))
+	if err != nil {
+		return nil, err
+	}
+
+	httpResponse, err := http.DefaultClient.Do(request)
+	if err != nil {
+		return nil, err
+	}
+
+	bodyBytes, err := ioutil.ReadAll(httpResponse.Body)
+	if err != nil {
+		return nil, err
+	}
+
+	return bodyBytes, nil
 }

@@ -20,30 +20,15 @@ func main() {
 	switch os.Args[1] {
 
 	case "exec":
-		err := commands.CreateJob(parameters)
-		if err != nil {
-			fmt.Printf("failed to create job: %s\n", err)
-		}
+		commands.CreateJob(parameters)
 	case "list":
-		err := commands.GetJobs(parameters)
-		if err != nil {
-			fmt.Printf("failed to get jobs: %s\n", err)
-		}
+		commands.GetJobs(parameters)
 	case "stop":
-		err := commands.StopJob(parameters)
-		if err != nil {
-			fmt.Printf("failed to stop job: %s\n", err)
-		}
+		commands.StopJob(parameters)
 	case "status":
-		err := commands.GetJobStatus(parameters)
-		if err != nil {
-			fmt.Printf("failed to get job status: %s\n", err)
-		}
+		commands.GetJobStatus(parameters)
 	case "logs":
-		err := commands.GetJobLogs(parameters)
-		if err != nil {
-			fmt.Printf("failed to get job logs: %s\n", err)
-		}
+		commands.GetJobLogs(parameters)
 	default:
 		handleInvalidCommand()
 	}
