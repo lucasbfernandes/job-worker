@@ -10,21 +10,21 @@ import (
 func GetJobs(parameters []string) error {
 	getCmd := flag.NewFlagSet("exec", flag.ExitOnError)
 	serverURL := getCmd.String("s", "", "server url")
-	username := getCmd.String("u", "", "username")
 
 	err := getCmd.Parse(parameters)
 	if err != nil {
 		return err
 	}
 
-	if *serverURL == "" || *username == "" {
+	if *serverURL == "" {
 		return errors.New("serverUrl and username shouldn't be empty")
 	}
 
-	response, err := interactors.GetJobs(*serverURL, *username)
+	response, err := interactors.GetJobs(*serverURL)
 	if err != nil {
 		return err
 	}
+
 	fmt.Printf("%s\n", *response)
 	return nil
 }

@@ -1,6 +1,7 @@
 package commands
 
 import (
+	"cli/internal/config"
 	"cli/internal/interactors"
 	"errors"
 	"flag"
@@ -9,8 +10,7 @@ import (
 
 func GetJobLogs(parameters []string) error {
 	logsCmd := flag.NewFlagSet("exec", flag.ExitOnError)
-	serverURL := logsCmd.String("s", "", "server url")
-	username := logsCmd.String("u", "", "username")
+	serverURL := logsCmd.String("s", config.GetDefaultServerURL(), "server url")
 	jobID := logsCmd.String("i", "", "job id")
 
 	err := logsCmd.Parse(parameters)
@@ -18,14 +18,15 @@ func GetJobLogs(parameters []string) error {
 		return err
 	}
 
-	if *serverURL == "" || *username == "" || *jobID == "" {
-		return errors.New("serverUrl, username and jobId shouldn't be empty")
+	if *jobID == "" {
+		return errors.New("serverUrl and jobId shouldn't be empty")
 	}
 
-	response, err := interactors.GetJobLogs(*serverURL, *username, *jobID)
+	response, err := interactors.GetJobLogs(*serverURL, *jobID)
 	if err != nil {
 		return err
 	}
+
 	fmt.Printf("%s\n", *response)
 	return nil
 }

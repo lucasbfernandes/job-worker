@@ -8,12 +8,12 @@ services:
     environment:
       STUBBY_PORT: 8883
     volumes:
-      - ./assets/stubby4j/integrations.yml:/usr/local/stubby.yml
+      - ./assets/stubby4j/integrations.yaml:/usr/local/stubby.yml
 
   cli:
     build:
       context: .
-      dockerfile: ./build/cli/Dockerfile
+      dockerfile: ./build/Dockerfile
     depends_on:
       - stubby4j
     command: sh -c 'while sleep 3600; do :; done'

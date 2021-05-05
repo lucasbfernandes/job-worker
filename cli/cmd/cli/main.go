@@ -6,12 +6,6 @@ import (
 	"os"
 )
 
-//Create Job: job-worker exec -s SERVER_URL -u USERNAME -c EXECUTABLE [ARG...]
-//List Jobs: job-worker list -s SERVER_URL -u USERNAME
-//Stop Job: job-worker stop -s SERVER_URL -u USERNAME -i JOB_ID
-//Get Job Status: job-worker status -s SERVER_URL -u USERNAME -i JOB_ID
-//Get Job Logs: job-worker logs -s SERVER_URL -u USERNAME -i JOB_ID
-
 func handleInvalidCommand() {
 	fmt.Println("expected 'exec', 'list', 'stop', 'status' or 'logs' subcommands")
 	os.Exit(1)
