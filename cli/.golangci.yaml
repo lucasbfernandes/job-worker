@@ -1,0 +1,20 @@
+linters:
+  disable-all: true
+  enable:
+    - bodyclose
+    - deadcode
+    - goimports
+    - golint
+    - gosimple
+    - govet
+    - ineffassign
+    - misspell
+    - staticcheck
+    - structcheck
+    - typecheck
+    - unused
+    - unconvert
+    - varcheck
+
+output:
+  uniq-by-line: false

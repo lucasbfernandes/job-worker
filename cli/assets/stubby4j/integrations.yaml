@@ -1,0 +1,85 @@
+# POST /jobs
+- request:
+    method: POST
+    url: ^/jobs
+
+  response:
+    status: 201
+    headers:
+      content-type: application/json
+    body: >
+      {
+        "id": "ad94eaae-b33e-42f8-927d-c13c0fc4a1f3"
+      }
+
+# GET /jobs
+- request:
+    method: GET
+    url: ^/jobs
+
+  response:
+    status: 200
+    headers:
+      content-type: application/json
+    body: >
+      {
+        "jobs": [
+          {
+            "id": "ad94eaae-b33e-42f8-927d-c13c0fc4a1f3",
+            "command": ["sh", "-c", "echo hello world"],
+            "status": "COMPLETED",
+            "exitCode": 0,
+            "createdAt": "2021-05-04T22:12:09.733285-03:00",
+            "finishedAt": "2021-05-04T22:12:09.745211-03:00"
+          },
+          {
+            "id": "4321cafb-0749-4a8e-99ca-03bb782a3381",
+            "command": ["sh", "-c", "wrongcommand"],
+            "status": "FAILED",
+            "exitCode": 1,
+            "createdAt": "2021-05-04T22:12:09.733285-03:00",
+            "finishedAt": "2021-05-04T22:12:09.745211-03:00"
+          }
+        ]
+      }
+
+# GET jobs/:id/status
+- request:
+    method: GET
+    url: ^/jobs/.*/status
+
+  response:
+    status: 200
+    headers:
+      content-type: application/json
+    body: >
+      {
+        "status": "FAILED",
+        "exitCode": 1,
+        "createdAt": "2021-05-04T19:23:22.341245-03:00",
+        "finishedAt": "2021-05-04T19:23:22.406849-03:00"
+      }
+
+# GET /jobs/:id/logs
+- request:
+    method: GET
+    url: ^/jobs/.*/logs
+
+  response:
+    status: 200
+    headers:
+      content-type: application/json
+    body: >
+      "hello test!
+       ls: wrongfile: No such file or directory"
+
+# POST /jobs/:id/stop
+- request:
+    method: POST
+    url: ^/jobs/.*/stop
+
+  response:
+    status: 200
+    headers:
+      content-type: application/json
+    body: ""
