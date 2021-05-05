@@ -4,6 +4,7 @@ import (
 	"errors"
 	"io"
 	"os/exec"
+	"sync"
 	"time"
 )
 
@@ -21,6 +22,8 @@ type Process struct {
 	execCmd *exec.Cmd
 
 	finishedChannel chan struct{}
+
+	mutex sync.Mutex
 }
 
 func NewProcess(command []string) (*Process, error) {

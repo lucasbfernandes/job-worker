@@ -45,6 +45,32 @@ func (suite *StartProcessIntegrationTestSuite) TestShouldFailWithStartSequence()
 	assert.NotNil(suite.T(), err, "Process should fail to start again.")
 }
 
+func (suite *StopProcessIntegrationTestSuite) TestShouldFailOnlyOneStartWhenConcurrentCallHappens() {
+	process, err := worker.NewProcess([]string{"sleep", "5"})
+	assert.Nil(suite.T(), err, "Failed to create process.")
+
+	var err1 error
+	var err2 error
+	firstStartChan := make(chan struct{}, 1)
+	secondStartChan := make(chan struct{}, 1)
+
+	go func() {
+		err1 = process.Start()
+		firstStartChan <- struct{}{}
+	}()
+	go func() {
+		err2 = process.Start()
+		secondStartChan <- struct{}{}
+	}()
+
+	<-firstStartChan
+	<-secondStartChan
+	close(firstStartChan)
+	close(secondStartChan)
+
+	assert.NotEqual(suite.T(), err1, err2, "errors must not be equal - only one should fail.")
+}
+
 func TestStartProcessIntegrationTest(t *testing.T) {
 	suite.Run(t, new(StartProcessIntegrationTestSuite))
 }

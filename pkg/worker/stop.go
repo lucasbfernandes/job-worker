@@ -6,6 +6,9 @@ import (
 )
 
 func (p *Process) Stop() error {
+	p.mutex.Lock()
+	defer p.mutex.Unlock()
+
 	if p.execCmd.Process == nil {
 		return errors.New("process hasn't started yet")
 	}

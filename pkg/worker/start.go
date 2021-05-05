@@ -6,6 +6,9 @@ import (
 )
 
 func (p *Process) Start() error {
+	p.mutex.Lock()
+	defer p.mutex.Unlock()
+
 	err := p.execCmd.Start()
 	if err != nil {
 		log.Printf("failed to start process: %s\n", err)
