@@ -7,7 +7,7 @@ import (
 	"flag"
 )
 
-func StopJob(parameters []string) error {
+func (w *WorkerCLI) StopJob(parameters []string) error {
 	stopCmd := flag.NewFlagSet("exec", flag.ExitOnError)
 	serverURL := stopCmd.String("s", config.GetDefaultServerURL(), "server url")
 	jobID := stopCmd.String("i", "", "job id")

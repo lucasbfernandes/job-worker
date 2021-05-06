@@ -7,7 +7,7 @@ import (
 	"fmt"
 )
 
-func GetJobs(parameters []string) error {
+func (w *WorkerCLI) GetJobs(parameters []string) error {
 	getCmd := flag.NewFlagSet("exec", flag.ExitOnError)
 	serverURL := getCmd.String("s", "", "server url")
 

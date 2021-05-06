@@ -3,33 +3,34 @@ package commands
 import (
 	"cli/internal/config"
 	"cli/internal/interactors"
+	"errors"
 	"flag"
 	"fmt"
+	"os"
 	"strings"
 )
 
-func CreateJob(parameters []string) {
+func (w *WorkerCLI) CreateJob(parameters []string) error {
+	// TODO use flag.ContinueOnError?
 	execCmd := flag.NewFlagSet("exec", flag.ExitOnError)
 	serverURL := execCmd.String("s", config.GetDefaultServerURL(), "server url")
-	executable := execCmd.String("c", "", "command to be executed")
+	executable := execCmd.String("c", "", "command to be executed on the server")
 
 	err := execCmd.Parse(parameters)
 	if err != nil {
-		fmt.Printf("failed to parse command line arguments\n")
-		return
+		return errors.New("failed to parse exec command line arguments")
 	}
 
 	if *executable == "" {
-		fmt.Printf("executable cannot be empty\n")
-		return
+		return errors.New("executable cannot be empty")
 	}
 	command := strings.Split(*executable, " ")
 
-	response, err := interactors.CreateJob(*serverURL+"/jobs", command)
+	response, err := interactors.CreateJob(*serverURL, command)
 	if err != nil {
-		fmt.Printf("failed to create job with error: %s\n", err)
-		return
+		return err
 	}
 
-	fmt.Printf("created job with id: %s\n", *response)
+	_, _ = os.Stdout.WriteString(fmt.Sprintf("Created job successfully. Id: %s.\n", *response))
+	return nil
 }

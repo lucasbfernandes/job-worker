@@ -8,7 +8,7 @@ import (
 	"fmt"
 )
 
-func GetJobStatus(parameters []string) error {
+func (w *WorkerCLI) GetJobStatus(parameters []string) error {
 	statusCmd := flag.NewFlagSet("exec", flag.ExitOnError)
 	serverURL := statusCmd.String("s", config.GetDefaultServerURL(), "server url")
 	jobID := statusCmd.String("i", "", "job id")

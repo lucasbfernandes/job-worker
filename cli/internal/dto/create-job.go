@@ -1,15 +1,15 @@
 package dto
 
 type CreateJobRequest struct {
-	command []string
+	Command []string `json:"command"`
 }
 
 type CreateJobResponse struct {
-	ID string
+	ID string `json:"id"`
 }
 
 func NewCreateJobRequest(command []string) *CreateJobRequest {
 	return &CreateJobRequest{
-		command: command,
+		Command: command,
 	}
 }
