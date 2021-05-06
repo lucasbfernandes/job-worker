@@ -4,7 +4,6 @@ import (
 	"github.com/gin-gonic/gin"
 
 	"flag"
-	"fmt"
 	"log"
 	"os"
 	"os/signal"
@@ -21,7 +20,7 @@ func handleTerminationSignals() {
 		<-terminationSignal
 		err := storage.DeleteLogsDir()
 		if err != nil {
-			fmt.Printf("failed to cleanup state before exiting %s\n", err)
+			log.Printf("failed to cleanup state before exiting %s\n", err)
 		}
 		os.Exit(1)
 	}()

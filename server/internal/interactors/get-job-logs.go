@@ -10,20 +10,17 @@ import (
 func GetJobLogs(jobID string) (*string, error) {
 	_, err := repository.GetJobOrFail(jobID)
 	if err != nil {
-		log.Printf("could not get job logs: %s\n", err)
 		return nil, err
 	}
 
 	logFile, err := repository.GetLogFile(jobID)
 	if err != nil {
-		log.Printf("could not get stdout file: %s\n", err)
 		return nil, err
 	}
 	defer closeFile(logFile)
 
 	logFileContent, err := getLogContent(logFile)
 	if err != nil {
-		log.Printf("could not get log file content: %s\n", err)
 		return nil, err
 	}
 

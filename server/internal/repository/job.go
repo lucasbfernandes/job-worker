@@ -2,7 +2,6 @@ package repository
 
 import (
 	"fmt"
-	"log"
 	jobEntity "server/internal/models/job"
 	"server/internal/storage"
 )
@@ -12,8 +11,7 @@ func UpsertJob(job *jobEntity.Job) error {
 	txn := db.Txn(true)
 	err := txn.Insert("job", job)
 	if err != nil {
-		log.Printf("failed to insert job: %s\n", err)
-		return err
+		return fmt.Errorf("failed to insert job: %s", err)
 	}
 	txn.Commit()
 	return nil
@@ -24,8 +22,7 @@ func DeleteAllJobs() error {
 	txn := db.Txn(true)
 	_, err := txn.DeleteAll("job", "id")
 	if err != nil {
-		log.Printf("failed to delete all jobs: %s\n", err)
-		return err
+		return fmt.Errorf("failed to delete all jobs: %s", err)
 	}
 	txn.Commit()
 	return nil
@@ -38,11 +35,9 @@ func GetJobOrFail(id string) (*jobEntity.Job, error) {
 
 	raw, err := txn.First("job", "id", id)
 	if err != nil {
-		log.Printf("failed to get job: %s\n", err)
-		return nil, nil
+		return nil, fmt.Errorf("failed to get job: %s", err)
 	}
 	if raw == nil {
-		log.Printf("could not find job\n")
 		return nil, fmt.Errorf("could not find job with id %s", id)
 	}
 
@@ -58,8 +53,7 @@ func GetAllJobs() ([]*jobEntity.Job, error) {
 
 	jobIterator, err := txn.Get("job", "id")
 	if err != nil {
-		log.Printf("failed to get all jobs: %s\n", err)
-		return nil, err
+		return nil, fmt.Errorf("failed to get all jobs: %s", err)
 	}
 
 	for rawJob := jobIterator.Next(); rawJob != nil; rawJob = jobIterator.Next() {
