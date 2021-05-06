@@ -19,6 +19,7 @@ services:
     command: sh -c 'while sleep 3600; do :; done'
     environment:
       - DEFAULT_SERVER_URL=http://server:8080
+      - DEFAULT_SERVER_MOCK_URL=http://stubby4j:8883
 
   server:
     build:

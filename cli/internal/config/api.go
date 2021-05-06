@@ -3,7 +3,7 @@ package config
 import "os"
 
 const (
-	defaultServerURL = "http://localhost:8883"
+	DefaultServerURL = "http://localhost:8883"
 )
 
 func GetDefaultServerURL() string {
@@ -11,5 +11,5 @@ func GetDefaultServerURL() string {
 	if envExists && envDefaultServer != "" {
 		return envDefaultServer
 	}
-	return defaultServerURL
+	return DefaultServerURL
 }

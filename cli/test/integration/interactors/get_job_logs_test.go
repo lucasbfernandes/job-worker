@@ -4,8 +4,8 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/suite"
 
-	"cli/internal/config"
 	"cli/internal/interactors"
+	"cli/test/integration"
 	"testing"
 )
 
@@ -17,7 +17,7 @@ func (suite *GetJobLogsInteractorIntegrationTestSuite) TestShouldReturnCorrectSt
 	expectedResponse := `hello test! ls: wrongfile: No such file or directory`
 
 	workerCLIInteractor := interactors.NewWorkerCLIInteractor()
-	response, err := workerCLIInteractor.GetJobLogs(config.GetDefaultServerURL(), "mock-id")
+	response, err := workerCLIInteractor.GetJobLogs(integration.GetDefaultTestsServerURL(), "mock-id")
 	assert.Nil(suite.T(), err, "error should be nil")
 	assert.Equal(suite.T(), expectedResponse, *response, "wrong get logs response")
 }

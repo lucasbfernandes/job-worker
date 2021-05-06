@@ -52,7 +52,7 @@ func parseGetJobsResponse(getJobsResponse *dto.GetJobsResponse) *string {
 	for index, job := range getJobsResponse.Jobs {
 		parsedResponse += fmt.Sprintf(
 			"\n%d\nid: %s\ncommand: %s\nstatus: %s\ncreatedAt: %s\nfinishedAt: %s\n",
-			index+1, job.ID, job.Command, job.Status, job.CreatedAt, job.FinishedAt,
+			index+1, job.ID, job.Command, job.Status, job.CreatedAt.Format(dateLayout), job.FinishedAt.Format(dateLayout),
 		)
 	}
 	return &parsedResponse

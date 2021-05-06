@@ -4,8 +4,8 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/suite"
 
-	"cli/internal/config"
 	"cli/internal/interactors"
+	"cli/test/integration"
 	"testing"
 )
 
@@ -16,12 +16,12 @@ type GetJobStatusInteractorIntegrationTestSuite struct {
 func (suite *GetJobStatusInteractorIntegrationTestSuite) TestShouldReturnCorrectStringWhenRequestIsSuccessful() {
 	expectedResponse := `
 status: FAILED
-createdAt: 2021-05-04 19:23:22.341245 -0300 -03
-finishedAt: 2021-05-04 19:23:22.406849 -0300 -03
+createdAt: 2021-05-04 19:23:22.341
+finishedAt: 2021-05-04 19:23:22.406
 exitCode: 1
 `
 	workerCLIInteractor := interactors.NewWorkerCLIInteractor()
-	response, err := workerCLIInteractor.GetJobStatus(config.GetDefaultServerURL(), "mock-id")
+	response, err := workerCLIInteractor.GetJobStatus(integration.GetDefaultTestsServerURL(), "mock-id")
 	assert.Nil(suite.T(), err, "error should be nil")
 	assert.Equal(suite.T(), expectedResponse, *response, "wrong get status response")
 }

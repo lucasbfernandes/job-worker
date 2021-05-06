@@ -4,8 +4,8 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/suite"
 
-	"cli/internal/config"
 	"cli/internal/interactors"
+	"cli/test/integration"
 	"testing"
 )
 
@@ -15,7 +15,7 @@ type StopJobInteractorIntegrationTestSuite struct {
 
 func (suite *StopJobInteractorIntegrationTestSuite) TestShouldNotReturnErrorWhenRequestIsSuccessful() {
 	workerCLIInteractor := interactors.NewWorkerCLIInteractor()
-	err := workerCLIInteractor.StopJob(config.GetDefaultServerURL(), "mock-id")
+	err := workerCLIInteractor.StopJob(integration.GetDefaultTestsServerURL(), "mock-id")
 	assert.Nil(suite.T(), err, "error should be nil")
 }
 

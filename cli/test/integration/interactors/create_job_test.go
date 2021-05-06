@@ -4,8 +4,8 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/suite"
 
-	"cli/internal/config"
 	"cli/internal/interactors"
+	"cli/test/integration"
 	"testing"
 )
 
@@ -15,14 +15,14 @@ type CreateJobInteractorIntegrationTestSuite struct {
 
 func (suite *CreateJobInteractorIntegrationTestSuite) TestShouldReturnErrorWhenRequestFailed() {
 	workerCLIInteractor := interactors.NewWorkerCLIInteractor()
-	response, err := workerCLIInteractor.CreateJob(config.GetDefaultServerURL(), []string{})
+	response, err := workerCLIInteractor.CreateJob(integration.GetDefaultTestsServerURL(), []string{})
 	assert.Nil(suite.T(), response, "response should be nil")
 	assert.NotNil(suite.T(), err, "error should not be nil")
 }
 
 func (suite *CreateJobInteractorIntegrationTestSuite) TestShouldReturnResponseWhenRequestSucceeds() {
 	workerCLIInteractor := interactors.NewWorkerCLIInteractor()
-	response, err := workerCLIInteractor.CreateJob(config.GetDefaultServerURL(), []string{"ls"})
+	response, err := workerCLIInteractor.CreateJob(integration.GetDefaultTestsServerURL(), []string{"ls"})
 	assert.NotNil(suite.T(), response, "response should not be nil")
 	assert.Nil(suite.T(), err, "error should be nil")
 }
