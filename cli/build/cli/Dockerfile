@@ -4,7 +4,7 @@ RUN apk --no-cache add gcc musl-dev git mercurial
 
 WORKDIR /app/cli
 
-COPY . .
+COPY .. .
 
 # Running lint
 RUN (wget -O- -nv https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s v1.39.0 && \
