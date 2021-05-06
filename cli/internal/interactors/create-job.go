@@ -36,7 +36,10 @@ func requestCreateJob(serverURL string, createJobRequest *dto.CreateJobRequest) 
 	}
 
 	if response.IsError() {
-		return nil, errors.New(createJobError.Error)
+		if createJobError.Error != "" {
+			return nil, errors.New(createJobError.Error)
+		}
+		return nil, errors.New("could not create job")
 	}
 
 	return &createJobResponse, nil

@@ -4,6 +4,7 @@ import (
 	"cli/internal/config"
 	"errors"
 	"flag"
+	"os"
 )
 
 func (w *WorkerCLI) StopJob(parameters []string) error {
@@ -16,8 +17,8 @@ func (w *WorkerCLI) StopJob(parameters []string) error {
 		return err
 	}
 
-	if *serverURL == "" || *jobID == "" {
-		return errors.New("serverUrl, username and jobId shouldn't be empty")
+	if *jobID == "" {
+		return errors.New("job id cannot be empty")
 	}
 
 	err = w.workerCLIInteractor.StopJob(*serverURL, *jobID)
@@ -25,5 +26,6 @@ func (w *WorkerCLI) StopJob(parameters []string) error {
 		return err
 	}
 
+	_, _ = os.Stdout.WriteString("Job stopped successfully.\n")
 	return nil
 }

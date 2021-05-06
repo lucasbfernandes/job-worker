@@ -42,7 +42,10 @@ func requestGetJobs(serverURL string) (*dto.GetJobsResponse, error) {
 	}
 
 	if response.IsError() {
-		return nil, errors.New(getJobsError.Error)
+		if getJobsError.Error != "" {
+			return nil, errors.New(getJobsError.Error)
+		}
+		return nil, errors.New("could not get jobs")
 	}
 
 	return &getJobsResponse, nil

@@ -18,6 +18,10 @@ func (w *WorkerCLI) CreateJob(parameters []string) error {
 	}
 
 	commands := execCmd.Args()
+	if len(commands) == 0 {
+		return errors.New("exec must receive at least one executable without arguments")
+	}
+
 	response, err := w.workerCLIInteractor.CreateJob(*serverURL, commands)
 	if err != nil {
 		return err

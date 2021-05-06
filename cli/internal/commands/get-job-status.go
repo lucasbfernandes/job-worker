@@ -4,7 +4,7 @@ import (
 	"cli/internal/config"
 	"errors"
 	"flag"
-	"fmt"
+	"os"
 )
 
 func (w *WorkerCLI) GetJobStatus(parameters []string) error {
@@ -26,6 +26,6 @@ func (w *WorkerCLI) GetJobStatus(parameters []string) error {
 		return err
 	}
 
-	fmt.Printf("%s\n", *response)
+	_, _ = os.Stdout.WriteString(*response + "\n")
 	return nil
 }
