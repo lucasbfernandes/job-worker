@@ -2,7 +2,6 @@ package commands
 
 import (
 	"cli/internal/config"
-	"cli/internal/interactors"
 	"errors"
 	"flag"
 )
@@ -21,7 +20,7 @@ func (w *WorkerCLI) StopJob(parameters []string) error {
 		return errors.New("serverUrl, username and jobId shouldn't be empty")
 	}
 
-	err = interactors.StopJob(*serverURL, *jobID)
+	err = w.workerCLIInteractor.StopJob(*serverURL, *jobID)
 	if err != nil {
 		return err
 	}

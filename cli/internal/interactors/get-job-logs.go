@@ -1,6 +1,6 @@
 package interactors
 
-func GetJobLogs(serverURL string, jobID string) (*string, error) {
+func (i *WorkerCLIInteractor) GetJobLogs(serverURL string, jobID string) (*string, error) {
 	result := ""
 	return &result, nil
 }

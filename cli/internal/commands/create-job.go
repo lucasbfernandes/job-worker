@@ -2,7 +2,6 @@ package commands
 
 import (
 	"cli/internal/config"
-	"cli/internal/interactors"
 	"errors"
 	"flag"
 	"fmt"
@@ -26,7 +25,7 @@ func (w *WorkerCLI) CreateJob(parameters []string) error {
 	}
 	command := strings.Split(*executable, " ")
 
-	response, err := interactors.CreateJob(*serverURL, command)
+	response, err := w.workerCLIInteractor.CreateJob(*serverURL, command)
 	if err != nil {
 		return err
 	}

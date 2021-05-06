@@ -1,7 +1,6 @@
 package commands
 
 import (
-	"cli/internal/interactors"
 	"errors"
 	"flag"
 	"fmt"
@@ -20,7 +19,7 @@ func (w *WorkerCLI) GetJobs(parameters []string) error {
 		return errors.New("serverUrl and username shouldn't be empty")
 	}
 
-	response, err := interactors.GetJobs(*serverURL)
+	response, err := w.workerCLIInteractor.GetJobs(*serverURL)
 	if err != nil {
 		return err
 	}

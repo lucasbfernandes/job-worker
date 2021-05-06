@@ -4,13 +4,14 @@ import (
 	"github.com/go-resty/resty/v2"
 
 	"cli/internal/dto"
+	"errors"
 )
 
 const (
 	createJobPath = "/jobs"
 )
 
-func CreateJob(serverURL string, command []string) (*string, error) {
+func (i *WorkerCLIInteractor) CreateJob(serverURL string, command []string) (*string, error) {
 	createJobRequest := dto.NewCreateJobRequest(command)
 	createJobResponse, err := requestCreateJob(serverURL, createJobRequest)
 	if err != nil {
@@ -21,15 +22,21 @@ func CreateJob(serverURL string, command []string) (*string, error) {
 
 func requestCreateJob(serverURL string, createJobRequest *dto.CreateJobRequest) (*dto.CreateJobResponse, error) {
 	var createJobResponse dto.CreateJobResponse
+	var createJobError dto.CreateJobError
 
 	client := resty.New()
-	_, err := client.R().
+	response, err := client.R().
 		SetBody(createJobRequest).
 		SetResult(&createJobResponse).
+		SetError(&createJobError).
 		Post(serverURL + createJobPath)
 
 	if err != nil {
 		return nil, err
+	}
+
+	if response.IsError() {
+		return nil, errors.New(createJobError.Error)
 	}
 
 	return &createJobResponse, nil

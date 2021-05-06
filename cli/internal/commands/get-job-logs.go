@@ -2,7 +2,6 @@ package commands
 
 import (
 	"cli/internal/config"
-	"cli/internal/interactors"
 	"errors"
 	"flag"
 	"fmt"
@@ -22,7 +21,7 @@ func (w *WorkerCLI) GetJobLogs(parameters []string) error {
 		return errors.New("serverUrl and jobId shouldn't be empty")
 	}
 
-	response, err := interactors.GetJobLogs(*serverURL, *jobID)
+	response, err := w.workerCLIInteractor.GetJobLogs(*serverURL, *jobID)
 	if err != nil {
 		return err
 	}

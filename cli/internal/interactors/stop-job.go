@@ -1,5 +1,5 @@
 package interactors
 
-func StopJob(serverURL string, jobID string) error {
+func (i *WorkerCLIInteractor) StopJob(serverURL string, jobID string) error {
 	return nil
 }

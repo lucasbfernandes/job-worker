@@ -1,13 +1,18 @@
 package commands
 
 import (
+	"cli/internal/interactors"
 	"errors"
 )
 
-type WorkerCLI struct{}
+type WorkerCLI struct {
+	workerCLIInteractor *interactors.WorkerCLIInteractor
+}
 
 func NewWorkerCLI() *WorkerCLI {
-	return &WorkerCLI{}
+	return &WorkerCLI{
+		workerCLIInteractor: interactors.NewWorkerCLIInteractor(),
+	}
 }
 
 func (w *WorkerCLI) ExecuteCommand(args []string) error {

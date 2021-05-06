@@ -1,7 +1,25 @@
-# POST /jobs
+# POST /jobs (500)
 - request:
     method: POST
     url: ^/jobs
+    post: >
+      {"command":[]}
+
+  response:
+    status: 500
+    headers:
+      content-type: application/json
+    body: >
+      {
+        "error": "some error message"
+      }
+
+# POST /jobs (Success)
+- request:
+    method: POST
+    url: ^/jobs
+    post: >
+      {"command":[".*".*]}
 
   response:
     status: 201

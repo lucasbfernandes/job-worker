@@ -2,7 +2,6 @@ package commands
 
 import (
 	"cli/internal/config"
-	"cli/internal/interactors"
 	"errors"
 	"flag"
 	"fmt"
@@ -22,7 +21,7 @@ func (w *WorkerCLI) GetJobStatus(parameters []string) error {
 		return errors.New("jobID shouldn't be empty")
 	}
 
-	response, err := interactors.GetJobStatus(*serverURL, *jobID)
+	response, err := w.workerCLIInteractor.GetJobStatus(*serverURL, *jobID)
 	if err != nil {
 		return err
 	}
