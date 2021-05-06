@@ -42,7 +42,7 @@ and exhibit the responses in a structured manner. This section will:
 
 ### Commands
 
-* [Create Job](cli/jobs/create-job.md): `job-worker exec -s SERVER_URL -t API_TOKEN -c EXECUTABLE`
+* [Create Job](cli/jobs/create-job.md): `job-worker exec -s SERVER_URL -t API_TOKEN EXECUTABLE [ARGS...]`
 * [List Jobs](cli/jobs/list-jobs.md): `job-worker list -s SERVER_URL -t API_TOKEN`
 * [Stop Job](cli/jobs/stop-job.md): `job-worker stop -s SERVER_URL -t API_TOKEN -i JOB_ID`
 * [Get Job Status](cli/jobs/get-status.md): `job-worker status -s SERVER_URL -t API_TOKEN -i JOB_ID`

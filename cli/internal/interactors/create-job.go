@@ -22,7 +22,7 @@ func (i *WorkerCLIInteractor) CreateJob(serverURL string, command []string) (*st
 
 func requestCreateJob(serverURL string, createJobRequest *dto.CreateJobRequest) (*dto.CreateJobResponse, error) {
 	var createJobResponse dto.CreateJobResponse
-	var createJobError dto.CreateJobError
+	var createJobError dto.JobsError
 
 	client := resty.New()
 	response, err := client.R().
