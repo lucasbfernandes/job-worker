@@ -5,7 +5,7 @@ Simple Job Worker service that provides an API to run arbitrary Linux processes.
 ###  Server
 In order to run the Server, please install [docker](https://docs.docker.com/get-docker/) and [docker-compose](https://docs.docker.com/compose/install/).
 
-From the root directory, execute `docker-compose build && docker-compose up` and choose one of the following commands in another terminal window:
+From the server's root directory, execute `docker-compose build && docker-compose up` and choose one of the following commands in another terminal window:
 
 * Run the application (Will be available at http://localhost:8080 and a Postman collection can be found [here](assets/postman)):
 
