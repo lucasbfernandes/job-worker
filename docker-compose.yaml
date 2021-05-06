@@ -3,8 +3,8 @@ services:
 
   server:
     build:
-      context: .
-      dockerfile: ./build/server/Dockerfile
+      context: ./server
+      dockerfile: build/server/Dockerfile
     command: sh -c 'while sleep 3600; do :; done'
     ports:
       - 8080:8080
