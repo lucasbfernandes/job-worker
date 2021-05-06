@@ -10,7 +10,6 @@ import (
 )
 
 func (w *WorkerCLI) CreateJob(parameters []string) error {
-	// TODO use flag.ContinueOnError?
 	execCmd := flag.NewFlagSet("exec", flag.ExitOnError)
 	serverURL := execCmd.String("s", config.GetDefaultServerURL(), "server url")
 	executable := execCmd.String("c", "", "command to be executed on the server")
