@@ -1,0 +1,12 @@
+version: '3'
+services:
+
+  server:
+    build:
+      context: .
+      dockerfile: ./build/server/Dockerfile
+    command: sh -c 'while sleep 3600; do :; done'
+    ports:
+      - 8080:8080
+    environment:
+      - LOGS_DIR=/app/server/logs
