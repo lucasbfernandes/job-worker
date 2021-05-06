@@ -6,19 +6,19 @@
 
 ### Synopsis
 
-<strong>job-worker exec -s SERVER_URL -u USERNAME -c EXECUTABLE [ARG...]</strong>
+<strong>job-worker exec -s SERVER_URL -t API_TOKEN -c EXECUTABLE</strong>
 
 ### Description
 
 * <strong>-s:</strong> Server url. Must start with `https`, otherwise command will return with an error.
-* <strong>-u:</strong> Username;
-* <strong>-c:</strong> Command that will be executed. Starts with a linux executable name and can be followed by an array of arguments.
+* <strong>-t:</strong> API token the user possess. This token is a random string with 20 digits, uppercase and lowercase letters and digits;
+* <strong>-c:</strong> Command that will be executed. Starts with a linux executable name and can be followed by an array of arguments. Must be in a string format.
 
 <strong>PS:</strong> The CLI will forward the exact same input it received from the user to the `command` JSON field that will be sent to the Server (This is for the sake of simplicity).
 Examples:
 
 ```
-    Command: job-worker exec -s https://server-url.com -u user -p pass -c bin/sh -c "echo hello world"
+    Command: job-worker exec -s https://server-url.com -t 6q6Tz5NBELFo5E9iOSEo -c "bin/sh -c 'echo hello world'"
     
     Will become
     
@@ -26,8 +26,8 @@ Examples:
 ```
 
 ```
-    Command: job-worker exec -s https://server-url.com -u user -p pass -c bin/sh -c ls -la
-    
+    Command: job-worker exec -s https://server-url.com -t 6q6Tz5NBELFo5E9iOSEo -c "bin/sh -c ls -la"
+
     Will become
     
     JSON object: { command: ["bin/sh", "-c", "ls", "-la"] }
@@ -35,7 +35,7 @@ Examples:
 
 ### Examples
 
-<strong>Command:</strong> `job-worker exec -s https://server-url.com -u user -p pass -c bin/sh -c ls -la`
+<strong>Command:</strong> `job-worker exec -s https://server-url.com -t 6q6Tz5NBELFo5E9iOSEo -c "bin/sh -c ls -la"`
 
 <strong>Expected successful output:</strong>
 ```

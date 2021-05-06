@@ -14,7 +14,7 @@ It's possible to see numbers 1, 2 and 3 in the image below, each representing a 
 details later in this document, but for now, here is a summary of what's happening:
 
 * <strong>Step 1</strong>: The user types a CLI command requesting one of the possible
-  interactions with a linux process. Username will be provided as a CLI flag.
+  interactions with a linux process. An API Token will be provided as a CLI flag.
 
 * <strong>Step 2</strong>: The CLI application parses the user's command and translates it into an HTTPS request for the Server. The API module of the Server receives
   the request, checks if the input is valid and verifies if the user is authorized to perform the requested operation.
@@ -42,15 +42,15 @@ and exhibit the responses in a structured manner. This section will:
 
 ### Commands
 
-* [Create Job](cli/jobs/create-job.md): `job-worker exec -s SERVER_URL -u USERNAME -c EXECUTABLE [ARG...]`
-* [List Jobs](cli/jobs/list-jobs.md): `job-worker list -s SERVER_URL -u USERNAME`
-* [Stop Job](cli/jobs/stop-job.md): `job-worker stop -s SERVER_URL -u USERNAME -i JOB_ID`
-* [Get Job Status](cli/jobs/get-status.md): `job-worker status -s SERVER_URL -u USERNAME -i JOB_ID`
-* [Get Job Logs](cli/jobs/get-logs.md): `job-worker logs -s SERVER_URL -u USERNAME -i JOB_ID`
+* [Create Job](cli/jobs/create-job.md): `job-worker exec -s SERVER_URL -t API_TOKEN -c EXECUTABLE`
+* [List Jobs](cli/jobs/list-jobs.md): `job-worker list -s SERVER_URL -t API_TOKEN`
+* [Stop Job](cli/jobs/stop-job.md): `job-worker stop -s SERVER_URL -t API_TOKEN -i JOB_ID`
+* [Get Job Status](cli/jobs/get-status.md): `job-worker status -s SERVER_URL -t API_TOKEN -i JOB_ID`
+* [Get Job Logs](cli/jobs/get-logs.md): `job-worker logs -s SERVER_URL -t API_TOKEN -i JOB_ID`
 
 ### Managing User Secrets
 
-For the sake of simplicity, the CLI will receive a username input each time a command is invoked. This username will be matched against a set of seed users,
+For the sake of simplicity, the CLI will receive an api token input each time a command is invoked. This api token will be matched against a set of seed api tokens,
 and if a match happens, a hardcoded JWT token will be sent in the form `Authorization: Bearer <jwtToken>`. This token will be used to authenticate requests with the Server and
 its generation will be explained in Server Security section.
 
@@ -116,18 +116,18 @@ HTTPS/TLS will be configured in the Server with the following steps:
 #### Authentication
 
 Every request made to the Server must contain an authorization header in the form `Authorization: Bearer <jwtToken>`,
-where `<jwtToken>` is a JWT token with `username` and `role` claims. The token will be signed using the RSA algorithm
+where `<jwtToken>` is a JWT token with `apiToken` and `role` claims. The token will be signed using the RSA algorithm
 and SHA-512 hash algorithm.
 
 Claims example:
 ```
 {
-  "username": "someuser",
+  "apiToken": "6q6Tz5NBELFo5E9iOSEo",
   "role": "admin" // we'll have 2 possible roles - will be used to enforce authorization
 }
 ```
 
-After receiving the request, the Server will check if the token is valid and if the `username` claim matches any user in
+After receiving the request, the Server will check if the token is valid and if the `apiToken` claim matches any user's api token in
 its in-memory database. If the request is not valid, a `401 Unauthorized` will be returned.
 
 As explained before, JWT tokens will be mocked in the initial Job Worker version. Since there won't be a login step, tokens

@@ -6,17 +6,17 @@
 
 ### Synopsis
 
-<strong>job-worker status -s SERVER_URL -u USERNAME -i JOB_ID</strong>
+<strong>job-worker status -s SERVER_URL -t API_TOKEN -i JOB_ID</strong>
 
 ### Description
 
 * <strong>-s:</strong> Server url. Must start with `https`, otherwise command will return with an error.
-* <strong>-u:</strong> Username;
+* <strong>-t:</strong> API token the user possess. This token is a random string with 20 digits, uppercase and lowercase letters and digits;
 * <strong>-i:</strong> UUIDV4 string representing the Job ID. This id can be found after running the [list jobs command](list-jobs.md).
 
 ### Examples
 
-<strong>Command:</strong> `job-worker status -s https://server-url.com -u user -p pass -i 1d655e68-aae0-43d2-adc7-b47c81f1b37e`
+<strong>Command:</strong> `job-worker status -s https://server-url.com -t 6q6Tz5NBELFo5E9iOSEo -i 1d655e68-aae0-43d2-adc7-b47c81f1b37e`
 
 <strong>Expected successful output:</strong>
 ```

@@ -6,16 +6,16 @@
 
 ### Synopsis
 
-<strong>job-worker list -s SERVER_URL -u USERNAME</strong>
+<strong>job-worker list -s SERVER_URL -t API_TOKEN</strong>
 
 ### Description:
 
 * <strong>-s:</strong> Server url. Must start with `https`, otherwise command will return with an error.
-* <strong>-u:</strong> Username;
+* <strong>-t:</strong> API token the user possess. This token is a random string with 20 digits, uppercase and lowercase letters and digits;
 
 ### Examples
 
-<strong>Command:</strong> `job-worker list -s https://server-url.com -u user -p pass`
+<strong>Command:</strong> `job-worker list -s https://server-url.com -t 6q6Tz5NBELFo5E9iOSEo`
 
 <strong>Expected successful output:</strong>
 ```
