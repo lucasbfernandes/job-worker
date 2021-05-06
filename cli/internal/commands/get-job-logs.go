@@ -18,7 +18,7 @@ func (w *WorkerCLI) GetJobLogs(parameters []string) error {
 	}
 
 	if *jobID == "" {
-		return errors.New("serverUrl and jobId shouldn't be empty")
+		return errors.New("job id cannot be empty")
 	}
 
 	response, err := w.workerCLIInteractor.GetJobLogs(*serverURL, *jobID)

@@ -88,8 +88,8 @@
     headers:
       content-type: application/json
     body: >
-      "hello test!
-       ls: wrongfile: No such file or directory"
+       hello test!
+       ls: wrongfile: No such file or directory
 
 # POST /jobs/:id/stop
 - request:
