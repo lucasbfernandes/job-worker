@@ -7,7 +7,7 @@ const (
 )
 
 func GetDefaultServerURL() string {
-	envDefaultServer, envExists := os.LookupEnv("DEFAULT_SERVER")
+	envDefaultServer, envExists := os.LookupEnv("DEFAULT_SERVER_URL")
 	if envExists && envDefaultServer != "" {
 		return envDefaultServer
 	}

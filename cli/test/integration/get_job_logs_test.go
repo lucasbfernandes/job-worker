@@ -14,8 +14,7 @@ type GetJobLogsInteractorIntegrationTestSuite struct {
 }
 
 func (suite *GetJobLogsInteractorIntegrationTestSuite) TestShouldReturnCorrectStringWhenRequestIsSuccessful() {
-	expectedResponse := `"hello test!
- ls: wrongfile: No such file or directory"`
+	expectedResponse := `hello test! ls: wrongfile: No such file or directory`
 
 	workerCLIInteractor := interactors.NewWorkerCLIInteractor()
 	response, err := workerCLIInteractor.GetJobLogs(config.GetDefaultServerURL(), "mock-id")
