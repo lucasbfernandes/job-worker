@@ -7,11 +7,6 @@ import (
 	"errors"
 )
 
-const (
-	jobsPath     = "/jobs/"
-	stopJobsVerb = "/stop"
-)
-
 func (i *WorkerCLIInteractor) StopJob(serverURL string, jobID string) error {
 	err := requestStopJob(serverURL, jobID)
 	if err != nil {
@@ -26,7 +21,7 @@ func requestStopJob(serverURL string, jobID string) error {
 	client := resty.New()
 	response, err := client.R().
 		SetError(&stopJobError).
-		Post(serverURL + jobsPath + jobID + stopJobsVerb)
+		Post(serverURL + jobsPath + "/" + jobID + stopJobsPath)
 
 	if err != nil {
 		return err

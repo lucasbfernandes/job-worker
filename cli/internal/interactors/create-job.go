@@ -7,10 +7,6 @@ import (
 	"errors"
 )
 
-const (
-	createJobPath = "/jobs"
-)
-
 func (i *WorkerCLIInteractor) CreateJob(serverURL string, command []string) (*string, error) {
 	createJobRequest := dto.NewCreateJobRequest(command)
 	createJobResponse, err := requestCreateJob(serverURL, createJobRequest)
@@ -29,7 +25,7 @@ func requestCreateJob(serverURL string, createJobRequest *dto.CreateJobRequest) 
 		SetBody(createJobRequest).
 		SetResult(&createJobResponse).
 		SetError(&createJobError).
-		Post(serverURL + createJobPath)
+		Post(serverURL + jobsPath)
 
 	if err != nil {
 		return nil, err

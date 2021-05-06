@@ -8,10 +8,6 @@ import (
 	"fmt"
 )
 
-const (
-	getJobsPath = "/jobs"
-)
-
 func (i *WorkerCLIInteractor) GetJobs(serverURL string) (*string, error) {
 	getJobsResponse, err := requestGetJobs(serverURL)
 	if err != nil {
@@ -35,7 +31,7 @@ func requestGetJobs(serverURL string) (*dto.GetJobsResponse, error) {
 	response, err := client.R().
 		SetResult(&getJobsResponse).
 		SetError(&getJobsError).
-		Get(serverURL + getJobsPath)
+		Get(serverURL + jobsPath)
 
 	if err != nil {
 		return nil, err
@@ -55,7 +51,7 @@ func parseGetJobsResponse(getJobsResponse *dto.GetJobsResponse) *string {
 	parsedResponse := ""
 	for index, job := range getJobsResponse.Jobs {
 		parsedResponse += fmt.Sprintf(
-			"%d\nid: %s\ncommand: %s\nstatus: %s\ncreatedAt: %s\nfinishedAt: %s\n",
+			"\n%d\nid: %s\ncommand: %s\nstatus: %s\ncreatedAt: %s\nfinishedAt: %s\n",
 			index+1, job.ID, job.Command, job.Status, job.CreatedAt, job.FinishedAt,
 		)
 	}
