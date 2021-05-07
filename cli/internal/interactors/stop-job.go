@@ -37,6 +37,9 @@ func requestStopJob(serverURL string, jobID string, apiToken string) error {
 	}
 
 	if response.IsError() {
+		if response.StatusCode() == 401 {
+			return errors.New("failed authentication - unauthorized")
+		}
 		if stopJobError.Error != "" {
 			return errors.New(stopJobError.Error)
 		}

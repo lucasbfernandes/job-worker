@@ -42,6 +42,9 @@ func requestGetJobStatus(serverURL string, jobID string, apiToken string) (*dto.
 	}
 
 	if response.IsError() {
+		if response.StatusCode() == 401 {
+			return nil, errors.New("failed authentication - unauthorized")
+		}
 		if getJobStatusError.Error != "" {
 			return nil, errors.New(getJobStatusError.Error)
 		}
