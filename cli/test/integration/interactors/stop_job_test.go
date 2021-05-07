@@ -15,7 +15,7 @@ type StopJobInteractorIntegrationTestSuite struct {
 
 func (suite *StopJobInteractorIntegrationTestSuite) TestShouldNotReturnErrorWhenRequestIsSuccessful() {
 	workerCLIInteractor := interactors.NewWorkerCLIInteractor()
-	err := workerCLIInteractor.StopJob(integration.GetDefaultTestsServerURL(), "mock-id")
+	err := workerCLIInteractor.StopJob(integration.GetDefaultTestsServerURL(), "mock-id", "qTMaYIfw8q3esZ6Dv2rQ")
 	assert.Nil(suite.T(), err, "error should be nil")
 }
 

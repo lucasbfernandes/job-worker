@@ -11,6 +11,7 @@ func (w *WorkerCLI) StopJob(parameters []string) error {
 	stopCmd := flag.NewFlagSet("exec", flag.ExitOnError)
 	serverURL := stopCmd.String("s", config.GetDefaultServerURL(), "server url")
 	jobID := stopCmd.String("i", "", "job id")
+	apiToken := stopCmd.String("t", "", "user api token")
 
 	err := stopCmd.Parse(parameters)
 	if err != nil {
@@ -21,7 +22,11 @@ func (w *WorkerCLI) StopJob(parameters []string) error {
 		return errors.New("job id cannot be empty")
 	}
 
-	err = w.workerCLIInteractor.StopJob(*serverURL, *jobID)
+	if *apiToken == "" {
+		return errors.New("api token cannot be empty")
+	}
+
+	err = w.workerCLIInteractor.StopJob(*serverURL, *jobID, *apiToken)
 	if err != nil {
 		return err
 	}

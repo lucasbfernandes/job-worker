@@ -32,4 +32,4 @@ services:
       - LOGS_DIR=/app/server/logs
       - TLS_CERT_FILE_PATH=/app/server/cert/server.crt
       - TLS_KEY_FILE_PATH=/app/server/cert/server.key
-      - JWT_CERT_FILE_PATH=/app/server/cert/jwt.key
+      - JWT_CERT_FILE_PATH=/app/server/cert/jwt.crt

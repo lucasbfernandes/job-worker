@@ -4,13 +4,14 @@ import (
 	"github.com/go-resty/resty/v2"
 
 	"cli/internal/dto"
+	"cli/internal/security"
 	"crypto/tls"
 	"errors"
 	"fmt"
 )
 
-func (i *WorkerCLIInteractor) GetJobs(serverURL string) (*string, error) {
-	getJobsResponse, err := requestGetJobs(serverURL)
+func (i *WorkerCLIInteractor) GetJobs(serverURL string, apiToken string) (*string, error) {
+	getJobsResponse, err := requestGetJobs(serverURL, apiToken)
 	if err != nil {
 		return nil, err
 	}
@@ -24,13 +25,19 @@ func (i *WorkerCLIInteractor) GetJobs(serverURL string) (*string, error) {
 	return parsedResponse, nil
 }
 
-func requestGetJobs(serverURL string) (*dto.GetJobsResponse, error) {
+func requestGetJobs(serverURL string, apiToken string) (*dto.GetJobsResponse, error) {
 	var getJobsResponse dto.GetJobsResponse
 	var getJobsError dto.JobsError
+
+	bearerToken, err := security.AuthenticateUser(apiToken)
+	if err != nil {
+		return nil, err
+	}
 
 	// We are skipping this verification because server has a self-signed certificate
 	client := resty.New().SetTLSClientConfig(&tls.Config{InsecureSkipVerify: true})
 	response, err := client.R().
+		SetHeader("Authorization", "Bearer "+*bearerToken).
 		SetResult(&getJobsResponse).
 		SetError(&getJobsError).
 		Get(serverURL + jobsPath)

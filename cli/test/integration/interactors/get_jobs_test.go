@@ -31,7 +31,7 @@ finishedAt: 2021-05-04 22:12:09.745
 `
 
 	workerCLIInteractor := interactors.NewWorkerCLIInteractor()
-	response, err := workerCLIInteractor.GetJobs(integration.GetDefaultTestsServerURL())
+	response, err := workerCLIInteractor.GetJobs(integration.GetDefaultTestsServerURL(), "qTMaYIfw8q3esZ6Dv2rQ")
 	assert.Nil(suite.T(), err, "error should be nil")
 	assert.Equal(suite.T(), expectedResponse, *response, "wrong get logs response")
 }

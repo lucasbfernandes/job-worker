@@ -17,7 +17,7 @@ func (suite *GetJobLogsInteractorIntegrationTestSuite) TestShouldReturnCorrectSt
 	expectedResponse := `hello test! ls: wrongfile: No such file or directory`
 
 	workerCLIInteractor := interactors.NewWorkerCLIInteractor()
-	response, err := workerCLIInteractor.GetJobLogs(integration.GetDefaultTestsServerURL(), "mock-id")
+	response, err := workerCLIInteractor.GetJobLogs(integration.GetDefaultTestsServerURL(), "mock-id", "qTMaYIfw8q3esZ6Dv2rQ")
 	assert.Nil(suite.T(), err, "error should be nil")
 	assert.Equal(suite.T(), expectedResponse, *response, "wrong get logs response")
 }
