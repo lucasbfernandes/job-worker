@@ -19,6 +19,10 @@ type GetJobsInteractorIntegrationTestSuite struct {
 	suite.Suite
 
 	interactor *interactors.ServerInteractor
+
+	admin *userEntity.User
+
+	user *userEntity.User
 }
 
 func (suite *GetJobsInteractorIntegrationTestSuite) SetupSuite() {
@@ -28,6 +32,21 @@ func (suite *GetJobsInteractorIntegrationTestSuite) SetupSuite() {
 	}
 
 	suite.interactor, err = interactors.NewServerInteractor()
+	if err != nil {
+		suite.FailNow(fmt.Sprintf("failed to setup test suite: %s", err))
+	}
+
+	err = suite.interactor.Database.SeedUsers()
+	if err != nil {
+		suite.FailNow(fmt.Sprintf("failed to setup test suite: %s", err))
+	}
+
+	suite.admin, err = suite.interactor.Database.GetUserOrFailByAPIToken("qTMaYIfw8q3esZ6Dv2rQ")
+	if err != nil {
+		suite.FailNow(fmt.Sprintf("failed to setup test suite: %s", err))
+	}
+
+	suite.user, err = suite.interactor.Database.GetUserOrFailByAPIToken("9EzGJOTcMHFMXphfvAuM")
 	if err != nil {
 		suite.FailNow(fmt.Sprintf("failed to setup test suite: %s", err))
 	}
@@ -48,7 +67,7 @@ func (suite *GetJobsInteractorIntegrationTestSuite) TearDownTest() {
 }
 
 func (suite *GetJobsInteractorIntegrationTestSuite) TestShouldReturnEmptyArrayWhenNoJobsWerePersisted() {
-	response, err := suite.interactor.GetJobs()
+	response, err := suite.interactor.GetJobs(suite.admin)
 	assert.Nil(suite.T(), err, "get jobs interactor returned with error")
 
 	assert.Equal(suite.T(), &dto.GetJobsResponse{Jobs: []dto.JobResponse{}}, response, "wrong get jobs response")
@@ -64,7 +83,7 @@ func (suite *GetJobsInteractorIntegrationTestSuite) TestShouldReturnCorrectArray
 	err = suite.interactor.Database.UpsertJob(job)
 	assert.Nil(suite.T(), err, "upsert job returned with error")
 
-	response, err := suite.interactor.GetJobs()
+	response, err := suite.interactor.GetJobs(suite.admin)
 	assert.Nil(suite.T(), err, "get jobs interactor returned with error")
 
 	expectedResponse := &dto.GetJobsResponse{Jobs: []dto.JobResponse{dto.JobResponseFromJob(job)}}

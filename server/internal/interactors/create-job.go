@@ -5,17 +5,13 @@ import (
 	"log"
 	"server/internal/dto"
 	jobEntity "server/internal/models/job"
+	userEntity "server/internal/models/user"
 	"server/internal/repository"
 	"server/pkg/worker"
 	"time"
 )
 
-func (s *ServerInteractor) CreateJob(createJobRequest dto.CreateJobRequest, apiToken string) (*dto.CreateJobResponse, error) {
-	user, err := s.Database.GetUserOrFailByAPIToken(apiToken)
-	if err != nil {
-		return nil, err
-	}
-
+func (s *ServerInteractor) CreateJob(createJobRequest dto.CreateJobRequest, user *userEntity.User) (*dto.CreateJobResponse, error) {
 	job := createJobRequest.ToJob(user)
 	process, err := s.createWorkerProcess(createJobRequest.Command)
 	if err != nil {

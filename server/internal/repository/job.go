@@ -69,3 +69,26 @@ func (db *InMemoryDatabase) GetAllJobs() ([]*jobEntity.Job, error) {
 
 	return jobs, nil
 }
+
+func (db *InMemoryDatabase) GetAllUserJobs(userID string) ([]*jobEntity.Job, error) {
+	db.mutex.Lock()
+	defer db.mutex.Unlock()
+
+	txn := db.instance.Txn(false)
+	defer txn.Abort()
+
+	jobs := make([]*jobEntity.Job, 0)
+	jobIterator, err := txn.Get("job", "id")
+	if err != nil {
+		return nil, fmt.Errorf("failed to get all user jobs: %s", err)
+	}
+
+	for rawJob := jobIterator.Next(); rawJob != nil; rawJob = jobIterator.Next() {
+		job := rawJob.(*jobEntity.Job)
+		if job.UserID == userID {
+			jobs = append(jobs, job)
+		}
+	}
+
+	return jobs, nil
+}

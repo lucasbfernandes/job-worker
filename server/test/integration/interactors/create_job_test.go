@@ -7,10 +7,10 @@ import (
 	"fmt"
 	"log"
 	"os"
-
 	"server/internal/dto"
 	"server/internal/interactors"
 	jobEntity "server/internal/models/job"
+	userEntity "server/internal/models/user"
 	"server/internal/repository"
 	"server/test/integration"
 	"testing"
@@ -22,9 +22,9 @@ type CreateJobInteractorIntegrationTestSuite struct {
 
 	interactor *interactors.ServerInteractor
 
-	adminToken string
+	admin *userEntity.User
 
-	userToken string
+	user *userEntity.User
 }
 
 func (suite *CreateJobInteractorIntegrationTestSuite) SetupSuite() {
@@ -38,17 +38,24 @@ func (suite *CreateJobInteractorIntegrationTestSuite) SetupSuite() {
 		suite.FailNow(fmt.Sprintf("failed to setup test suite: %s", err))
 	}
 
-	suite.adminToken = "qTMaYIfw8q3esZ6Dv2rQ"
-	suite.userToken = "9EzGJOTcMHFMXphfvAuM"
+	err = suite.interactor.Database.SeedUsers()
+	if err != nil {
+		suite.FailNow(fmt.Sprintf("failed to setup test suite: %s", err))
+	}
+
+	suite.admin, err = suite.interactor.Database.GetUserOrFailByAPIToken("qTMaYIfw8q3esZ6Dv2rQ")
+	if err != nil {
+		suite.FailNow(fmt.Sprintf("failed to setup test suite: %s", err))
+	}
+
+	suite.user, err = suite.interactor.Database.GetUserOrFailByAPIToken("9EzGJOTcMHFMXphfvAuM")
+	if err != nil {
+		suite.FailNow(fmt.Sprintf("failed to setup test suite: %s", err))
+	}
 }
 
 func (suite *CreateJobInteractorIntegrationTestSuite) SetupTest() {
 	err := repository.CreateLogsDir()
-	if err != nil {
-		suite.FailNow(fmt.Sprintf("failed to setup test: %s", err))
-	}
-
-	err = suite.interactor.Database.SeedUsers()
 	if err != nil {
 		suite.FailNow(fmt.Sprintf("failed to setup test: %s", err))
 	}
@@ -66,7 +73,7 @@ func (suite *CreateJobInteractorIntegrationTestSuite) TestShouldPersistJobWithCo
 		Command: []string{"ls", "-la"},
 	}
 
-	response, err := suite.interactor.CreateJob(request, suite.adminToken)
+	response, err := suite.interactor.CreateJob(request, suite.admin)
 	assert.Nil(suite.T(), err, "create job interactor returned with error")
 
 	job, err := suite.interactor.Database.GetJobOrFail(response.ID)
@@ -83,7 +90,7 @@ func (suite *CreateJobInteractorIntegrationTestSuite) TestShouldNotPersistJobWhe
 		Command: []string{},
 	}
 
-	response, err := suite.interactor.CreateJob(request, suite.adminToken)
+	response, err := suite.interactor.CreateJob(request, suite.admin)
 	assert.NotNil(suite.T(), err, "create job interactor returned without error")
 	assert.Nil(suite.T(), response, "returned non empty job response")
 
@@ -97,7 +104,7 @@ func (suite *CreateJobInteractorIntegrationTestSuite) TestShouldCreateOutputFile
 		Command: []string{"ls", "-la"},
 	}
 
-	response, err := suite.interactor.CreateJob(request, suite.adminToken)
+	response, err := suite.interactor.CreateJob(request, suite.admin)
 	assert.Nil(suite.T(), err, "create job interactor returned with error")
 
 	logFile, err := repository.GetLogFile(response.ID)
@@ -111,7 +118,7 @@ func (suite *CreateJobInteractorIntegrationTestSuite) TestShouldNotCreateOutputF
 		Command: []string{},
 	}
 
-	response, err := suite.interactor.CreateJob(request, suite.adminToken)
+	response, err := suite.interactor.CreateJob(request, suite.admin)
 	assert.NotNil(suite.T(), err, "create job interactor returned without error")
 	assert.Nil(suite.T(), response, "returned non empty job response")
 
@@ -125,7 +132,7 @@ func (suite *CreateJobInteractorIntegrationTestSuite) TestStdoutShouldHaveConten
 		Command: []string{"ls", "-la"},
 	}
 
-	response, err := suite.interactor.CreateJob(request, suite.adminToken)
+	response, err := suite.interactor.CreateJob(request, suite.admin)
 	assert.Nil(suite.T(), err, "create job interactor returned with error")
 
 	time.Sleep(250 * time.Millisecond)
@@ -145,7 +152,7 @@ func (suite *CreateJobInteractorIntegrationTestSuite) TestStderrShouldHaveConten
 		Command: []string{"ls", "1000assa"},
 	}
 
-	response, err := suite.interactor.CreateJob(request, suite.adminToken)
+	response, err := suite.interactor.CreateJob(request, suite.admin)
 	assert.Nil(suite.T(), err, "create job interactor returned with error")
 
 	time.Sleep(250 * time.Millisecond)
@@ -165,7 +172,7 @@ func (suite *CreateJobInteractorIntegrationTestSuite) TestShouldPersistCorrectJo
 		Command: []string{"ls", "100000asdas"},
 	}
 
-	response, err := suite.interactor.CreateJob(request, suite.adminToken)
+	response, err := suite.interactor.CreateJob(request, suite.admin)
 	assert.Nil(suite.T(), err, "create job interactor returned with error")
 
 	time.Sleep(250 * time.Millisecond)
@@ -183,7 +190,7 @@ func (suite *CreateJobInteractorIntegrationTestSuite) TestShouldPersistCorrectJo
 		Command: []string{"sleep", "4"},
 	}
 
-	response, err := suite.interactor.CreateJob(request, suite.adminToken)
+	response, err := suite.interactor.CreateJob(request, suite.admin)
 	assert.Nil(suite.T(), err, "create job interactor returned with error")
 
 	time.Sleep(1100 * time.Millisecond)
@@ -201,7 +208,7 @@ func (suite *CreateJobInteractorIntegrationTestSuite) TestShouldPersistCorrectJo
 		Command: []string{"echo", "hello test world"},
 	}
 
-	response, err := suite.interactor.CreateJob(request, suite.adminToken)
+	response, err := suite.interactor.CreateJob(request, suite.admin)
 	assert.Nil(suite.T(), err, "create job interactor returned with error")
 
 	time.Sleep(250 * time.Millisecond)

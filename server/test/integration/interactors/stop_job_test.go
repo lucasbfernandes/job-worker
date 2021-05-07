@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"server/internal/dto"
 	jobEntity "server/internal/models/job"
+	userEntity "server/internal/models/user"
 	"server/internal/repository"
 	"time"
 
@@ -20,9 +21,9 @@ type StopJobInteractorIntegrationTestSuite struct {
 
 	interactor *interactors.ServerInteractor
 
-	adminToken string
+	admin *userEntity.User
 
-	userToken string
+	user *userEntity.User
 }
 
 func (suite *StopJobInteractorIntegrationTestSuite) SetupSuite() {
@@ -36,17 +37,24 @@ func (suite *StopJobInteractorIntegrationTestSuite) SetupSuite() {
 		suite.FailNow(fmt.Sprintf("failed to setup test suite: %s", err))
 	}
 
-	suite.adminToken = "qTMaYIfw8q3esZ6Dv2rQ"
-	suite.userToken = "9EzGJOTcMHFMXphfvAuM"
+	err = suite.interactor.Database.SeedUsers()
+	if err != nil {
+		suite.FailNow(fmt.Sprintf("failed to setup test suite: %s", err))
+	}
+
+	suite.admin, err = suite.interactor.Database.GetUserOrFailByAPIToken("qTMaYIfw8q3esZ6Dv2rQ")
+	if err != nil {
+		suite.FailNow(fmt.Sprintf("failed to setup test suite: %s", err))
+	}
+
+	suite.user, err = suite.interactor.Database.GetUserOrFailByAPIToken("9EzGJOTcMHFMXphfvAuM")
+	if err != nil {
+		suite.FailNow(fmt.Sprintf("failed to setup test suite: %s", err))
+	}
 }
 
 func (suite *StopJobInteractorIntegrationTestSuite) SetupTest() {
 	err := repository.CreateLogsDir()
-	if err != nil {
-		suite.FailNow(fmt.Sprintf("failed to setup test: %s", err))
-	}
-
-	err = suite.interactor.Database.SeedUsers()
 	if err != nil {
 		suite.FailNow(fmt.Sprintf("failed to setup test: %s", err))
 	}
@@ -69,7 +77,7 @@ func (suite *StopJobInteractorIntegrationTestSuite) TestShouldStopJobSuccessfull
 		Command: []string{"sleep", "10"},
 	}
 
-	createJobResponse, err := suite.interactor.CreateJob(request, suite.adminToken)
+	createJobResponse, err := suite.interactor.CreateJob(request, suite.admin)
 	assert.Nil(suite.T(), err, "create job interactor returned with error")
 
 	time.Sleep(250 * time.Millisecond)
@@ -91,7 +99,7 @@ func (suite *StopJobInteractorIntegrationTestSuite) TestShouldFailWhenJobHasAlre
 		Command: []string{"sleep", "10"},
 	}
 
-	createJobResponse, err := suite.interactor.CreateJob(request, suite.adminToken)
+	createJobResponse, err := suite.interactor.CreateJob(request, suite.admin)
 	assert.Nil(suite.T(), err, "create job interactor returned with error")
 
 	time.Sleep(250 * time.Millisecond)

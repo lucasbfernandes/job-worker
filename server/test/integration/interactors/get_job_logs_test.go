@@ -2,6 +2,7 @@ package integration_interactors_test
 
 import (
 	"fmt"
+	userEntity "server/internal/models/user"
 	"server/internal/repository"
 
 	"github.com/stretchr/testify/assert"
@@ -19,9 +20,9 @@ type GetJobLogsInteractorIntegrationTestSuite struct {
 
 	interactor *interactors.ServerInteractor
 
-	adminToken string
+	admin *userEntity.User
 
-	userToken string
+	user *userEntity.User
 }
 
 func (suite *GetJobLogsInteractorIntegrationTestSuite) SetupSuite() {
@@ -35,17 +36,24 @@ func (suite *GetJobLogsInteractorIntegrationTestSuite) SetupSuite() {
 		suite.FailNow(fmt.Sprintf("failed to setup test suite: %s", err))
 	}
 
-	suite.adminToken = "qTMaYIfw8q3esZ6Dv2rQ"
-	suite.userToken = "9EzGJOTcMHFMXphfvAuM"
+	err = suite.interactor.Database.SeedUsers()
+	if err != nil {
+		suite.FailNow(fmt.Sprintf("failed to setup test suite: %s", err))
+	}
+
+	suite.admin, err = suite.interactor.Database.GetUserOrFailByAPIToken("qTMaYIfw8q3esZ6Dv2rQ")
+	if err != nil {
+		suite.FailNow(fmt.Sprintf("failed to setup test suite: %s", err))
+	}
+
+	suite.user, err = suite.interactor.Database.GetUserOrFailByAPIToken("9EzGJOTcMHFMXphfvAuM")
+	if err != nil {
+		suite.FailNow(fmt.Sprintf("failed to setup test suite: %s", err))
+	}
 }
 
 func (suite *GetJobLogsInteractorIntegrationTestSuite) SetupTest() {
 	err := repository.CreateLogsDir()
-	if err != nil {
-		suite.FailNow(fmt.Sprintf("failed to setup test: %s", err))
-	}
-
-	err = suite.interactor.Database.SeedUsers()
 	if err != nil {
 		suite.FailNow(fmt.Sprintf("failed to setup test: %s", err))
 	}
@@ -63,7 +71,7 @@ func (suite *GetJobLogsInteractorIntegrationTestSuite) TestShouldReturnLogsCorre
 		Command: []string{"echo", "this is a test"},
 	}
 
-	createJobResponse, err := suite.interactor.CreateJob(request, suite.adminToken)
+	createJobResponse, err := suite.interactor.CreateJob(request, suite.admin)
 	assert.Nil(suite.T(), err, "create job interactor returned with error")
 
 	time.Sleep(250 * time.Millisecond)
@@ -80,7 +88,7 @@ func (suite *GetJobLogsInteractorIntegrationTestSuite) TestShouldReturnLogsCorre
 		Command: []string{"ls", "abobora"},
 	}
 
-	createJobResponse, err := suite.interactor.CreateJob(request, suite.adminToken)
+	createJobResponse, err := suite.interactor.CreateJob(request, suite.admin)
 	assert.Nil(suite.T(), err, "create job interactor returned with error")
 
 	time.Sleep(250 * time.Millisecond)
@@ -97,7 +105,7 @@ func (suite *GetJobLogsInteractorIntegrationTestSuite) TestShouldReturnLogsCorre
 		Command: []string{"sh", "-c", "echo hello test! && ls what"},
 	}
 
-	createJobResponse, err := suite.interactor.CreateJob(request, suite.adminToken)
+	createJobResponse, err := suite.interactor.CreateJob(request, suite.admin)
 	assert.Nil(suite.T(), err, "create job interactor returned with error")
 
 	time.Sleep(250 * time.Millisecond)

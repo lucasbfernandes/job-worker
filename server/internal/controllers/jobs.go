@@ -6,12 +6,13 @@ import (
 	"log"
 	"net/http"
 	"server/internal/dto"
+	userEntity "server/internal/models/user"
 )
 
 func (s *Server) CreateJob(context *gin.Context) {
-	apiToken, exists := context.Get("apiToken")
+	user, exists := context.Get("user")
 	if !exists {
-		context.AbortWithStatus(http.StatusUnauthorized)
+		context.AbortWithStatus(http.StatusNotFound)
 	}
 
 	var createJobRequest dto.CreateJobRequest
@@ -22,7 +23,7 @@ func (s *Server) CreateJob(context *gin.Context) {
 		return
 	}
 
-	createJobResponse, err := s.interactor.CreateJob(createJobRequest, apiToken.(string))
+	createJobResponse, err := s.interactor.CreateJob(createJobRequest, user.(*userEntity.User))
 	if err != nil {
 		log.Printf("failed to create job: %s\n", err)
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
@@ -45,7 +46,12 @@ func (s *Server) StopJob(context *gin.Context) {
 }
 
 func (s *Server) GetJobs(context *gin.Context) {
-	getJobsResponse, err := s.interactor.GetJobs()
+	user, exists := context.Get("user")
+	if !exists {
+		context.AbortWithStatus(http.StatusNotFound)
+	}
+
+	getJobsResponse, err := s.interactor.GetJobs(user.(*userEntity.User))
 	if err != nil {
 		log.Printf("failed to get jobs: %s\n", err)
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})

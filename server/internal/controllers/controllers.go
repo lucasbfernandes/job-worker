@@ -10,6 +10,7 @@ import (
 	"os"
 	"os/signal"
 	"server/internal/interactors"
+	userEntity "server/internal/models/user"
 	"server/internal/repository"
 	"server/internal/sec"
 	"strconv"
@@ -86,13 +87,18 @@ func (s *Server) createLogsDir() error {
 func (s *Server) startAPI(appPort int) error {
 	router := gin.Default()
 
-	router.Use(s.AuthorizeJWT())
+	router.Use(s.JWTGuard())
+	router.Use(s.UserExistenceGuard())
 
 	router.POST("/jobs", s.CreateJob)
-	router.POST("/jobs/:id/stop", s.StopJob)
 	router.GET("/jobs", s.GetJobs)
-	router.GET("/jobs/:id/status", s.GetJobStatus)
-	router.GET("/jobs/:id/logs", s.GetJobLogs)
+
+	authzRoutes := router.Group("/")
+	authzRoutes.Use(s.UserJobGuard())
+
+	authzRoutes.POST("/jobs/:id/stop", s.StopJob)
+	authzRoutes.GET("/jobs/:id/status", s.GetJobStatus)
+	authzRoutes.GET("/jobs/:id/logs", s.GetJobLogs)
 
 	err := router.RunTLS(":"+strconv.Itoa(appPort), sec.GetTLSCertFilePath(), sec.GetTLSKeyFilePath())
 	if err != nil {
@@ -101,7 +107,7 @@ func (s *Server) startAPI(appPort int) error {
 	return nil
 }
 
-func (s *Server) AuthorizeJWT() gin.HandlerFunc {
+func (s *Server) JWTGuard() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		const bearerSchema = "Bearer"
 		authHeader := c.GetHeader("Authorization")
@@ -130,5 +136,45 @@ func (s *Server) AuthorizeJWT() gin.HandlerFunc {
 		}
 
 		c.Set("apiToken", claims["apiToken"])
+	}
+}
+
+func (s *Server) UserExistenceGuard() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		apiToken, exists := c.Get("apiToken")
+		if !exists {
+			c.AbortWithStatus(http.StatusUnauthorized)
+			return
+		}
+
+		user, err := s.interactor.Database.GetUserOrFailByAPIToken(apiToken.(string))
+		if err != nil {
+			c.AbortWithStatus(http.StatusNotFound)
+			return
+		}
+
+		c.Set("user", user)
+	}
+}
+
+func (s *Server) UserJobGuard() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		user, exists := c.Get("user")
+		if !exists {
+			c.AbortWithStatus(http.StatusNotFound)
+			return
+		}
+		userOBJ := user.(*userEntity.User)
+
+		jobID := c.Param("id")
+		job, err := s.interactor.Database.GetJobOrFail(jobID)
+		if err != nil {
+			c.AbortWithStatus(http.StatusNotFound)
+		}
+
+		// If user is ADMIN, then we skip this verification
+		if userOBJ.Role == userEntity.UserRole && userOBJ.ID != job.UserID {
+			c.AbortWithStatus(http.StatusUnauthorized)
+		}
 	}
 }
