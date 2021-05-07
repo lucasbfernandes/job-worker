@@ -86,13 +86,13 @@ Get Job Logs:
 
 <strong>PS:</strong>
 
-SERVER_URL will default to http://server:8080 but you can override it with the `-s` flag.
+SERVER_URL will default to https://server:8080 but you can override it with the `-s` flag.
 
 The Job Worker has 2 available users. One with the `ADMIN` role and another with the `USER` role.
 Both have access to every resource, with the only difference being that the `ADMIN` can interact with all resources,
 even those created by other users.
 
-These are the tokens associated with the users:
+These are the API tokens associated with the users:
 
 * ADMIN - `qTMaYIfw8q3esZ6Dv2rQ`
 * USER - `9EzGJOTcMHFMXphfvAuM`
