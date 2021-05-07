@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 	"server/internal/repository"
+	"strings"
 )
 
 func (s *ServerInteractor) GetJobLogs(jobID string) (*string, error) {
@@ -28,22 +29,14 @@ func (s *ServerInteractor) GetJobLogs(jobID string) (*string, error) {
 }
 
 func (s *ServerInteractor) getLogContent(logFile *os.File) (*string, error) {
-	bufferSize := 100
-	contentBytes := make([]byte, 0)
-	buffer := make([]byte, bufferSize)
+	buf := new(strings.Builder)
 
-	for {
-		numberOfBytes, err := logFile.Read(buffer)
-		if err != nil {
-			if err == io.EOF {
-				break
-			}
-			return nil, err
-		}
-		contentBytes = append(contentBytes, buffer[:numberOfBytes]...)
+	_, err := io.Copy(buf, logFile)
+	if err != nil {
+		return nil, err
 	}
 
-	logContent := string(contentBytes)
+	logContent := buf.String()
 	return &logContent, nil
 }
 
