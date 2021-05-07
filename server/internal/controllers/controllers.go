@@ -19,7 +19,7 @@ import (
 )
 
 type Server struct {
-	interactor *interactors.ServerInteractor
+	Interactor *interactors.ServerInteractor
 	secService *security.SecService
 }
 
@@ -35,7 +35,7 @@ func NewServer() (*Server, error) {
 	}
 
 	return &Server{
-		interactor: serverInteractor,
+		Interactor: serverInteractor,
 		secService: secService,
 	}, nil
 }
@@ -62,7 +62,7 @@ func (s *Server) SetupState() error {
 	}
 
 	// TODO remove this after creating users CRUD
-	err = s.interactor.Database.SeedUsers()
+	err = s.Interactor.Database.SeedUsers()
 	if err != nil {
 		return err
 	}
@@ -160,7 +160,7 @@ func (s *Server) UserExistenceGuard() gin.HandlerFunc {
 			return
 		}
 
-		user, err := s.interactor.Database.GetUserOrFailByAPIToken(apiToken.(string))
+		user, err := s.Interactor.Database.GetUserOrFailByAPIToken(apiToken.(string))
 		if err != nil {
 			c.AbortWithStatus(http.StatusNotFound)
 			return
@@ -180,7 +180,7 @@ func (s *Server) UserJobGuard() gin.HandlerFunc {
 		userOBJ := user.(*userEntity.User)
 
 		jobID := c.Param("id")
-		job, err := s.interactor.Database.GetJobOrFail(jobID)
+		job, err := s.Interactor.Database.GetJobOrFail(jobID)
 		if err != nil {
 			c.AbortWithStatus(http.StatusNotFound)
 		}
