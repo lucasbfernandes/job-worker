@@ -6,6 +6,9 @@ import (
 )
 
 func (db *InMemoryDatabase) UpsertJob(job *jobEntity.Job) error {
+	db.mutex.Lock()
+	defer db.mutex.Unlock()
+
 	txn := db.instance.Txn(true)
 	err := txn.Insert("job", job)
 	if err != nil {
@@ -16,6 +19,9 @@ func (db *InMemoryDatabase) UpsertJob(job *jobEntity.Job) error {
 }
 
 func (db *InMemoryDatabase) DeleteAllJobs() error {
+	db.mutex.Lock()
+	defer db.mutex.Unlock()
+
 	txn := db.instance.Txn(true)
 	_, err := txn.DeleteAll("job", "id")
 	if err != nil {
@@ -26,6 +32,9 @@ func (db *InMemoryDatabase) DeleteAllJobs() error {
 }
 
 func (db *InMemoryDatabase) GetJobOrFail(id string) (*jobEntity.Job, error) {
+	db.mutex.Lock()
+	defer db.mutex.Unlock()
+
 	txn := db.instance.Txn(false)
 	defer txn.Abort()
 
@@ -41,6 +50,9 @@ func (db *InMemoryDatabase) GetJobOrFail(id string) (*jobEntity.Job, error) {
 }
 
 func (db *InMemoryDatabase) GetAllJobs() ([]*jobEntity.Job, error) {
+	db.mutex.Lock()
+	defer db.mutex.Unlock()
+
 	txn := db.instance.Txn(false)
 	defer txn.Abort()
 

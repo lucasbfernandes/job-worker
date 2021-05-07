@@ -4,10 +4,13 @@ import (
 	"github.com/hashicorp/go-memdb"
 
 	"fmt"
+	"sync"
 )
 
 type InMemoryDatabase struct {
 	instance *memdb.MemDB
+
+	mutex sync.Mutex
 }
 
 func NewInMemoryDatabase() (*InMemoryDatabase, error) {
