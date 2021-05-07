@@ -1,29 +1,25 @@
 package controllers
 
 import (
+	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
-
-	"server/internal/interactors"
-	"server/internal/repository"
 
 	"fmt"
 	"log"
+	"net/http"
 	"os"
 	"os/signal"
+	"server/internal/interactors"
+	"server/internal/repository"
+	"server/internal/sec"
 	"strconv"
+	"strings"
 	"syscall"
-)
-
-const (
-	// This will create files inside pwd/cert
-	defaultCertFilePath = "cert/server.crt"
-
-	// This will create files inside pwd/cert
-	defaultKeyFilePath = "cert/server.key"
 )
 
 type Server struct {
 	interactor *interactors.ServerInteractor
+	secService *sec.SecurityService
 }
 
 func NewServer() (*Server, error) {
@@ -32,13 +28,24 @@ func NewServer() (*Server, error) {
 		return nil, err
 	}
 
+	secService, err := sec.NewSecService()
+	if err != nil {
+		return nil, err
+	}
+
 	return &Server{
 		interactor: serverInteractor,
+		secService: secService,
 	}, nil
 }
 
 func (s *Server) Start(port int) error {
 	err := s.createLogsDir()
+	if err != nil {
+		return err
+	}
+
+	err = s.interactor.Database.SeedUsers()
 	if err != nil {
 		return err
 	}
@@ -78,31 +85,50 @@ func (s *Server) createLogsDir() error {
 func (s *Server) startAPI(appPort int) error {
 	router := gin.Default()
 
+	router.Use(s.AuthorizeJWT())
+
 	router.POST("/jobs", s.CreateJob)
 	router.POST("/jobs/:id/stop", s.StopJob)
 	router.GET("/jobs", s.GetJobs)
 	router.GET("/jobs/:id/status", s.GetJobStatus)
 	router.GET("/jobs/:id/logs", s.GetJobLogs)
 
-	err := router.RunTLS(":"+strconv.Itoa(appPort), getCertFilePath(), getKeyFilePath())
+	err := router.RunTLS(":"+strconv.Itoa(appPort), sec.GetTLSCertFilePath(), sec.GetTLSKeyFilePath())
 	if err != nil {
 		return fmt.Errorf("failed to start api: %s", err)
 	}
 	return nil
 }
 
-func getCertFilePath() string {
-	certFilePath, envExists := os.LookupEnv("TLS_CERT_FILE_PATH")
-	if envExists && certFilePath != "" {
-		return certFilePath
-	}
-	return defaultCertFilePath
-}
+func (s *Server) AuthorizeJWT() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		const bearerSchema = "Bearer"
+		authHeader := c.GetHeader("Authorization")
 
-func getKeyFilePath() string {
-	keyFilePath, envExists := os.LookupEnv("TLS_KEY_FILE_PATH")
-	if envExists && keyFilePath != "" {
-		return keyFilePath
+		if authHeader == "" && !strings.HasPrefix(authHeader, bearerSchema) {
+			c.AbortWithStatus(http.StatusUnauthorized)
+			return
+		}
+
+		tokenString := authHeader[len("Bearer "):]
+		token, err := s.secService.ValidateToken(tokenString)
+		if err != nil {
+			c.AbortWithStatus(http.StatusUnauthorized)
+			return
+		}
+
+		if !token.Valid {
+			c.AbortWithStatus(http.StatusUnauthorized)
+			return
+		}
+
+		claims := token.Claims.(jwt.MapClaims)
+
+		if apiToken, ok := claims["apiToken"]; !ok || apiToken == "" {
+			c.AbortWithStatus(http.StatusUnauthorized)
+			return
+		}
+
+		c.Set("apiToken", claims["apiToken"])
 	}
-	return defaultKeyFilePath
 }

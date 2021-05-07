@@ -3,12 +3,17 @@ package controllers
 import (
 	"github.com/gin-gonic/gin"
 
+	"fmt"
 	"log"
 	"net/http"
 	"server/internal/dto"
 )
 
 func (s *Server) CreateJob(context *gin.Context) {
+
+	apiToken, _ := context.Get("apiToken")
+	fmt.Printf("API_TOKEN: %s\n", apiToken)
+
 	var createJobRequest dto.CreateJobRequest
 	err := context.ShouldBindJSON(&createJobRequest)
 	if err != nil {

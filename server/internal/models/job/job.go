@@ -14,6 +14,7 @@ type Job struct {
 	ExitCode   int
 	CreatedAt  *time.Time
 	FinishedAt *time.Time
+	UserID     string
 
 	process *worker.Process
 }
