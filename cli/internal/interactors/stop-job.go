@@ -4,6 +4,7 @@ import (
 	"github.com/go-resty/resty/v2"
 
 	"cli/internal/dto"
+	"crypto/tls"
 	"errors"
 )
 
@@ -18,7 +19,8 @@ func (i *WorkerCLIInteractor) StopJob(serverURL string, jobID string) error {
 func requestStopJob(serverURL string, jobID string) error {
 	var stopJobError dto.JobsError
 
-	client := resty.New()
+	// We are skipping this verification because server has a self-signed certificate
+	client := resty.New().SetTLSClientConfig(&tls.Config{InsecureSkipVerify: true})
 	response, err := client.R().
 		SetError(&stopJobError).
 		Post(serverURL + jobsPath + "/" + jobID + stopJobsPath)

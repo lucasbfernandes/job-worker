@@ -4,6 +4,7 @@ import (
 	"github.com/go-resty/resty/v2"
 
 	"cli/internal/dto"
+	"crypto/tls"
 	"errors"
 )
 
@@ -18,7 +19,8 @@ func (i *WorkerCLIInteractor) GetJobLogs(serverURL string, jobID string) (*strin
 func requestGetJobLogs(serverURL string, jobID string) (*string, error) {
 	var getJobLogsError dto.JobsError
 
-	client := resty.New()
+	// We are skipping this verification because server has a self-signed certificate
+	client := resty.New().SetTLSClientConfig(&tls.Config{InsecureSkipVerify: true})
 	response, err := client.R().
 		SetError(&getJobLogsError).
 		Get(serverURL + jobsPath + "/" + jobID + getJobLogsPath)

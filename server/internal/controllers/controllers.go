@@ -14,6 +14,14 @@ import (
 	"syscall"
 )
 
+const (
+	// This will create files inside pwd/cert
+	defaultCertFilePath = "cert/server.crt"
+
+	// This will create files inside pwd/cert
+	defaultKeyFilePath = "cert/server.key"
+)
+
 type Server struct {
 	interactor *interactors.ServerInteractor
 }
@@ -76,9 +84,25 @@ func (s *Server) startAPI(appPort int) error {
 	router.GET("/jobs/:id/status", s.GetJobStatus)
 	router.GET("/jobs/:id/logs", s.GetJobLogs)
 
-	err := router.Run(":" + strconv.Itoa(appPort))
+	err := router.RunTLS(":"+strconv.Itoa(appPort), getCertFilePath(), getKeyFilePath())
 	if err != nil {
 		return fmt.Errorf("failed to start api: %s", err)
 	}
 	return nil
+}
+
+func getCertFilePath() string {
+	certFilePath, envExists := os.LookupEnv("TLS_CERT_FILE_PATH")
+	if envExists && certFilePath != "" {
+		return certFilePath
+	}
+	return defaultCertFilePath
+}
+
+func getKeyFilePath() string {
+	keyFilePath, envExists := os.LookupEnv("TLS_KEY_FILE_PATH")
+	if envExists && keyFilePath != "" {
+		return keyFilePath
+	}
+	return defaultKeyFilePath
 }

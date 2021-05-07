@@ -4,6 +4,7 @@ import (
 	"github.com/go-resty/resty/v2"
 
 	"cli/internal/dto"
+	"crypto/tls"
 	"errors"
 )
 
@@ -20,7 +21,8 @@ func requestCreateJob(serverURL string, createJobRequest *dto.CreateJobRequest) 
 	var createJobResponse dto.CreateJobResponse
 	var createJobError dto.JobsError
 
-	client := resty.New()
+	// We are skipping this verification because server has a self-signed certificate
+	client := resty.New().SetTLSClientConfig(&tls.Config{InsecureSkipVerify: true})
 	response, err := client.R().
 		SetBody(createJobRequest).
 		SetResult(&createJobResponse).
