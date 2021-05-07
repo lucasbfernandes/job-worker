@@ -19,7 +19,6 @@ func (p *Process) Stop() error {
 	}
 
 	<-p.finishedChannel
-	close(p.finishedChannel)
 
 	return nil
 }
