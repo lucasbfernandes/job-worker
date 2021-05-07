@@ -11,13 +11,14 @@ import (
 	"github.com/stretchr/testify/suite"
 
 	"server/internal/interactors"
-	"server/internal/storage"
 	"server/test/integration"
 	"testing"
 )
 
 type StopJobInteractorIntegrationTestSuite struct {
 	suite.Suite
+
+	interactor *interactors.ServerInteractor
 }
 
 func (suite *StopJobInteractorIntegrationTestSuite) SetupSuite() {
@@ -25,24 +26,29 @@ func (suite *StopJobInteractorIntegrationTestSuite) SetupSuite() {
 	if err != nil {
 		suite.FailNow(fmt.Sprintf("failed to setup test suite: %s", err))
 	}
+
+	suite.interactor, err = interactors.NewServerInteractor()
+	if err != nil {
+		suite.FailNow(fmt.Sprintf("failed to setup test suite: %s", err))
+	}
 }
 
 func (suite *StopJobInteractorIntegrationTestSuite) SetupTest() {
-	err := storage.CreateLogsDir()
+	err := repository.CreateLogsDir()
 	if err != nil {
 		suite.FailNow(fmt.Sprintf("failed to setup test: %s", err))
 	}
 }
 
 func (suite *StopJobInteractorIntegrationTestSuite) TearDownTest() {
-	err := integration.RollbackState()
+	err := integration.RollbackState(suite.interactor.Database)
 	if err != nil {
 		suite.FailNow(fmt.Sprintf("failed to tear down test: %s", err))
 	}
 }
 
 func (suite *StopJobInteractorIntegrationTestSuite) TestShouldReturnErrorWhenJobDoesNotExist() {
-	err := interactors.StopJob("1233")
+	err := suite.interactor.StopJob("1233")
 	assert.NotNil(suite.T(), err, "stop job interactor should return with error")
 }
 
@@ -51,17 +57,17 @@ func (suite *StopJobInteractorIntegrationTestSuite) TestShouldStopJobSuccessfull
 		Command: []string{"sleep", "10"},
 	}
 
-	createJobResponse, err := interactors.CreateJob(request)
+	createJobResponse, err := suite.interactor.CreateJob(request)
 	assert.Nil(suite.T(), err, "create job interactor returned with error")
 
 	time.Sleep(250 * time.Millisecond)
 
-	err = interactors.StopJob(createJobResponse.ID)
+	err = suite.interactor.StopJob(createJobResponse.ID)
 	assert.Nil(suite.T(), err, "stop interactor should not return with error")
 
 	time.Sleep(250 * time.Millisecond)
 
-	job, err := repository.GetJobOrFail(createJobResponse.ID)
+	job, err := suite.interactor.Database.GetJobOrFail(createJobResponse.ID)
 	assert.Nil(suite.T(), err, "get job should not return with error")
 
 	assert.Equal(suite.T(), jobEntity.STOPPED, job.Status, "job status should be STOPPED")
@@ -73,15 +79,15 @@ func (suite *StopJobInteractorIntegrationTestSuite) TestShouldFailWhenJobHasAlre
 		Command: []string{"sleep", "10"},
 	}
 
-	createJobResponse, err := interactors.CreateJob(request)
+	createJobResponse, err := suite.interactor.CreateJob(request)
 	assert.Nil(suite.T(), err, "create job interactor returned with error")
 
 	time.Sleep(250 * time.Millisecond)
 
-	err = interactors.StopJob(createJobResponse.ID)
+	err = suite.interactor.StopJob(createJobResponse.ID)
 	assert.Nil(suite.T(), err, "stop interactor should not return with error")
 
-	err = interactors.StopJob(createJobResponse.ID)
+	err = suite.interactor.StopJob(createJobResponse.ID)
 	assert.NotNil(suite.T(), err, "stop interactor should return with error")
 }
 

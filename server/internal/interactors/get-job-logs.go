@@ -7,8 +7,8 @@ import (
 	"server/internal/repository"
 )
 
-func GetJobLogs(jobID string) (*string, error) {
-	_, err := repository.GetJobOrFail(jobID)
+func (s *ServerInteractor) GetJobLogs(jobID string) (*string, error) {
+	_, err := s.Database.GetJobOrFail(jobID)
 	if err != nil {
 		return nil, err
 	}
@@ -19,7 +19,7 @@ func GetJobLogs(jobID string) (*string, error) {
 	}
 	defer closeFile(logFile)
 
-	logFileContent, err := getLogContent(logFile)
+	logFileContent, err := s.getLogContent(logFile)
 	if err != nil {
 		return nil, err
 	}
@@ -27,14 +27,7 @@ func GetJobLogs(jobID string) (*string, error) {
 	return logFileContent, nil
 }
 
-func closeFile(file *os.File) {
-	err := file.Close()
-	if err != nil {
-		log.Printf("failed to close file with error: %s\n", err)
-	}
-}
-
-func getLogContent(logFile *os.File) (*string, error) {
+func (s *ServerInteractor) getLogContent(logFile *os.File) (*string, error) {
 	bufferSize := 100
 	contentBytes := make([]byte, 0)
 	buffer := make([]byte, bufferSize)
@@ -52,4 +45,11 @@ func getLogContent(logFile *os.File) (*string, error) {
 
 	logContent := string(contentBytes)
 	return &logContent, nil
+}
+
+func closeFile(file *os.File) {
+	err := file.Close()
+	if err != nil {
+		log.Printf("failed to close file with error: %s\n", err)
+	}
 }

@@ -10,13 +10,14 @@ import (
 	"server/internal/interactors"
 	jobEntity "server/internal/models/job"
 	"server/internal/repository"
-	"server/internal/storage"
 	"server/test/integration"
 	"testing"
 )
 
 type GetJobsInteractorIntegrationTestSuite struct {
 	suite.Suite
+
+	interactor *interactors.ServerInteractor
 }
 
 func (suite *GetJobsInteractorIntegrationTestSuite) SetupSuite() {
@@ -24,24 +25,29 @@ func (suite *GetJobsInteractorIntegrationTestSuite) SetupSuite() {
 	if err != nil {
 		suite.FailNow(fmt.Sprintf("failed to setup test suite: %s", err))
 	}
+
+	suite.interactor, err = interactors.NewServerInteractor()
+	if err != nil {
+		suite.FailNow(fmt.Sprintf("failed to setup test suite: %s", err))
+	}
 }
 
 func (suite *GetJobsInteractorIntegrationTestSuite) SetupTest() {
-	err := storage.CreateLogsDir()
+	err := repository.CreateLogsDir()
 	if err != nil {
 		suite.FailNow(fmt.Sprintf("failed to setup test: %s", err))
 	}
 }
 
 func (suite *GetJobsInteractorIntegrationTestSuite) TearDownTest() {
-	err := integration.RollbackState()
+	err := integration.RollbackState(suite.interactor.Database)
 	if err != nil {
 		suite.FailNow(fmt.Sprintf("failed to tear down test: %s", err))
 	}
 }
 
 func (suite *GetJobsInteractorIntegrationTestSuite) TestShouldReturnEmptyArrayWhenNoJobsWerePersisted() {
-	response, err := interactors.GetJobs()
+	response, err := suite.interactor.GetJobs()
 	assert.Nil(suite.T(), err, "get jobs interactor returned with error")
 
 	assert.Equal(suite.T(), &dto.GetJobsResponse{Jobs: []dto.JobResponse{}}, response, "wrong get jobs response")
@@ -51,10 +57,10 @@ func (suite *GetJobsInteractorIntegrationTestSuite) TestShouldReturnEmptyArrayWh
 func (suite *GetJobsInteractorIntegrationTestSuite) TestShouldReturnCorrectArrayWhenOneJobIsPersisted() {
 	job := jobEntity.NewJob([]string{"ls", "-la"})
 
-	err := repository.UpsertJob(job)
+	err := suite.interactor.Database.UpsertJob(job)
 	assert.Nil(suite.T(), err, "upsert job returned with error")
 
-	response, err := interactors.GetJobs()
+	response, err := suite.interactor.GetJobs()
 	assert.Nil(suite.T(), err, "get jobs interactor returned with error")
 
 	expectedResponse := &dto.GetJobsResponse{Jobs: []dto.JobResponse{dto.JobResponseFromJob(job)}}

@@ -2,11 +2,10 @@ package interactors
 
 import (
 	"server/internal/dto"
-	"server/internal/repository"
 )
 
-func GetJobStatus(jobID string) (*dto.GetJobStatusResponse, error) {
-	job, err := repository.GetJobOrFail(jobID)
+func (s *ServerInteractor) GetJobStatus(jobID string) (*dto.GetJobStatusResponse, error) {
+	job, err := s.Database.GetJobOrFail(jobID)
 	if err != nil {
 		return nil, err
 	}

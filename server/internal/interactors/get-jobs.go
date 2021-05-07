@@ -2,15 +2,14 @@ package interactors
 
 import (
 	"server/internal/dto"
-	"server/internal/repository"
 )
 
-func GetJobs() (*dto.GetJobsResponse, error) {
+func (s *ServerInteractor) GetJobs() (*dto.GetJobsResponse, error) {
 	getJobsResponse := dto.GetJobsResponse{
 		Jobs: make([]dto.JobResponse, 0),
 	}
 
-	jobs, err := repository.GetAllJobs()
+	jobs, err := s.Database.GetAllJobs()
 	if err != nil {
 		return nil, err
 	}

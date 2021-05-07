@@ -3,12 +3,10 @@ package repository
 import (
 	"fmt"
 	jobEntity "server/internal/models/job"
-	"server/internal/storage"
 )
 
-func UpsertJob(job *jobEntity.Job) error {
-	db := storage.GetDB()
-	txn := db.Txn(true)
+func (db *InMemoryDatabase) UpsertJob(job *jobEntity.Job) error {
+	txn := db.instance.Txn(true)
 	err := txn.Insert("job", job)
 	if err != nil {
 		return fmt.Errorf("failed to insert job: %s", err)
@@ -17,9 +15,8 @@ func UpsertJob(job *jobEntity.Job) error {
 	return nil
 }
 
-func DeleteAllJobs() error {
-	db := storage.GetDB()
-	txn := db.Txn(true)
+func (db *InMemoryDatabase) DeleteAllJobs() error {
+	txn := db.instance.Txn(true)
 	_, err := txn.DeleteAll("job", "id")
 	if err != nil {
 		return fmt.Errorf("failed to delete all jobs: %s", err)
@@ -28,9 +25,8 @@ func DeleteAllJobs() error {
 	return nil
 }
 
-func GetJobOrFail(id string) (*jobEntity.Job, error) {
-	db := storage.GetDB()
-	txn := db.Txn(false)
+func (db *InMemoryDatabase) GetJobOrFail(id string) (*jobEntity.Job, error) {
+	txn := db.instance.Txn(false)
 	defer txn.Abort()
 
 	raw, err := txn.First("job", "id", id)
@@ -44,13 +40,11 @@ func GetJobOrFail(id string) (*jobEntity.Job, error) {
 	return raw.(*jobEntity.Job), nil
 }
 
-func GetAllJobs() ([]*jobEntity.Job, error) {
-	jobs := make([]*jobEntity.Job, 0)
-
-	db := storage.GetDB()
-	txn := db.Txn(false)
+func (db *InMemoryDatabase) GetAllJobs() ([]*jobEntity.Job, error) {
+	txn := db.instance.Txn(false)
 	defer txn.Abort()
 
+	jobs := make([]*jobEntity.Job, 0)
 	jobIterator, err := txn.Get("job", "id")
 	if err != nil {
 		return nil, fmt.Errorf("failed to get all jobs: %s", err)

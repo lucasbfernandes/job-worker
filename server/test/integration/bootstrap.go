@@ -7,7 +7,6 @@ import (
 	"path/filepath"
 	"runtime"
 	"server/internal/repository"
-	"server/internal/storage"
 )
 
 func BootstrapTestEnvironment() error {
@@ -15,20 +14,16 @@ func BootstrapTestEnvironment() error {
 	if err != nil {
 		return err
 	}
-	err = storage.CreateDB()
-	if err != nil {
-		return err
-	}
 	return nil
 }
 
-func RollbackState() error {
-	err := repository.DeleteAllJobs()
+func RollbackState(db *repository.InMemoryDatabase) error {
+	err := db.DeleteAllJobs()
 	if err != nil {
 		return err
 	}
 
-	err = storage.DeleteLogsDir()
+	err = repository.DeleteLogsDir()
 	if err != nil {
 		return err
 	}
@@ -48,7 +43,7 @@ func setTestLogsDirEnv() error {
 }
 
 func GetNumberOfLogFiles() (*int, error) {
-	files, err := ioutil.ReadDir(storage.GetLogsDir())
+	files, err := ioutil.ReadDir(repository.GetLogsDir())
 	if err != nil {
 		return nil, err
 	}
