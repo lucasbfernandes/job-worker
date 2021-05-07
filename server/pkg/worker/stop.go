@@ -2,7 +2,7 @@ package worker
 
 import (
 	"errors"
-	"log"
+	"fmt"
 )
 
 func (p *Process) Stop() error {
@@ -15,8 +15,7 @@ func (p *Process) Stop() error {
 
 	err := p.execCmd.Process.Kill()
 	if err != nil {
-		log.Printf("failed to kill process: %s\n", err)
-		return err
+		return fmt.Errorf("failed to kill process: %s", err)
 	}
 
 	<-p.finishedChannel

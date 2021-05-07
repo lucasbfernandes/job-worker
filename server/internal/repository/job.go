@@ -2,64 +2,52 @@ package repository
 
 import (
 	"fmt"
-	"log"
 	jobEntity "server/internal/models/job"
-	"server/internal/storage"
 )
 
-func UpsertJob(job *jobEntity.Job) error {
-	db := storage.GetDB()
-	txn := db.Txn(true)
+func (db *InMemoryDatabase) UpsertJob(job *jobEntity.Job) error {
+	txn := db.instance.Txn(true)
 	err := txn.Insert("job", job)
 	if err != nil {
-		log.Printf("failed to insert job: %s\n", err)
-		return err
+		return fmt.Errorf("failed to insert job: %s", err)
 	}
 	txn.Commit()
 	return nil
 }
 
-func DeleteAllJobs() error {
-	db := storage.GetDB()
-	txn := db.Txn(true)
+func (db *InMemoryDatabase) DeleteAllJobs() error {
+	txn := db.instance.Txn(true)
 	_, err := txn.DeleteAll("job", "id")
 	if err != nil {
-		log.Printf("failed to delete all jobs: %s\n", err)
-		return err
+		return fmt.Errorf("failed to delete all jobs: %s", err)
 	}
 	txn.Commit()
 	return nil
 }
 
-func GetJobOrFail(id string) (*jobEntity.Job, error) {
-	db := storage.GetDB()
-	txn := db.Txn(false)
+func (db *InMemoryDatabase) GetJobOrFail(id string) (*jobEntity.Job, error) {
+	txn := db.instance.Txn(false)
 	defer txn.Abort()
 
 	raw, err := txn.First("job", "id", id)
 	if err != nil {
-		log.Printf("failed to get job: %s\n", err)
-		return nil, nil
+		return nil, fmt.Errorf("failed to get job: %s", err)
 	}
 	if raw == nil {
-		log.Printf("could not find job\n")
 		return nil, fmt.Errorf("could not find job with id %s", id)
 	}
 
 	return raw.(*jobEntity.Job), nil
 }
 
-func GetAllJobs() ([]*jobEntity.Job, error) {
-	jobs := make([]*jobEntity.Job, 0)
-
-	db := storage.GetDB()
-	txn := db.Txn(false)
+func (db *InMemoryDatabase) GetAllJobs() ([]*jobEntity.Job, error) {
+	txn := db.instance.Txn(false)
 	defer txn.Abort()
 
+	jobs := make([]*jobEntity.Job, 0)
 	jobIterator, err := txn.Get("job", "id")
 	if err != nil {
-		log.Printf("failed to get all jobs: %s\n", err)
-		return nil, err
+		return nil, fmt.Errorf("failed to get all jobs: %s", err)
 	}
 
 	for rawJob := jobIterator.Next(); rawJob != nil; rawJob = jobIterator.Next() {
