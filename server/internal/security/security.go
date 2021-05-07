@@ -1,4 +1,4 @@
-package sec
+package security
 
 import (
 	"github.com/dgrijalva/jwt-go"
@@ -16,14 +16,14 @@ const (
 	defaultTLSKeyFilePath = "cert/server.key"
 
 	// This will create files inside pwd/cert
-	defaultJWTKeyFilePath = "cert/jwt.crt"
+	defaultJWTCertFilePath = "cert/jwt.crt"
 )
 
-type SecurityService struct {
+type SecService struct {
 	jwtPubKey *rsa.PublicKey
 }
 
-func NewSecService() (*SecurityService, error) {
+func NewSecService() (*SecService, error) {
 	jwtCertBytes, err := ioutil.ReadFile(GetJWTCertFilePath())
 	if err != nil {
 		return nil, err
@@ -34,12 +34,12 @@ func NewSecService() (*SecurityService, error) {
 		return nil, err
 	}
 
-	return &SecurityService{
+	return &SecService{
 		jwtPubKey: jwtPubKey,
 	}, nil
 }
 
-func (s *SecurityService) ValidateToken(encodedToken string) (*jwt.Token, error) {
+func (s *SecService) ValidateToken(encodedToken string) (*jwt.Token, error) {
 	token, err := jwt.Parse(encodedToken, func(token *jwt.Token) (interface{}, error) {
 		return s.jwtPubKey, nil
 	})
@@ -71,5 +71,5 @@ func GetJWTCertFilePath() string {
 	if envExists && certFilePath != "" {
 		return certFilePath
 	}
-	return defaultJWTKeyFilePath
+	return defaultJWTCertFilePath
 }

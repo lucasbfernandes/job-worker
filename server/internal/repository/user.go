@@ -3,10 +3,10 @@ package repository
 import (
 	"errors"
 	"fmt"
-	"server/internal/models/user"
+	userEntity "server/internal/models/user"
 )
 
-func (db *InMemoryDatabase) UpsertUser(user *user.User) error {
+func (db *InMemoryDatabase) UpsertUser(user *userEntity.User) error {
 	db.mutex.Lock()
 	defer db.mutex.Unlock()
 
@@ -19,7 +19,7 @@ func (db *InMemoryDatabase) UpsertUser(user *user.User) error {
 	return nil
 }
 
-func (db *InMemoryDatabase) GetUserOrFailByAPIToken(apiToken string) (*user.User, error) {
+func (db *InMemoryDatabase) GetUserOrFailByAPIToken(apiToken string) (*userEntity.User, error) {
 	db.mutex.Lock()
 	defer db.mutex.Unlock()
 
@@ -34,7 +34,7 @@ func (db *InMemoryDatabase) GetUserOrFailByAPIToken(apiToken string) (*user.User
 		return nil, errors.New("user doesn't exist")
 	}
 
-	return raw.(*user.User), nil
+	return raw.(*userEntity.User), nil
 }
 
 func (db *InMemoryDatabase) DeleteAllUsers() error {

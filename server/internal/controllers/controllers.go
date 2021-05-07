@@ -12,7 +12,7 @@ import (
 	"server/internal/interactors"
 	userEntity "server/internal/models/user"
 	"server/internal/repository"
-	"server/internal/sec"
+	"server/internal/security"
 	"strconv"
 	"strings"
 	"syscall"
@@ -20,7 +20,7 @@ import (
 
 type Server struct {
 	interactor *interactors.ServerInteractor
-	secService *sec.SecurityService
+	secService *security.SecService
 }
 
 func NewServer() (*Server, error) {
@@ -29,7 +29,7 @@ func NewServer() (*Server, error) {
 		return nil, err
 	}
 
-	secService, err := sec.NewSecService()
+	secService, err := security.NewSecService()
 	if err != nil {
 		return nil, err
 	}
@@ -41,13 +41,7 @@ func NewServer() (*Server, error) {
 }
 
 func (s *Server) Start(port int) error {
-	err := s.createLogsDir()
-	if err != nil {
-		return err
-	}
-
-	// TODO remove this after creating users CRUD
-	err = s.interactor.Database.SeedUsers()
+	err := s.SetupState()
 	if err != nil {
 		return err
 	}
@@ -55,6 +49,20 @@ func (s *Server) Start(port int) error {
 	s.handleTerminationSignals()
 
 	err = s.startAPI(port)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (s *Server) SetupState() error {
+	err := s.createLogsDir()
+	if err != nil {
+		return err
+	}
+
+	// TODO remove this after creating users CRUD
+	err = s.interactor.Database.SeedUsers()
 	if err != nil {
 		return err
 	}
@@ -85,6 +93,15 @@ func (s *Server) createLogsDir() error {
 }
 
 func (s *Server) startAPI(appPort int) error {
+	ginEngine := s.GetGinEngine()
+	err := ginEngine.RunTLS(":"+strconv.Itoa(appPort), security.GetTLSCertFilePath(), security.GetTLSKeyFilePath())
+	if err != nil {
+		return fmt.Errorf("failed to start api: %s", err)
+	}
+	return nil
+}
+
+func (s *Server) GetGinEngine() *gin.Engine {
 	router := gin.Default()
 
 	router.Use(s.JWTGuard())
@@ -100,11 +117,7 @@ func (s *Server) startAPI(appPort int) error {
 	authzRoutes.GET("/jobs/:id/status", s.GetJobStatus)
 	authzRoutes.GET("/jobs/:id/logs", s.GetJobLogs)
 
-	err := router.RunTLS(":"+strconv.Itoa(appPort), sec.GetTLSCertFilePath(), sec.GetTLSKeyFilePath())
-	if err != nil {
-		return fmt.Errorf("failed to start api: %s", err)
-	}
-	return nil
+	return router
 }
 
 func (s *Server) JWTGuard() gin.HandlerFunc {
