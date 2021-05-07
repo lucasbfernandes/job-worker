@@ -19,6 +19,10 @@ type StopJobInteractorIntegrationTestSuite struct {
 	suite.Suite
 
 	interactor *interactors.ServerInteractor
+
+	adminToken string
+
+	userToken string
 }
 
 func (suite *StopJobInteractorIntegrationTestSuite) SetupSuite() {
@@ -31,10 +35,18 @@ func (suite *StopJobInteractorIntegrationTestSuite) SetupSuite() {
 	if err != nil {
 		suite.FailNow(fmt.Sprintf("failed to setup test suite: %s", err))
 	}
+
+	suite.adminToken = "qTMaYIfw8q3esZ6Dv2rQ"
+	suite.userToken = "9EzGJOTcMHFMXphfvAuM"
 }
 
 func (suite *StopJobInteractorIntegrationTestSuite) SetupTest() {
 	err := repository.CreateLogsDir()
+	if err != nil {
+		suite.FailNow(fmt.Sprintf("failed to setup test: %s", err))
+	}
+
+	err = suite.interactor.Database.SeedUsers()
 	if err != nil {
 		suite.FailNow(fmt.Sprintf("failed to setup test: %s", err))
 	}
@@ -57,7 +69,7 @@ func (suite *StopJobInteractorIntegrationTestSuite) TestShouldStopJobSuccessfull
 		Command: []string{"sleep", "10"},
 	}
 
-	createJobResponse, err := suite.interactor.CreateJob(request)
+	createJobResponse, err := suite.interactor.CreateJob(request, suite.adminToken)
 	assert.Nil(suite.T(), err, "create job interactor returned with error")
 
 	time.Sleep(250 * time.Millisecond)
@@ -79,7 +91,7 @@ func (suite *StopJobInteractorIntegrationTestSuite) TestShouldFailWhenJobHasAlre
 		Command: []string{"sleep", "10"},
 	}
 
-	createJobResponse, err := suite.interactor.CreateJob(request)
+	createJobResponse, err := suite.interactor.CreateJob(request, suite.adminToken)
 	assert.Nil(suite.T(), err, "create job interactor returned with error")
 
 	time.Sleep(250 * time.Millisecond)

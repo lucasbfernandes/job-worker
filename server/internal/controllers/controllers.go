@@ -45,6 +45,7 @@ func (s *Server) Start(port int) error {
 		return err
 	}
 
+	// TODO remove this after creating users CRUD
 	err = s.interactor.Database.SeedUsers()
 	if err != nil {
 		return err
@@ -123,7 +124,6 @@ func (s *Server) AuthorizeJWT() gin.HandlerFunc {
 		}
 
 		claims := token.Claims.(jwt.MapClaims)
-
 		if apiToken, ok := claims["apiToken"]; !ok || apiToken == "" {
 			c.AbortWithStatus(http.StatusUnauthorized)
 			return

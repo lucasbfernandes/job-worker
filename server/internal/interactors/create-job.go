@@ -10,9 +10,13 @@ import (
 	"time"
 )
 
-func (s *ServerInteractor) CreateJob(createJobRequest dto.CreateJobRequest) (*dto.CreateJobResponse, error) {
-	job := createJobRequest.ToJob()
+func (s *ServerInteractor) CreateJob(createJobRequest dto.CreateJobRequest, apiToken string) (*dto.CreateJobResponse, error) {
+	user, err := s.Database.GetUserOrFailByAPIToken(apiToken)
+	if err != nil {
+		return nil, err
+	}
 
+	job := createJobRequest.ToJob(user)
 	process, err := s.createWorkerProcess(createJobRequest.Command)
 	if err != nil {
 		return nil, err

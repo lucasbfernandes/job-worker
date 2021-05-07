@@ -36,3 +36,16 @@ func (db *InMemoryDatabase) GetUserOrFailByAPIToken(apiToken string) (*user.User
 
 	return raw.(*user.User), nil
 }
+
+func (db *InMemoryDatabase) DeleteAllUsers() error {
+	db.mutex.Lock()
+	defer db.mutex.Unlock()
+
+	txn := db.instance.Txn(true)
+	_, err := txn.DeleteAll("user", "id")
+	if err != nil {
+		return fmt.Errorf("failed to delete all users: %s", err)
+	}
+	txn.Commit()
+	return nil
+}

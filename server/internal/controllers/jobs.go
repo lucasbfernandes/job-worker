@@ -3,16 +3,16 @@ package controllers
 import (
 	"github.com/gin-gonic/gin"
 
-	"fmt"
 	"log"
 	"net/http"
 	"server/internal/dto"
 )
 
 func (s *Server) CreateJob(context *gin.Context) {
-
-	apiToken, _ := context.Get("apiToken")
-	fmt.Printf("API_TOKEN: %s\n", apiToken)
+	apiToken, exists := context.Get("apiToken")
+	if !exists {
+		context.AbortWithStatus(http.StatusUnauthorized)
+	}
 
 	var createJobRequest dto.CreateJobRequest
 	err := context.ShouldBindJSON(&createJobRequest)
@@ -22,7 +22,7 @@ func (s *Server) CreateJob(context *gin.Context) {
 		return
 	}
 
-	createJobResponse, err := s.interactor.CreateJob(createJobRequest)
+	createJobResponse, err := s.interactor.CreateJob(createJobRequest, apiToken.(string))
 	if err != nil {
 		log.Printf("failed to create job: %s\n", err)
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})

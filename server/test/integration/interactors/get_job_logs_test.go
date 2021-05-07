@@ -18,6 +18,10 @@ type GetJobLogsInteractorIntegrationTestSuite struct {
 	suite.Suite
 
 	interactor *interactors.ServerInteractor
+
+	adminToken string
+
+	userToken string
 }
 
 func (suite *GetJobLogsInteractorIntegrationTestSuite) SetupSuite() {
@@ -30,10 +34,18 @@ func (suite *GetJobLogsInteractorIntegrationTestSuite) SetupSuite() {
 	if err != nil {
 		suite.FailNow(fmt.Sprintf("failed to setup test suite: %s", err))
 	}
+
+	suite.adminToken = "qTMaYIfw8q3esZ6Dv2rQ"
+	suite.userToken = "9EzGJOTcMHFMXphfvAuM"
 }
 
 func (suite *GetJobLogsInteractorIntegrationTestSuite) SetupTest() {
 	err := repository.CreateLogsDir()
+	if err != nil {
+		suite.FailNow(fmt.Sprintf("failed to setup test: %s", err))
+	}
+
+	err = suite.interactor.Database.SeedUsers()
 	if err != nil {
 		suite.FailNow(fmt.Sprintf("failed to setup test: %s", err))
 	}
@@ -51,7 +63,7 @@ func (suite *GetJobLogsInteractorIntegrationTestSuite) TestShouldReturnLogsCorre
 		Command: []string{"echo", "this is a test"},
 	}
 
-	createJobResponse, err := suite.interactor.CreateJob(request)
+	createJobResponse, err := suite.interactor.CreateJob(request, suite.adminToken)
 	assert.Nil(suite.T(), err, "create job interactor returned with error")
 
 	time.Sleep(250 * time.Millisecond)
@@ -68,7 +80,7 @@ func (suite *GetJobLogsInteractorIntegrationTestSuite) TestShouldReturnLogsCorre
 		Command: []string{"ls", "abobora"},
 	}
 
-	createJobResponse, err := suite.interactor.CreateJob(request)
+	createJobResponse, err := suite.interactor.CreateJob(request, suite.adminToken)
 	assert.Nil(suite.T(), err, "create job interactor returned with error")
 
 	time.Sleep(250 * time.Millisecond)
@@ -85,7 +97,7 @@ func (suite *GetJobLogsInteractorIntegrationTestSuite) TestShouldReturnLogsCorre
 		Command: []string{"sh", "-c", "echo hello test! && ls what"},
 	}
 
-	createJobResponse, err := suite.interactor.CreateJob(request)
+	createJobResponse, err := suite.interactor.CreateJob(request, suite.adminToken)
 	assert.Nil(suite.T(), err, "create job interactor returned with error")
 
 	time.Sleep(250 * time.Millisecond)

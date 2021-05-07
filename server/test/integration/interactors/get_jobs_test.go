@@ -2,6 +2,7 @@ package integration_interactors_test
 
 import (
 	"fmt"
+	userEntity "server/internal/models/user"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/suite"
@@ -55,9 +56,12 @@ func (suite *GetJobsInteractorIntegrationTestSuite) TestShouldReturnEmptyArrayWh
 }
 
 func (suite *GetJobsInteractorIntegrationTestSuite) TestShouldReturnCorrectArrayWhenOneJobIsPersisted() {
-	job := jobEntity.NewJob([]string{"ls", "-la"})
+	user, err := userEntity.NewUser("test", "random-token", "ADMIN")
+	assert.Nil(suite.T(), err, "new user returned with error")
 
-	err := suite.interactor.Database.UpsertJob(job)
+	job := jobEntity.NewJob([]string{"ls", "-la"}, user.ID)
+
+	err = suite.interactor.Database.UpsertJob(job)
 	assert.Nil(suite.T(), err, "upsert job returned with error")
 
 	response, err := suite.interactor.GetJobs()

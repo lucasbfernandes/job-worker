@@ -23,6 +23,11 @@ func RollbackState(db *repository.InMemoryDatabase) error {
 		return err
 	}
 
+	err = db.DeleteAllUsers()
+	if err != nil {
+		return err
+	}
+
 	err = repository.DeleteLogsDir()
 	if err != nil {
 		return err

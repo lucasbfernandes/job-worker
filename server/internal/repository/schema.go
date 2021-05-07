@@ -25,7 +25,7 @@ var DBSchema = &memdb.DBSchema{
 				"api_token": {
 					Name:    "api_token",
 					Unique:  true,
-					Indexer: &memdb.StringFieldIndex{Field: "ApiToken"},
+					Indexer: &memdb.StringFieldIndex{Field: "APIToken"},
 				},
 			},
 		},
