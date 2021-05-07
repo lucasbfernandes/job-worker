@@ -1,131 +1,323 @@
 {
 	"info": {
-		"_postman_id": "4e03d9a1-9671-4d60-8c9d-3f282da7ba2b",
+		"_postman_id": "d638fdd3-9c67-42b0-888d-660ebaf1c008",
 		"name": "Job Worker Server",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
 		{
-			"name": "Create Job",
-			"event": [
+			"name": "admin",
+			"item": [
 				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"const response = JSON.parse(responseBody);",
-							"postman.setGlobalVariable(\"jobID\", response[\"id\"]);"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"command\": [\"sh\", \"-c\", \"echo hello test! && ls wrongfile\"]\n}",
-					"options": {
-						"raw": {
-							"language": "json"
+					"name": "Create Job",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const response = JSON.parse(responseBody);",
+									"postman.setGlobalVariable(\"jobID\", response[\"id\"]);"
+								],
+								"type": "text/javascript"
+							}
 						}
-					}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJSUzUxMiIsInR5cCI6IkpXVCJ9.eyJhcGlUb2tlbiI6InFUTWFZSWZ3OHEzZXNaNkR2MnJRIn0.RRjTYWXmLGOI4KYfhgvW2qwgwA9EjP2Xxoo2gKuKHAfsPgBa1XVXdEYKbKdvX8KGcivArUnTDoLxfKUUm6EK9gFofft4o47Yj1hgStSzZIE-UEFOALaOVdJ20orsfFY3lxI90vdCCFTmNgWmzocgZUhScuM4Xn7BQFrmZ82sMLP4wn2GufCIbeL2oz3QephrQJ3aDSP7DueQ_7wY3wYhE2o69m9VGYxVcTbghMIygD1uEIWAQPg6ceApCb0Nke_CYLp1SXDtFBwnR9l8fmYVR40-qmuLyvw-jg3j459jgShuDrNxZvZlZg4qKRSQdBzhJ6kNXyewQ9cB9WYaxmKjMQ",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"command\": [\"sh\", \"-c\", \"echo hello Im an admin! && ls wrongfile\"]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:8080/jobs",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"jobs"
+							]
+						}
+					},
+					"response": []
 				},
-				"url": {
-					"raw": "http://localhost:8080/jobs",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"jobs"
-					]
+				{
+					"name": "Stop Job",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJSUzUxMiIsInR5cCI6IkpXVCJ9.eyJhcGlUb2tlbiI6InFUTWFZSWZ3OHEzZXNaNkR2MnJRIn0.RRjTYWXmLGOI4KYfhgvW2qwgwA9EjP2Xxoo2gKuKHAfsPgBa1XVXdEYKbKdvX8KGcivArUnTDoLxfKUUm6EK9gFofft4o47Yj1hgStSzZIE-UEFOALaOVdJ20orsfFY3lxI90vdCCFTmNgWmzocgZUhScuM4Xn7BQFrmZ82sMLP4wn2GufCIbeL2oz3QephrQJ3aDSP7DueQ_7wY3wYhE2o69m9VGYxVcTbghMIygD1uEIWAQPg6ceApCb0Nke_CYLp1SXDtFBwnR9l8fmYVR40-qmuLyvw-jg3j459jgShuDrNxZvZlZg4qKRSQdBzhJ6kNXyewQ9cB9WYaxmKjMQ",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://localhost:8080/jobs/{{jobID}}/stop",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"jobs",
+								"{{jobID}}",
+								"stop"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Jobs",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJSUzUxMiIsInR5cCI6IkpXVCJ9.eyJhcGlUb2tlbiI6InFUTWFZSWZ3OHEzZXNaNkR2MnJRIn0.RRjTYWXmLGOI4KYfhgvW2qwgwA9EjP2Xxoo2gKuKHAfsPgBa1XVXdEYKbKdvX8KGcivArUnTDoLxfKUUm6EK9gFofft4o47Yj1hgStSzZIE-UEFOALaOVdJ20orsfFY3lxI90vdCCFTmNgWmzocgZUhScuM4Xn7BQFrmZ82sMLP4wn2GufCIbeL2oz3QephrQJ3aDSP7DueQ_7wY3wYhE2o69m9VGYxVcTbghMIygD1uEIWAQPg6ceApCb0Nke_CYLp1SXDtFBwnR9l8fmYVR40-qmuLyvw-jg3j459jgShuDrNxZvZlZg4qKRSQdBzhJ6kNXyewQ9cB9WYaxmKjMQ",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://localhost:8080/jobs",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"jobs"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Job Logs",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJSUzUxMiIsInR5cCI6IkpXVCJ9.eyJhcGlUb2tlbiI6InFUTWFZSWZ3OHEzZXNaNkR2MnJRIn0.RRjTYWXmLGOI4KYfhgvW2qwgwA9EjP2Xxoo2gKuKHAfsPgBa1XVXdEYKbKdvX8KGcivArUnTDoLxfKUUm6EK9gFofft4o47Yj1hgStSzZIE-UEFOALaOVdJ20orsfFY3lxI90vdCCFTmNgWmzocgZUhScuM4Xn7BQFrmZ82sMLP4wn2GufCIbeL2oz3QephrQJ3aDSP7DueQ_7wY3wYhE2o69m9VGYxVcTbghMIygD1uEIWAQPg6ceApCb0Nke_CYLp1SXDtFBwnR9l8fmYVR40-qmuLyvw-jg3j459jgShuDrNxZvZlZg4qKRSQdBzhJ6kNXyewQ9cB9WYaxmKjMQ",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://localhost:8080/jobs/{{jobID}}/logs",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"jobs",
+								"{{jobID}}",
+								"logs"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Job Status",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJSUzUxMiIsInR5cCI6IkpXVCJ9.eyJhcGlUb2tlbiI6InFUTWFZSWZ3OHEzZXNaNkR2MnJRIn0.RRjTYWXmLGOI4KYfhgvW2qwgwA9EjP2Xxoo2gKuKHAfsPgBa1XVXdEYKbKdvX8KGcivArUnTDoLxfKUUm6EK9gFofft4o47Yj1hgStSzZIE-UEFOALaOVdJ20orsfFY3lxI90vdCCFTmNgWmzocgZUhScuM4Xn7BQFrmZ82sMLP4wn2GufCIbeL2oz3QephrQJ3aDSP7DueQ_7wY3wYhE2o69m9VGYxVcTbghMIygD1uEIWAQPg6ceApCb0Nke_CYLp1SXDtFBwnR9l8fmYVR40-qmuLyvw-jg3j459jgShuDrNxZvZlZg4qKRSQdBzhJ6kNXyewQ9cB9WYaxmKjMQ",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://localhost:8080/jobs/{{jobID}}/status",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"jobs",
+								"{{jobID}}",
+								"status"
+							]
+						}
+					},
+					"response": []
 				}
-			},
-			"response": []
+			]
 		},
 		{
-			"name": "Stop Job",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"url": {
-					"raw": "http://localhost:8080/jobs/{{jobID}}/stop",
-					"protocol": "http",
-					"host": [
-						"localhost"
+			"name": "user",
+			"item": [
+				{
+					"name": "Create Job",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const response = JSON.parse(responseBody);",
+									"postman.setGlobalVariable(\"jobID\", response[\"id\"]);"
+								],
+								"type": "text/javascript"
+							}
+						}
 					],
-					"port": "8080",
-					"path": [
-						"jobs",
-						"{{jobID}}",
-						"stop"
-					]
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJSUzUxMiIsInR5cCI6IkpXVCJ9.eyJhcGlUb2tlbiI6IjlFekdKT1RjTUhGTVhwaGZ2QXVNIn0.ZhnpBKFKxcFrPR5FwnpxYxPymScXbq_CBI-x7vuws7wXQBjZT5Z9mtVbb6Mw7pii5GtJTtoTZEAJYzFYWx8akybWBip1cu3hxGo-ZRpgBh7ZOmmR32dln79xKfkUpq2q3u_jN2Gk3VJVUjrihyIeuA2yNuAVWcF_9cGoFmYIhBVpQ0OrmueAYNSNVrDB9wAj8xABePXVTsAyn4cR8AUf3OyP1vQawWxuAsD0bgthoEblMcAPbW4BxIrwS4AFIUM1V0-V-tvbJFXPqsV2Ke_0DSuDaYZwQnQXEXT7OKZL_eMisKINHalwMngUy1M0O9o1mnVKChwu4u9WQ9kIyla3ug",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"command\": [\"sh\", \"-c\", \"echo hello Im a normal user! && ls wrongfile\"]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:8080/jobs",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"jobs"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Stop Job",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJSUzUxMiIsInR5cCI6IkpXVCJ9.eyJhcGlUb2tlbiI6IjlFekdKT1RjTUhGTVhwaGZ2QXVNIn0.ZhnpBKFKxcFrPR5FwnpxYxPymScXbq_CBI-x7vuws7wXQBjZT5Z9mtVbb6Mw7pii5GtJTtoTZEAJYzFYWx8akybWBip1cu3hxGo-ZRpgBh7ZOmmR32dln79xKfkUpq2q3u_jN2Gk3VJVUjrihyIeuA2yNuAVWcF_9cGoFmYIhBVpQ0OrmueAYNSNVrDB9wAj8xABePXVTsAyn4cR8AUf3OyP1vQawWxuAsD0bgthoEblMcAPbW4BxIrwS4AFIUM1V0-V-tvbJFXPqsV2Ke_0DSuDaYZwQnQXEXT7OKZL_eMisKINHalwMngUy1M0O9o1mnVKChwu4u9WQ9kIyla3ug",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://localhost:8080/jobs/{{jobID}}/stop",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"jobs",
+								"{{jobID}}",
+								"stop"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Jobs",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJSUzUxMiIsInR5cCI6IkpXVCJ9.eyJhcGlUb2tlbiI6IjlFekdKT1RjTUhGTVhwaGZ2QXVNIn0.ZhnpBKFKxcFrPR5FwnpxYxPymScXbq_CBI-x7vuws7wXQBjZT5Z9mtVbb6Mw7pii5GtJTtoTZEAJYzFYWx8akybWBip1cu3hxGo-ZRpgBh7ZOmmR32dln79xKfkUpq2q3u_jN2Gk3VJVUjrihyIeuA2yNuAVWcF_9cGoFmYIhBVpQ0OrmueAYNSNVrDB9wAj8xABePXVTsAyn4cR8AUf3OyP1vQawWxuAsD0bgthoEblMcAPbW4BxIrwS4AFIUM1V0-V-tvbJFXPqsV2Ke_0DSuDaYZwQnQXEXT7OKZL_eMisKINHalwMngUy1M0O9o1mnVKChwu4u9WQ9kIyla3ug",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://localhost:8080/jobs",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"jobs"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Job Logs",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJSUzUxMiIsInR5cCI6IkpXVCJ9.eyJhcGlUb2tlbiI6IjlFekdKT1RjTUhGTVhwaGZ2QXVNIn0.ZhnpBKFKxcFrPR5FwnpxYxPymScXbq_CBI-x7vuws7wXQBjZT5Z9mtVbb6Mw7pii5GtJTtoTZEAJYzFYWx8akybWBip1cu3hxGo-ZRpgBh7ZOmmR32dln79xKfkUpq2q3u_jN2Gk3VJVUjrihyIeuA2yNuAVWcF_9cGoFmYIhBVpQ0OrmueAYNSNVrDB9wAj8xABePXVTsAyn4cR8AUf3OyP1vQawWxuAsD0bgthoEblMcAPbW4BxIrwS4AFIUM1V0-V-tvbJFXPqsV2Ke_0DSuDaYZwQnQXEXT7OKZL_eMisKINHalwMngUy1M0O9o1mnVKChwu4u9WQ9kIyla3ug",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://localhost:8080/jobs/{{jobID}}/logs",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"jobs",
+								"{{jobID}}",
+								"logs"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Job Status",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJSUzUxMiIsInR5cCI6IkpXVCJ9.eyJhcGlUb2tlbiI6IjlFekdKT1RjTUhGTVhwaGZ2QXVNIn0.ZhnpBKFKxcFrPR5FwnpxYxPymScXbq_CBI-x7vuws7wXQBjZT5Z9mtVbb6Mw7pii5GtJTtoTZEAJYzFYWx8akybWBip1cu3hxGo-ZRpgBh7ZOmmR32dln79xKfkUpq2q3u_jN2Gk3VJVUjrihyIeuA2yNuAVWcF_9cGoFmYIhBVpQ0OrmueAYNSNVrDB9wAj8xABePXVTsAyn4cR8AUf3OyP1vQawWxuAsD0bgthoEblMcAPbW4BxIrwS4AFIUM1V0-V-tvbJFXPqsV2Ke_0DSuDaYZwQnQXEXT7OKZL_eMisKINHalwMngUy1M0O9o1mnVKChwu4u9WQ9kIyla3ug",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://localhost:8080/jobs/{{jobID}}/status",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"jobs",
+								"{{jobID}}",
+								"status"
+							]
+						}
+					},
+					"response": []
 				}
-			},
-			"response": []
-		},
-		{
-			"name": "Get Jobs",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "http://localhost:8080/jobs",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"jobs"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Get Job Logs",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "http://localhost:8080/jobs/{{jobID}}/logs",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"jobs",
-						"{{jobID}}",
-						"logs"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Get Job Status",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "http://localhost:8080/jobs/{{jobID}}/status",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"jobs",
-						"{{jobID}}",
-						"status"
-					]
-				}
-			},
-			"response": []
+			]
 		}
 	]
 }
