@@ -59,7 +59,6 @@ func (s *ServerInteractor) waitForExitReason(job *jobEntity.Job, process *worker
 	if err != nil {
 		log.Printf("%s\n", err.Error())
 	}
-	close(process.ExitChannel)
 }
 
 func (s *ServerInteractor) persistJob(job *jobEntity.Job, process *worker.Process) (*jobEntity.Job, error) {
