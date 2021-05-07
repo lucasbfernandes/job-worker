@@ -40,6 +40,9 @@ func requestGetJobLogs(serverURL string, jobID string, apiToken string) (*string
 		if response.StatusCode() == 401 {
 			return nil, errors.New("failed authentication - unauthorized")
 		}
+		if response.StatusCode() == 403 {
+			return nil, errors.New("failed authorization - forbidden")
+		}
 		if getJobLogsError.Error != "" {
 			return nil, errors.New(getJobLogsError.Error)
 		}

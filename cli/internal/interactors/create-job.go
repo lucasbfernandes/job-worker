@@ -44,6 +44,9 @@ func requestCreateJob(serverURL string, createJobRequest *dto.CreateJobRequest, 
 		if response.StatusCode() == 401 {
 			return nil, errors.New("failed authentication - unauthorized")
 		}
+		if response.StatusCode() == 403 {
+			return nil, errors.New("failed authorization - forbidden")
+		}
 		if createJobError.Error != "" {
 			return nil, errors.New(createJobError.Error)
 		}

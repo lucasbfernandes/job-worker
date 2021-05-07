@@ -124,7 +124,7 @@ func (suite *StopJobE2EIntegrationTestSuite) TestShouldReturn401WhenAuthHeaderEx
 	}
 
 	assert.Nil(suite.T(), err, "request error should be nil")
-	assert.Equal(suite.T(), http.StatusUnauthorized, resp.StatusCode, "request response should have 401 status")
+	assert.Equal(suite.T(), http.StatusForbidden, resp.StatusCode, "request response should have 403 status")
 }
 
 func (suite *StopJobE2EIntegrationTestSuite) TestShouldReturn404WhenAuthHeaderExistsButUserDoesnt() {

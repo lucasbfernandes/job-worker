@@ -187,7 +187,7 @@ func (s *Server) UserJobGuard() gin.HandlerFunc {
 
 		// If user is ADMIN, then we skip this verification
 		if userOBJ.Role == userEntity.UserRole && userOBJ.ID != job.UserID {
-			c.AbortWithStatus(http.StatusUnauthorized)
+			c.AbortWithStatus(http.StatusForbidden)
 		}
 	}
 }

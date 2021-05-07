@@ -40,6 +40,9 @@ func requestStopJob(serverURL string, jobID string, apiToken string) error {
 		if response.StatusCode() == 401 {
 			return errors.New("failed authentication - unauthorized")
 		}
+		if response.StatusCode() == 403 {
+			return errors.New("failed authorization - forbidden")
+		}
 		if stopJobError.Error != "" {
 			return errors.New(stopJobError.Error)
 		}

@@ -101,7 +101,7 @@ func (suite *GetJobStatusE2EIntegrationTestSuite) TestShouldReturn401WhenAuthHea
 	assert.Equal(suite.T(), http.StatusUnauthorized, resp.StatusCode, "request response should have 401 status")
 }
 
-func (suite *GetJobStatusE2EIntegrationTestSuite) TestShouldReturn401WhenAuthHeaderExistsIsCorrectButFromDiffUser() {
+func (suite *GetJobStatusE2EIntegrationTestSuite) TestShouldReturn403WhenAuthHeaderExistsIsCorrectButFromDiffUser() {
 	job := jobEntity.NewJob([]string{"ls", "-la"}, suite.admin.ID)
 	err := suite.server.Interactor.Database.UpsertJob(job)
 	assert.Nil(suite.T(), err, "upsert job returned with error")
@@ -122,7 +122,7 @@ func (suite *GetJobStatusE2EIntegrationTestSuite) TestShouldReturn401WhenAuthHea
 	}
 
 	assert.Nil(suite.T(), err, "request error should be nil")
-	assert.Equal(suite.T(), http.StatusUnauthorized, resp.StatusCode, "request response should have 401 status")
+	assert.Equal(suite.T(), http.StatusForbidden, resp.StatusCode, "request response should have 403 status")
 }
 
 func (suite *GetJobStatusE2EIntegrationTestSuite) TestShouldReturn404WhenAuthHeaderExistsButUserDoesnt() {
