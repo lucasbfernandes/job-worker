@@ -19,6 +19,7 @@ func (suite *GetJobsInteractorIntegrationTestSuite) TestShouldReturnCorrectStrin
 id: ad94eaae-b33e-42f8-927d-c13c0fc4a1f3
 command: [sh -c echo hello world]
 status: COMPLETED
+user: user1
 createdAt: 2021-05-04 22:12:09.733
 finishedAt: 2021-05-04 22:12:09.745
 
@@ -26,6 +27,7 @@ finishedAt: 2021-05-04 22:12:09.745
 id: 4321cafb-0749-4a8e-99ca-03bb782a3381
 command: [sh -c wrongcommand]
 status: FAILED
+user: user1
 createdAt: 2021-05-04 22:12:09.733
 finishedAt: 2021-05-04 22:12:09.745
 `

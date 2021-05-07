@@ -56,8 +56,8 @@ func requestGetJobStatus(serverURL string, jobID string, apiToken string) (*dto.
 
 func parseGetJobStatusResponse(response *dto.GetJobStatusResponse) *string {
 	parsedResponse := fmt.Sprintf(
-		"\nstatus: %s\ncreatedAt: %s\nfinishedAt: %s\nexitCode: %d\n",
-		response.Status, response.CreatedAt.Format(dateLayout), response.FinishedAt.Format(dateLayout), response.ExitCode,
+		"\nstatus: %s\nuser: %s\ncreatedAt: %s\nfinishedAt: %s\nexitCode: %d\n",
+		response.Status, response.User, response.CreatedAt.Format(dateLayout), response.FinishedAt.Format(dateLayout), response.ExitCode,
 	)
 	return &parsedResponse
 }

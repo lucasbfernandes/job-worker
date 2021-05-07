@@ -16,6 +16,7 @@ type GetJobStatusInteractorIntegrationTestSuite struct {
 func (suite *GetJobStatusInteractorIntegrationTestSuite) TestShouldReturnCorrectStringWhenRequestIsSuccessful() {
 	expectedResponse := `
 status: FAILED
+user: user1
 createdAt: 2021-05-04 19:23:22.341
 finishedAt: 2021-05-04 19:23:22.406
 exitCode: 1
