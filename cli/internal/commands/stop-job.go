@@ -4,7 +4,7 @@ import (
 	"cli/internal/config"
 	"errors"
 	"flag"
-	"os"
+	"fmt"
 )
 
 func (w *WorkerCLI) StopJob(parameters []string) error {
@@ -26,6 +26,6 @@ func (w *WorkerCLI) StopJob(parameters []string) error {
 		return err
 	}
 
-	_, _ = os.Stdout.WriteString("Job stopped successfully.\n")
+	fmt.Printf("Job stopped successfully.\n")
 	return nil
 }

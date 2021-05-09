@@ -3,7 +3,7 @@ package commands
 import (
 	"cli/internal/config"
 	"flag"
-	"os"
+	"fmt"
 )
 
 func (w *WorkerCLI) GetJobs(parameters []string) error {
@@ -15,11 +15,11 @@ func (w *WorkerCLI) GetJobs(parameters []string) error {
 		return err
 	}
 
-	response, err := w.workerCLIInteractor.GetJobs(*serverURL)
+	formattedJobs, err := w.workerCLIInteractor.GetJobs(*serverURL)
 	if err != nil {
 		return err
 	}
 
-	_, _ = os.Stdout.WriteString(*response + "\n")
+	fmt.Printf("%s\n", *formattedJobs)
 	return nil
 }

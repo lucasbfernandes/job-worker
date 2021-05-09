@@ -5,7 +5,6 @@ import (
 	"errors"
 	"flag"
 	"fmt"
-	"os"
 )
 
 func (w *WorkerCLI) CreateJob(parameters []string) error {
@@ -22,11 +21,11 @@ func (w *WorkerCLI) CreateJob(parameters []string) error {
 		return errors.New("exec must receive at least one executable without arguments")
 	}
 
-	response, err := w.workerCLIInteractor.CreateJob(*serverURL, commands)
+	jobID, err := w.workerCLIInteractor.CreateJob(*serverURL, commands)
 	if err != nil {
 		return err
 	}
 
-	_, _ = os.Stdout.WriteString(fmt.Sprintf("Created job successfully. Id: %s.\n", *response))
+	fmt.Printf("Created job successfully. Id: %s\n", *jobID)
 	return nil
 }

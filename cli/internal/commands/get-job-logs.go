@@ -4,7 +4,7 @@ import (
 	"cli/internal/config"
 	"errors"
 	"flag"
-	"os"
+	"fmt"
 )
 
 func (w *WorkerCLI) GetJobLogs(parameters []string) error {
@@ -21,11 +21,11 @@ func (w *WorkerCLI) GetJobLogs(parameters []string) error {
 		return errors.New("job id cannot be empty")
 	}
 
-	response, err := w.workerCLIInteractor.GetJobLogs(*serverURL, *jobID)
+	formattedLogs, err := w.workerCLIInteractor.GetJobLogs(*serverURL, *jobID)
 	if err != nil {
 		return err
 	}
 
-	_, _ = os.Stdout.WriteString(*response + "\n")
+	fmt.Printf("%s\n", *formattedLogs)
 	return nil
 }
