@@ -36,7 +36,7 @@ func NewProcess(command []string) (*Process, error) {
 		ExitChannel:     make(chan ExitReason, 1),
 		Command:         command,
 		execCmd:         execCmd,
-		finishedChannel: make(chan struct{}, 1),
+		finishedChannel: make(chan struct{}),
 	}, nil
 }
 

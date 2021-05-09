@@ -3,6 +3,8 @@ package worker
 import (
 	"errors"
 	"fmt"
+	"log"
+	"time"
 )
 
 func (p *Process) Stop() error {
@@ -18,7 +20,12 @@ func (p *Process) Stop() error {
 		return fmt.Errorf("failed to kill process: %s", err)
 	}
 
-	<-p.finishedChannel
+	select {
+	case <-time.After(2 * time.Second):
+		log.Printf("process stop channel timed out\n")
+	case <-p.finishedChannel:
+		log.Printf("process stopped successfully\n")
+	}
 
 	return nil
 }
