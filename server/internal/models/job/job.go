@@ -26,7 +26,7 @@ func NewJob(command []string, userID string) *Job {
 	return &Job{
 		ID:         uuid.New().String(),
 		Command:    command,
-		Status:     CREATED,
+		Status:     RUNNING,
 		ExitCode:   -1,
 		CreatedAt:  &createdAt,
 		FinishedAt: nil,

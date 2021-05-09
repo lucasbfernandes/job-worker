@@ -33,11 +33,6 @@ func (s *ServerInteractor) CreateJob(createJobRequest dto.CreateJobRequest, user
 		return nil, err
 	}
 
-	err = s.setJobStatusRunning(savedJob)
-	if err != nil {
-		return nil, err
-	}
-
 	go s.waitForExitReason(savedJob, process)
 
 	return &dto.CreateJobResponse{ID: savedJob.ID}, nil
@@ -99,15 +94,6 @@ func (s *ServerInteractor) finishJobWithStatusAndCode(job jobEntity.Job, status 
 	err := s.Database.UpsertJob(&job)
 	if err != nil {
 		return fmt.Errorf("failed to update job with status %s: %s", status, err)
-	}
-	return nil
-}
-
-func (s *ServerInteractor) setJobStatusRunning(job *jobEntity.Job) error {
-	job.Status = jobEntity.RUNNING
-	err := s.Database.UpsertJob(job)
-	if err != nil {
-		return fmt.Errorf("failed to update job status to running: %s", err)
 	}
 	return nil
 }

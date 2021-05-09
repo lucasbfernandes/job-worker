@@ -1,7 +1,6 @@
 package job
 
 const (
-	CREATED   = "CREATED"
 	RUNNING   = "RUNNING"
 	FAILED    = "FAILED"
 	STOPPED   = "STOPPED"
