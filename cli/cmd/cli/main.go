@@ -8,7 +8,7 @@ import (
 
 func main() {
 	workerCLI := commands.NewWorkerCLI()
-	err := workerCLI.ExecuteCommand(os.Args)
+	err := workerCLI.ParseAndExecuteCommand(os.Args)
 	if err != nil {
 		fmt.Printf("failed to execute command: %s\n", err.Error())
 		os.Exit(1)

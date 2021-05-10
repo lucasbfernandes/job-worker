@@ -1,27 +1,20 @@
 package commands
 
 import (
-	"cli/internal/config"
 	"errors"
-	"flag"
 	"fmt"
 )
 
-func (w *WorkerCLI) CreateJob(parameters []string) error {
-	execCmd := flag.NewFlagSet("exec", flag.ExitOnError)
-	serverURL := execCmd.String("s", config.GetDefaultServerURL(), "server url")
-
-	err := execCmd.Parse(parameters)
-	if err != nil {
-		return errors.New("failed to parse exec command line arguments")
+func (w *WorkerCLI) CreateJob(serverURL string, commandArray []string) error {
+	if serverURL == "" {
+		return errors.New("server url cannot be empty")
 	}
 
-	commands := execCmd.Args()
-	if len(commands) == 0 {
+	if len(commandArray) == 0 {
 		return errors.New("exec must receive at least one executable without arguments")
 	}
 
-	jobID, err := w.workerCLIInteractor.CreateJob(*serverURL, commands)
+	jobID, err := w.workerCLIInteractor.CreateJob(serverURL, commandArray)
 	if err != nil {
 		return err
 	}

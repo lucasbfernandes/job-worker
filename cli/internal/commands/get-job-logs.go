@@ -1,27 +1,20 @@
 package commands
 
 import (
-	"cli/internal/config"
 	"errors"
-	"flag"
 	"fmt"
 )
 
-func (w *WorkerCLI) GetJobLogs(parameters []string) error {
-	logsCmd := flag.NewFlagSet("exec", flag.ExitOnError)
-	serverURL := logsCmd.String("s", config.GetDefaultServerURL(), "server url")
-	jobID := logsCmd.String("i", "", "job id")
-
-	err := logsCmd.Parse(parameters)
-	if err != nil {
-		return err
+func (w *WorkerCLI) GetJobLogs(serverURL string, jobID string) error {
+	if serverURL == "" {
+		return errors.New("server url cannot be empty")
 	}
 
-	if *jobID == "" {
+	if jobID == "" {
 		return errors.New("job id cannot be empty")
 	}
 
-	formattedLogs, err := w.workerCLIInteractor.GetJobLogs(*serverURL, *jobID)
+	formattedLogs, err := w.workerCLIInteractor.GetJobLogs(serverURL, jobID)
 	if err != nil {
 		return err
 	}
