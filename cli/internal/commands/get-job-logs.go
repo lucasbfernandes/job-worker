@@ -5,7 +5,7 @@ import (
 	"fmt"
 )
 
-func (w *WorkerCLI) GetJobLogs(serverURL string, jobID string) error {
+func (w *WorkerCLI) GetJobLogs(serverURL string, jobID string, apiToken string) error {
 	if serverURL == "" {
 		return errors.New("server url cannot be empty")
 	}
@@ -14,7 +14,11 @@ func (w *WorkerCLI) GetJobLogs(serverURL string, jobID string) error {
 		return errors.New("job id cannot be empty")
 	}
 
-	formattedLogs, err := w.workerCLIInteractor.GetJobLogs(serverURL, jobID)
+	if apiToken == "" {
+		return errors.New("api token cannot be empty")
+	}
+
+	formattedLogs, err := w.workerCLIInteractor.GetJobLogs(serverURL, jobID, apiToken)
 	if err != nil {
 		return err
 	}

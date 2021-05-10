@@ -26,6 +26,7 @@ func (w *WorkerCLI) ParseAndExecuteCommand(args []string) error {
 	cmd := flag.NewFlagSet("worker-cli", flag.ExitOnError)
 	serverURL := cmd.String("s", config.GetDefaultServerURL(), "server url")
 	jobID := cmd.String("i", "", "job id")
+	apiToken := cmd.String("t", "", "user api token")
 
 	err := cmd.Parse(parameters)
 	if err != nil {
@@ -35,15 +36,15 @@ func (w *WorkerCLI) ParseAndExecuteCommand(args []string) error {
 	switch args[1] {
 
 	case "exec":
-		return w.CreateJob(*serverURL, cmd.Args())
+		return w.CreateJob(*serverURL, cmd.Args(), *apiToken)
 	case "list":
-		return w.GetJobs(*serverURL)
+		return w.GetJobs(*serverURL, *apiToken)
 	case "stop":
-		return w.StopJob(*serverURL, *jobID)
+		return w.StopJob(*serverURL, *jobID, *apiToken)
 	case "status":
-		return w.GetJobStatus(*serverURL, *jobID)
+		return w.GetJobStatus(*serverURL, *jobID, *apiToken)
 	case "logs":
-		return w.GetJobLogs(*serverURL, *jobID)
+		return w.GetJobLogs(*serverURL, *jobID, *apiToken)
 	default:
 		return errors.New("unknown command")
 	}
