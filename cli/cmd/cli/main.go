@@ -2,15 +2,15 @@ package main
 
 import (
 	"cli/internal/commands"
+	"fmt"
 	"os"
 )
 
 func main() {
 	workerCLI := commands.NewWorkerCLI()
-	err := workerCLI.ExecuteCommand(os.Args)
+	err := workerCLI.ParseAndExecuteCommand(os.Args)
 	if err != nil {
-		_, _ = os.Stdout.WriteString("failed to execute command: " + err.Error() + "\n")
+		fmt.Printf("failed to execute command: %s\n", err.Error())
 		os.Exit(1)
 	}
-	os.Exit(0)
 }
