@@ -183,11 +183,13 @@ func (s *Server) Authorize() gin.HandlerFunc {
 		job, err := s.Interactor.Database.GetJobOrFail(jobID)
 		if err != nil {
 			c.AbortWithStatus(http.StatusNotFound)
+			return
 		}
 
 		// If user is ADMIN, then we skip this verification
 		if userOBJ.Role == userEntity.UserRole && userOBJ.ID != job.UserID {
 			c.AbortWithStatus(http.StatusForbidden)
+			return
 		}
 	}
 }
