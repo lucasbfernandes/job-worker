@@ -105,13 +105,13 @@ func (s *Server) GetGinEngine() *gin.Engine {
 	router := gin.Default()
 
 	router.Use(s.JWTGuard())
-	router.Use(s.UserExistenceGuard())
+	router.Use(s.Authenticate())
 
 	router.POST("/jobs", s.CreateJob)
 	router.GET("/jobs", s.GetJobs)
 
 	authzRoutes := router.Group("/")
-	authzRoutes.Use(s.UserJobGuard())
+	authzRoutes.Use(s.Authorize())
 
 	authzRoutes.POST("/jobs/:id/stop", s.StopJob)
 	authzRoutes.GET("/jobs/:id/status", s.GetJobStatus)
@@ -152,7 +152,7 @@ func (s *Server) JWTGuard() gin.HandlerFunc {
 	}
 }
 
-func (s *Server) UserExistenceGuard() gin.HandlerFunc {
+func (s *Server) Authenticate() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		apiToken, exists := c.Get("apiToken")
 		if !exists {
@@ -170,7 +170,7 @@ func (s *Server) UserExistenceGuard() gin.HandlerFunc {
 	}
 }
 
-func (s *Server) UserJobGuard() gin.HandlerFunc {
+func (s *Server) Authorize() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		user, exists := c.Get("user")
 		if !exists {
