@@ -2,20 +2,34 @@
 
 Simple Job Worker service that provides an API to run arbitrary Linux processes.
 
+## Setup
+In order to run the CLI and Server inside a docker environment, please install [docker](https://docs.docker.com/get-docker/) and [docker-compose](https://docs.docker.com/compose/install/).
+After it, from the job-worker's root directory, execute the following command:
+
+```
+docker-compose build && docker-compose up
+```
+
 ###  Server
-In order to run the Server, please install [docker](https://docs.docker.com/get-docker/) and [docker-compose](https://docs.docker.com/compose/install/).
 
-From the server's root directory, execute `docker-compose build && docker-compose up` and choose one of the following commands in another terminal window:
+<strong>Running the application:</strong>
 
-* Run the application (Will be available at http://localhost:8080 and a Postman collection can be found [here](assets/postman)):
+```
+docker-compose exec -T server ./out/server
+```
 
-        docker-compose exec -T server ./out/server
+(Will be available at http://localhost:8080 and a Postman collection can be found [here](assets/postman)):
 
-* Run tests:
 
-        docker-compose exec -T server go test -v ./...
+<strong>Running tests:</strong>
 
-You can also run and test the application outside a docker environment. In order to do that, [install go 1.16](https://golang.org/doc/install) and execute the following commands from the root directory:
+```
+docker-compose exec -T server go test -v ./...
+```
+
+<strong>Running everything outside a docker environment:</strong>
+
+You can also run and test the server outside a docker environment. In order to do that, [install go 1.16](https://golang.org/doc/install) and execute the following commands from the server's root directory:
 
 1. `go test -v ./...`
 2. `go build -o ./out/server cmd/server/*.go`
@@ -33,7 +47,64 @@ Example:
 
 Resulting files:
 
-* /app/servers/logs/\<job-id\>-stdout
-* /app/servers/logs/\<job-id\>-stderr
+* /app/servers/logs/\<job-id\>
 
 If LOGS_DIR is not provided, files will be created inside the folder `logs` in the current directory.
+
+### CLI
+
+<strong>Running the application:</strong>
+
+Before executing the CLI, please have the server up and running.
+
+```
+docker-compose exec -T server ./out/server
+```
+
+In another terminal window, execute the next command to hop in the CLI container shell:
+```
+docker-compose exec -T cli /bin/sh
+```
+
+Execute one of the following commands:
+```
+Create Job:
+./out/cli exec -s SERVER_URL EXECUTABLE [ARGS...]
+
+List Jobs:
+./out/cli list -s SERVER_URL
+
+Stop Job:
+./out/cli stop -s SERVER_URL -i JOB_ID
+
+Get Job Status:
+./out/cli status -s SERVER_URL -i JOB_ID
+
+Get Job Logs:
+./out/cli logs -s SERVER_URL -i JOB_ID
+```
+
+<strong>PS:</strong> SERVER_URL will default to http://server:8080 but you can override it with the -s flag.
+
+<strong>Running tests:</strong>
+
+```
+docker-compose exec -T cli go test -v ./...
+```
+
+<strong>PS:</strong> All CLI tests need a mock server up and running. This is the stubby4j container started with `docker-compose up`. Running tests inside the docker container will make
+DEFAULT_SERVER_MOCK_URL be evaluated as `http://stubby4j:8883`.
+
+<strong>Running everything outside a docker environment:</strong>
+
+You can also run and test the CLI outside a docker environment. In order to do that, [install go 1.16](https://golang.org/doc/install) and execute the following commands from the CLI's root directory:
+
+1. `go test -v ./...`
+2. `go build -o ./out/cli cmd/cli/*.go`
+3. `./out/cli <command>`
+
+<strong>PS:</strong>
+
+The CLI needs a server running, and you can provide its url using the `-s` flag in each command or by putting it inside the `DEFAULT_SERVER_URL` environment variable.
+
+The `stubby4j` container must be running for the tests, therefore you still need to run `docker-compose up stubby4j` before it.
