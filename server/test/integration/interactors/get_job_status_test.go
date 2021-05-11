@@ -2,6 +2,7 @@ package integration_interactors_test
 
 import (
 	"fmt"
+	userEntity "server/internal/models/user"
 	"server/internal/repository"
 
 	"github.com/stretchr/testify/assert"
@@ -19,6 +20,10 @@ type GetJobStatusInteractorIntegrationTestSuite struct {
 	suite.Suite
 
 	interactor *interactors.ServerInteractor
+
+	admin *userEntity.User
+
+	user *userEntity.User
 }
 
 func (suite *GetJobStatusInteractorIntegrationTestSuite) SetupSuite() {
@@ -28,6 +33,21 @@ func (suite *GetJobStatusInteractorIntegrationTestSuite) SetupSuite() {
 	}
 
 	suite.interactor, err = interactors.NewServerInteractor()
+	if err != nil {
+		suite.FailNow(fmt.Sprintf("failed to setup test suite: %s", err))
+	}
+
+	err = suite.interactor.Database.SeedUsers()
+	if err != nil {
+		suite.FailNow(fmt.Sprintf("failed to setup test suite: %s", err))
+	}
+
+	suite.admin, err = suite.interactor.Database.GetUserOrFailByAPIToken("qTMaYIfw8q3esZ6Dv2rQ")
+	if err != nil {
+		suite.FailNow(fmt.Sprintf("failed to setup test suite: %s", err))
+	}
+
+	suite.user, err = suite.interactor.Database.GetUserOrFailByAPIToken("9EzGJOTcMHFMXphfvAuM")
 	if err != nil {
 		suite.FailNow(fmt.Sprintf("failed to setup test suite: %s", err))
 	}
@@ -58,7 +78,7 @@ func (suite *GetJobStatusInteractorIntegrationTestSuite) TestShouldReturnCorrect
 		Command: []string{"echo", "hello test world"},
 	}
 
-	createJobResponse, err := suite.interactor.CreateJob(request)
+	createJobResponse, err := suite.interactor.CreateJob(request, suite.admin)
 	assert.Nil(suite.T(), err, "create job interactor returned with error")
 
 	time.Sleep(250 * time.Millisecond)
@@ -75,7 +95,7 @@ func (suite *GetJobStatusInteractorIntegrationTestSuite) TestShouldReturnCorrect
 		Command: []string{"cat", "hello test world"},
 	}
 
-	createJobResponse, err := suite.interactor.CreateJob(request)
+	createJobResponse, err := suite.interactor.CreateJob(request, suite.admin)
 	assert.Nil(suite.T(), err, "create job interactor returned with error")
 
 	time.Sleep(250 * time.Millisecond)
@@ -92,7 +112,7 @@ func (suite *GetJobStatusInteractorIntegrationTestSuite) TestShouldReturnCorrect
 		Command: []string{"sleep", "10"},
 	}
 
-	createJobResponse, err := suite.interactor.CreateJob(request)
+	createJobResponse, err := suite.interactor.CreateJob(request, suite.admin)
 	assert.Nil(suite.T(), err, "create job interactor returned with error")
 
 	time.Sleep(1100 * time.Millisecond)

@@ -15,14 +15,14 @@ type CreateJobInteractorIntegrationTestSuite struct {
 
 func (suite *CreateJobInteractorIntegrationTestSuite) TestShouldReturnErrorWhenRequestFailed() {
 	workerCLIInteractor := interactors.NewWorkerCLIInteractor()
-	response, err := workerCLIInteractor.CreateJob(integration.GetDefaultTestsServerURL(), []string{})
+	response, err := workerCLIInteractor.CreateJob(integration.GetDefaultTestsServerURL(), []string{}, "qTMaYIfw8q3esZ6Dv2rQ")
 	assert.Nil(suite.T(), response, "response should be nil")
 	assert.NotNil(suite.T(), err, "error should not be nil")
 }
 
 func (suite *CreateJobInteractorIntegrationTestSuite) TestShouldReturnResponseWhenRequestSucceeds() {
 	workerCLIInteractor := interactors.NewWorkerCLIInteractor()
-	response, err := workerCLIInteractor.CreateJob(integration.GetDefaultTestsServerURL(), []string{"ls"})
+	response, err := workerCLIInteractor.CreateJob(integration.GetDefaultTestsServerURL(), []string{"ls"}, "qTMaYIfw8q3esZ6Dv2rQ")
 	assert.NotNil(suite.T(), response, "response should not be nil")
 	assert.Nil(suite.T(), err, "error should be nil")
 }

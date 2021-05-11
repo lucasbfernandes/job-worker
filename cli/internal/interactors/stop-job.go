@@ -4,22 +4,31 @@ import (
 	"github.com/go-resty/resty/v2"
 
 	"cli/internal/dto"
+	"cli/internal/security"
+	"crypto/tls"
 	"errors"
 )
 
-func (i *WorkerCLIInteractor) StopJob(serverURL string, jobID string) error {
-	err := requestStopJob(serverURL, jobID)
+func (i *WorkerCLIInteractor) StopJob(serverURL string, jobID string, apiToken string) error {
+	err := requestStopJob(serverURL, jobID, apiToken)
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-func requestStopJob(serverURL string, jobID string) error {
+func requestStopJob(serverURL string, jobID string, apiToken string) error {
 	var stopJobError dto.JobsError
 
-	client := resty.New()
+	bearerToken, err := security.AuthenticateUser(apiToken)
+	if err != nil {
+		return err
+	}
+
+	// We are skipping this verification because server has a self-signed certificate
+	client := resty.New().SetTLSClientConfig(&tls.Config{InsecureSkipVerify: true})
 	response, err := client.R().
+		SetHeader("Authorization", "Bearer "+*bearerToken).
 		SetError(&stopJobError).
 		Post(serverURL + jobsPath + "/" + jobID + stopJobsPath)
 
@@ -28,6 +37,12 @@ func requestStopJob(serverURL string, jobID string) error {
 	}
 
 	if response.IsError() {
+		if response.StatusCode() == 401 {
+			return errors.New("failed authentication - unauthorized")
+		}
+		if response.StatusCode() == 403 {
+			return errors.New("failed authorization - forbidden")
+		}
 		if stopJobError.Error != "" {
 			return errors.New(stopJobError.Error)
 		}

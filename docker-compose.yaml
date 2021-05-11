@@ -18,7 +18,7 @@ services:
       - stubby4j
     command: sh -c 'while sleep 3600; do :; done'
     environment:
-      - DEFAULT_SERVER_URL=http://server:8080
+      - DEFAULT_SERVER_URL=https://server:8080
       - DEFAULT_SERVER_MOCK_URL=http://stubby4j:8883
 
   server:
@@ -30,3 +30,6 @@ services:
       - 8080:8080
     environment:
       - LOGS_DIR=/app/server/logs
+      - TLS_CERT_FILE_PATH=/app/server/cert/server.crt
+      - TLS_KEY_FILE_PATH=/app/server/cert/server.key
+      - JWT_CERT_FILE_PATH=/app/server/cert/jwt.crt

@@ -5,14 +5,14 @@ import (
 	"log"
 	"server/internal/dto"
 	jobEntity "server/internal/models/job"
+	userEntity "server/internal/models/user"
 	"server/internal/repository"
 	"server/pkg/worker"
 	"time"
 )
 
-func (s *ServerInteractor) CreateJob(createJobRequest dto.CreateJobRequest) (*dto.CreateJobResponse, error) {
-	job := createJobRequest.ToJob()
-
+func (s *ServerInteractor) CreateJob(createJobRequest dto.CreateJobRequest, user *userEntity.User) (*dto.CreateJobResponse, error) {
+	job := createJobRequest.ToJob(user)
 	process, err := s.createWorkerProcess(createJobRequest.Command)
 	if err != nil {
 		return nil, err

@@ -2,6 +2,7 @@ package dto
 
 import (
 	jobEntity "server/internal/models/job"
+	"server/internal/models/user"
 )
 
 type CreateJobRequest struct {
@@ -12,8 +13,9 @@ type CreateJobResponse struct {
 	ID string `json:"id"`
 }
 
-func (request *CreateJobRequest) ToJob() *jobEntity.Job {
+func (request *CreateJobRequest) ToJob(user *user.User) *jobEntity.Job {
 	return jobEntity.NewJob(
 		request.Command,
+		user.ID,
 	)
 }

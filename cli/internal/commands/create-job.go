@@ -5,7 +5,7 @@ import (
 	"fmt"
 )
 
-func (w *WorkerCLI) CreateJob(serverURL string, commandArray []string) error {
+func (w *WorkerCLI) CreateJob(serverURL string, commandArray []string, apiToken string) error {
 	if serverURL == "" {
 		return errors.New("server url cannot be empty")
 	}
@@ -14,7 +14,11 @@ func (w *WorkerCLI) CreateJob(serverURL string, commandArray []string) error {
 		return errors.New("exec must receive at least one executable without arguments")
 	}
 
-	jobID, err := w.workerCLIInteractor.CreateJob(serverURL, commandArray)
+	if apiToken == "" {
+		return errors.New("api token cannot be empty")
+	}
+
+	jobID, err := w.workerCLIInteractor.CreateJob(serverURL, commandArray, apiToken)
 	if err != nil {
 		return err
 	}

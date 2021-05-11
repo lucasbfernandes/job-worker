@@ -5,12 +5,16 @@ import (
 	"fmt"
 )
 
-func (w *WorkerCLI) GetJobs(serverURL string) error {
+func (w *WorkerCLI) GetJobs(serverURL string, apiToken string) error {
 	if serverURL == "" {
 		return errors.New("server url cannot be empty")
 	}
 
-	formattedJobs, err := w.workerCLIInteractor.GetJobs(serverURL)
+	if apiToken == "" {
+		return errors.New("api token cannot be empty")
+	}
+
+	formattedJobs, err := w.workerCLIInteractor.GetJobs(serverURL, apiToken)
 	if err != nil {
 		return err
 	}

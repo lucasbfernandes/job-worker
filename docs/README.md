@@ -85,7 +85,7 @@ The Job Worker Server is responsible for receiving HTTPS requests, applying vali
 ### Security
 
 The Job Worker Service will use HTTPS + Bearer Authentication (JWT) in its initial version. Authorization
-will take form with the following roles: `Developer` and `Reader`.
+will take form with the following roles: `ADMIN` and `USER`.
 
 #### Transport Layer Security
 
@@ -116,14 +116,13 @@ HTTPS/TLS will be configured in the Server with the following steps:
 #### Authentication
 
 Every request made to the Server must contain an authorization header in the form `Authorization: Bearer <jwtToken>`,
-where `<jwtToken>` is a JWT token with `apiToken` and `role` claims. The token will be signed using the RSA algorithm
+where `<jwtToken>` is a JWT token with an `apiToken` claim. The token will be signed using the RSA algorithm
 and SHA-512 hash algorithm.
 
-Claims example:
+Claim example:
 ```
 {
-  "apiToken": "6q6Tz5NBELFo5E9iOSEo",
-  "role": "admin" // we'll have 2 possible roles - will be used to enforce authorization
+  "apiToken": "6q6Tz5NBELFo5E9iOSEo"
 }
 ```
 
@@ -152,10 +151,10 @@ a set of permissions associated with it.
 
 <strong>PS: Stub users will be created as seed data when the Server starts. There will be no users CRUD in the initial version, and for that reason there won't be any roles for user management.</strong>
 
-|  Roles               |  Permissions         | Description |
-| :-------------------:| :-------------------:| :-----------: |
-|  Developer | jobs.create, jobs.get, jobs.logs, jobs.stop | Can create/stop jobs, view jobs logs + all Reader permissions|
-|  Reader | jobs.get | Can view all jobs and their status|
+|  Roles               | Description |
+| :-------------------:| :-----------: |
+|  ADMIN | Can access every API resource and can interact with jobs created by other users|
+|  USER | Can access every API resource but can only interact with resources he/she created |
 
 When receiving an authenticated request, the Server will always check if the user has enough permissions to access the resource. If not, `403 Forbidden` will be returned.
 

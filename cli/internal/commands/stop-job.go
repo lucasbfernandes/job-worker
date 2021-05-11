@@ -5,7 +5,7 @@ import (
 	"fmt"
 )
 
-func (w *WorkerCLI) StopJob(serverURL string, jobID string) error {
+func (w *WorkerCLI) StopJob(serverURL string, jobID string, apiToken string) error {
 	if serverURL == "" {
 		return errors.New("server url cannot be empty")
 	}
@@ -14,7 +14,11 @@ func (w *WorkerCLI) StopJob(serverURL string, jobID string) error {
 		return errors.New("job id cannot be empty")
 	}
 
-	err := w.workerCLIInteractor.StopJob(serverURL, jobID)
+	if apiToken == "" {
+		return errors.New("api token cannot be empty")
+	}
+
+	err := w.workerCLIInteractor.StopJob(serverURL, jobID, apiToken)
 	if err != nil {
 		return err
 	}

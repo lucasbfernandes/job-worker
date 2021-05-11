@@ -4,25 +4,34 @@ import (
 	"github.com/go-resty/resty/v2"
 
 	"cli/internal/dto"
+	"cli/internal/security"
+	"crypto/tls"
 	"errors"
 )
 
-func (i *WorkerCLIInteractor) CreateJob(serverURL string, command []string) (*string, error) {
+func (i *WorkerCLIInteractor) CreateJob(serverURL string, command []string, apiToken string) (*string, error) {
 	createJobRequest := dto.NewCreateJobRequest(command)
-	createJobResponse, err := requestCreateJob(serverURL, createJobRequest)
+	createJobResponse, err := requestCreateJob(serverURL, createJobRequest, apiToken)
 	if err != nil {
 		return nil, err
 	}
 	return &createJobResponse.ID, nil
 }
 
-func requestCreateJob(serverURL string, createJobRequest *dto.CreateJobRequest) (*dto.CreateJobResponse, error) {
+func requestCreateJob(serverURL string, createJobRequest *dto.CreateJobRequest, apiToken string) (*dto.CreateJobResponse, error) {
 	var createJobResponse dto.CreateJobResponse
 	var createJobError dto.JobsError
 
-	client := resty.New()
+	bearerToken, err := security.AuthenticateUser(apiToken)
+	if err != nil {
+		return nil, err
+	}
+
+	// We are skipping this verification because server has a self-signed certificate
+	client := resty.New().SetTLSClientConfig(&tls.Config{InsecureSkipVerify: true})
 	response, err := client.R().
 		SetBody(createJobRequest).
+		SetHeader("Authorization", "Bearer "+*bearerToken).
 		SetResult(&createJobResponse).
 		SetError(&createJobError).
 		Post(serverURL + jobsPath)
@@ -32,6 +41,12 @@ func requestCreateJob(serverURL string, createJobRequest *dto.CreateJobRequest) 
 	}
 
 	if response.IsError() {
+		if response.StatusCode() == 401 {
+			return nil, errors.New("failed authentication - unauthorized")
+		}
+		if response.StatusCode() == 403 {
+			return nil, errors.New("failed authorization - forbidden")
+		}
 		if createJobError.Error != "" {
 			return nil, errors.New(createJobError.Error)
 		}

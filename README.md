@@ -69,22 +69,35 @@ docker-compose exec -T cli /bin/sh
 Execute one of the following commands:
 ```
 Create Job:
-./out/cli exec -s SERVER_URL EXECUTABLE [ARGS...]
+./out/cli exec -s SERVER_URL -t API_TOKEN EXECUTABLE [ARGS...]
 
 List Jobs:
-./out/cli list -s SERVER_URL
+./out/cli list -s SERVER_URL -t API_TOKEN
 
 Stop Job:
-./out/cli stop -s SERVER_URL -i JOB_ID
+./out/cli stop -s SERVER_URL -t API_TOKEN -i JOB_ID
 
 Get Job Status:
-./out/cli status -s SERVER_URL -i JOB_ID
+./out/cli status -s SERVER_URL -t API_TOKEN -i JOB_ID
 
 Get Job Logs:
-./out/cli logs -s SERVER_URL -i JOB_ID
+./out/cli logs -s SERVER_URL -t API_TOKEN -i JOB_ID
 ```
 
-<strong>PS:</strong> SERVER_URL will default to http://server:8080 but you can override it with the -s flag.
+<strong>PS:</strong>
+
+SERVER_URL will default to https://server:8080 but you can override it with the `-s` flag.
+
+The Job Worker has 2 available users. One with the `ADMIN` role and another with the `USER` role.
+Both have access to every resource, with the only difference being that the `ADMIN` can interact with all resources,
+even those created by other users.
+
+These are the API tokens associated with the users:
+
+* ADMIN - `qTMaYIfw8q3esZ6Dv2rQ`
+* USER - `9EzGJOTcMHFMXphfvAuM`
+
+Please provide them to the `-t` flag.
 
 <strong>Running tests:</strong>
 

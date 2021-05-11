@@ -4,12 +4,14 @@ import (
 	"github.com/go-resty/resty/v2"
 
 	"cli/internal/dto"
+	"cli/internal/security"
+	"crypto/tls"
 	"errors"
 	"fmt"
 )
 
-func (i *WorkerCLIInteractor) GetJobStatus(serverURL string, jobID string) (*string, error) {
-	getJobStatusResponse, err := requestGetJobStatus(serverURL, jobID)
+func (i *WorkerCLIInteractor) GetJobStatus(serverURL string, jobID string, apiToken string) (*string, error) {
+	getJobStatusResponse, err := requestGetJobStatus(serverURL, jobID, apiToken)
 	if err != nil {
 		return nil, err
 	}
@@ -18,12 +20,19 @@ func (i *WorkerCLIInteractor) GetJobStatus(serverURL string, jobID string) (*str
 	return parsedResponse, nil
 }
 
-func requestGetJobStatus(serverURL string, jobID string) (*dto.GetJobStatusResponse, error) {
+func requestGetJobStatus(serverURL string, jobID string, apiToken string) (*dto.GetJobStatusResponse, error) {
 	var getJobStatusResponse dto.GetJobStatusResponse
 	var getJobStatusError dto.JobsError
 
-	client := resty.New()
+	bearerToken, err := security.AuthenticateUser(apiToken)
+	if err != nil {
+		return nil, err
+	}
+
+	// We are skipping this verification because server has a self-signed certificate
+	client := resty.New().SetTLSClientConfig(&tls.Config{InsecureSkipVerify: true})
 	response, err := client.R().
+		SetHeader("Authorization", "Bearer "+*bearerToken).
 		SetResult(&getJobStatusResponse).
 		SetError(&getJobStatusError).
 		Get(serverURL + jobsPath + "/" + jobID + getJobStatusPath)
@@ -33,6 +42,12 @@ func requestGetJobStatus(serverURL string, jobID string) (*dto.GetJobStatusRespo
 	}
 
 	if response.IsError() {
+		if response.StatusCode() == 401 {
+			return nil, errors.New("failed authentication - unauthorized")
+		}
+		if response.StatusCode() == 403 {
+			return nil, errors.New("failed authorization - forbidden")
+		}
 		if getJobStatusError.Error != "" {
 			return nil, errors.New(getJobStatusError.Error)
 		}
@@ -44,8 +59,8 @@ func requestGetJobStatus(serverURL string, jobID string) (*dto.GetJobStatusRespo
 
 func parseGetJobStatusResponse(response *dto.GetJobStatusResponse) *string {
 	parsedResponse := fmt.Sprintf(
-		"\nstatus: %s\ncreatedAt: %s\nfinishedAt: %s\nexitCode: %d\n",
-		response.Status, response.CreatedAt.Format(dateLayout), response.FinishedAt.Format(dateLayout), response.ExitCode,
+		"\nstatus: %s\nuser: %s\nexitCode: %d\ncreatedAt: %s\nfinishedAt: %s\nexitCode: %d\n",
+		response.Status, response.User, response.ExitCode, response.CreatedAt.Format(dateLayout), response.FinishedAt.Format(dateLayout), response.ExitCode,
 	)
 	return &parsedResponse
 }
